@@ -35,8 +35,8 @@ function handleMovieResult(resultData) {
             "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
-        rowHTML += "<th>" + "GENRES GO HERE" + "</th>";
-        rowHTML += "<th>" + "STARS GO HERE" + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_star"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
