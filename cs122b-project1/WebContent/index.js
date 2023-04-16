@@ -21,7 +21,7 @@ function handleMovieResult(resultData) {
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
+    for (let i = 0; i < Math.min(20, resultData.length); i++) {
 
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -37,7 +37,7 @@ function handleMovieResult(resultData) {
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
         rowHTML += "<th>" + "GENRES GO HERE" + "</th>";
         rowHTML += "<th>" + "STARS GO HERE" + "</th>";
-        rowHTML += "<th>" + "RATING GO HERE" + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
