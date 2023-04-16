@@ -57,17 +57,17 @@ public class MoviesServlet extends HttpServlet {
 
             // Iterate through each row of rs
             while (rs.next()) {
-                String star_id = rs.getString("id");
-                String star_name = rs.getString("title");
-                String star_year = rs.getString("year");
-                String star_dir= rs.getString("director");
+                String movie_id = rs.getString("id");
+                String movie_name = rs.getString("title");
+                String movie_year = rs.getString("year");
+                String movie_dir= rs.getString("director");
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", star_id);
-                jsonObject.addProperty("movie_name", star_name);
-                jsonObject.addProperty("movie_year", star_year);
-                jsonObject.addProperty("movie_dir", star_dir);
+                jsonObject.addProperty("movie_id", movie_id);
+                jsonObject.addProperty("movie_name", movie_name);
+                jsonObject.addProperty("movie_year", movie_year);
+                jsonObject.addProperty("movie_dir", movie_dir);
 
                 jsonArray.add(jsonObject);
             }

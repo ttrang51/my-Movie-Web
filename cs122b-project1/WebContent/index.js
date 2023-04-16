@@ -30,10 +30,14 @@ function handleMovieResult(resultData) {
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
             '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
-            + resultData[i]["star_name"] +     // display star_name for the link text
+            + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
+        rowHTML += "<th>" + "GENRES GO HERE" + "</th>";
+        rowHTML += "<th>" + "STARS GO HERE" + "</th>";
+        rowHTML += "<th>" + "RATING GO HERE" + "</th>";
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
