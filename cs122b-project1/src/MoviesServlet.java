@@ -48,22 +48,7 @@ public class MoviesServlet extends HttpServlet {
             // Declare our statement
             Statement statement = conn.createStatement();
 
-            String q = "with r(movieId, rating) as (select movieId, rating\n" +
-                    "from ratings order by rating desc limit 20),\n" +
-                    "g(movieId, genres) as (select movieId, GROUP_CONCAT(g.name) as genres\n" +
-                    "from genres_in_movies as gim, genres as g\n" +
-                    "where gim.genreId = g.id\n" +
-                    "group by movieId),\n" +
-                    "s(movieId, stars) as(select movieId, substring_index(group_concat(s.name separator ','), ',', 3) as stars\n" +
-                    "from stars_in_movies as sim, stars as s\n" +
-                    "where sim.starId = s.id\n" +
-                    "group by movieId)  \n" +
-                    "\n" +
-                    "select Id, m.title, m.year, m.director, genres, stars, rating\n" +
-                    "from movies as m, r, g, s\n" +
-                    "where r.movieId = m.Id and r.movieId = g.movieId and r.movieId = s.movieId\n" +
-                    "order by rating desc;";
-
+      
             String query = "with r(movieId, rating) as (select movieId, rating\n" +
                         "from ratings order by rating desc limit 20),\n" +
                         "g(movieId, genres) as (select movieId, GROUP_CONCAT(g.name) as genres\n" + 
