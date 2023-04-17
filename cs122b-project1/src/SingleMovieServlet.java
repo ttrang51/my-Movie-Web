@@ -53,8 +53,8 @@ public class SingleMovieServlet extends HttpServlet {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
-                    "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
+            String query = "SELECT * from movies as m " +
+                    "where m.id = ?";
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
@@ -73,11 +73,7 @@ public class SingleMovieServlet extends HttpServlet {
             // CHANGE TO GET INFO ABOUT MOVIE NOT STAR
             while (rs.next()) {
 
-                String starId = rs.getString("starId");
-                String starName = rs.getString("name");
-                String starDob = rs.getString("birthYear");
-
-                String movieId = rs.getString("movieId");
+                String movieId = rs.getString("id");
                 String movieTitle = rs.getString("title");
                 String movieYear = rs.getString("year");
                 String movieDirector = rs.getString("director");
@@ -85,9 +81,6 @@ public class SingleMovieServlet extends HttpServlet {
                 // Create a JsonObject based on the data we retrieve from rs
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("star_id", starId);
-                jsonObject.addProperty("star_name", starName);
-                jsonObject.addProperty("star_dob", starDob);
                 jsonObject.addProperty("movie_id", movieId);
                 jsonObject.addProperty("movie_title", movieTitle);
                 jsonObject.addProperty("movie_year", movieYear);
