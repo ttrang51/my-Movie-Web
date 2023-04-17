@@ -53,8 +53,15 @@ public class SingleMovieServlet extends HttpServlet {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = "SELECT * from movies as m " +
-                    "where m.id = ?";
+            String query = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                        "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                        "where gim.genreId = g.id group by movieId) as t,\n" + 
+                        "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                        "group_concat(sim.starId separator ',') as starId\n" +
+                        "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
+                        "movies as m, ratings as rat\n" +
+                        "where t.movieId = ? and z.movieId = ? and m.Id = ? and rat.movieId = ?";
+
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
@@ -62,6 +69,9 @@ public class SingleMovieServlet extends HttpServlet {
             // Set the parameter represented by "?" in the query to the id we get from url,
             // num 1 indicates the first "?" in the query
             statement.setString(1, id);
+            statement.setString(2, id);
+            statement.setString(3, id);
+            statement.setString(4, id);
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
@@ -73,24 +83,26 @@ public class SingleMovieServlet extends HttpServlet {
             // CHANGE TO GET INFO ABOUT MOVIE NOT STAR
             while (rs.next()) {
 
-                String movieId = rs.getString("id");
+                //String movieId = rs.getString("id");
                 String movieTitle = rs.getString("title");
                 String movieYear = rs.getString("year");
                 String movieDirector = rs.getString("director");
                 String movie_gen = rs.getString("genres");
 
                 String movie_star = rs.getString("stars");
+                String movie_star_ids = rs.getString("starId");
                 String movie_rating= rs.getString("rating");
 
                 // Create a JsonObject based on the data we retrieve from rs
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movieId);
+                //jsonObject.addProperty("movie_id", movieId);
                 jsonObject.addProperty("movie_title", movieTitle);
                 jsonObject.addProperty("movie_year", movieYear);
                 jsonObject.addProperty("movie_director", movieDirector);
                 jsonObject.addProperty("movie_gen", movie_gen);
                 jsonObject.addProperty("movie_star", movie_star);
+                jsonObject.addProperty("movie_star_ids", movie_star_ids);
                 jsonObject.addProperty("movie_rating", movie_rating);
 
 

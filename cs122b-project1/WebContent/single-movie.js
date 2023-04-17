@@ -62,7 +62,28 @@ function handleResult(resultData) {
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_star"] + "</th>";
+
+        stars_array = resultData[i]["movie_star"].split(","); // Length 3
+        stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3
+
+        rowHTML += "<th>";
+        
+        for (let i = 0; i < Math.min(10, stars_array.length); i++) {
+            if (i == stars_array.length - 1){
+                rowHTML += 
+                    '<a href="single-star.html?id=' + stars_ids_array[i] + '">'
+                    + stars_array[i] +     // display star_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="single-star.html?id=' + stars_ids_array[i] + '">'
+                    + stars_array[i] +     // display star_name for the link text
+                    '</a>, ';
+            }
+        }
+
+        rowHTML += "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
