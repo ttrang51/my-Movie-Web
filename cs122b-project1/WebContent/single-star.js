@@ -61,13 +61,28 @@ function handleResult(resultData) {
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML += "<th>" + 
-        
-        //resultData[i]["movie_title"] + 
-        '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">'
-            + resultData[i]["movie_title"] +     // display movie_name for the link text
-        '</a> '
-        + "</th>";
+
+        movies_array = resultData[i]["movie_title"].split(","); 
+        movies_ids_array = resultData[i]["movie_id"].split(","); 
+
+        rowHTML += "<th>";
+
+        for (let i = 0; i < Math.min(10, stars_array.length); i++) {
+            if (i == stars_array.length - 1){
+                rowHTML += 
+                    '<a href="single-movie.html?id=' + movies_ids_array[i] + '">'
+                    + movies_array[i] +     // display movie_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="single-movie.html?id=' + movies_ids_array[i] + '">'
+                    + movies_array[i] +     // display movie_name for the link text
+                    '</a>, ';
+            }
+
+
+        rowHTML += "</th>";
 
         rowHTML += "</tr>";
 
