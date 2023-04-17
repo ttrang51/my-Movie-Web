@@ -81,7 +81,7 @@ function handleResult(resultData) {
                     '</a>, ';
             }
 
-
+        }
         rowHTML += "</th>";
 
         rowHTML += "</tr>";
