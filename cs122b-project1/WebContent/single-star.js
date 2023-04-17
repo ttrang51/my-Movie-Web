@@ -45,6 +45,9 @@ function handleResult(resultData) {
     let starInfoElement = jQuery("#star_info");
 
     // append two html <p> created to the h3 body, which will refresh the page
+    if (resultData[0]["star_dob"] == null) {
+        resultData[0]["star_dob"] = "N/a"
+    }
     starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" +
         "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
 
