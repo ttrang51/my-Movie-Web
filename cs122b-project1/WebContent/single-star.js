@@ -63,7 +63,7 @@ function handleResult(resultData) {
         
         //resultData[i]["movie_title"] + 
         '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">'
-            + resultData[i]["movie_title"] +     // display star_name for the link text
+            + resultData[i]["movie_title"] +     // display movie_name for the link text
         '</a> '
         + "</th>";
 
