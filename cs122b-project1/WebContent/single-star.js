@@ -67,8 +67,8 @@ function handleResult(resultData) {
 
         rowHTML += "<th>";
 
-        for (let i = 0; i < Math.min(10, stars_array.length); i++) {
-            if (i == stars_array.length - 1){
+        for (let i = 0; i < Math.min(10, movies_array.length); i++) {
+            if (i == movies_array.length - 1){
                 rowHTML += 
                     '<a href="single-movie.html?id=' + movies_ids_array[i] + '">'
                     + movies_array[i] +     // display movie_name for the link text
