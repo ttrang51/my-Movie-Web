@@ -77,6 +77,10 @@ public class SingleMovieServlet extends HttpServlet {
                 String movieTitle = rs.getString("title");
                 String movieYear = rs.getString("year");
                 String movieDirector = rs.getString("director");
+                String movie_gen = rs.getString("genres");
+
+                String movie_star = rs.getString("stars");
+                String movie_rating= rs.getString("rating");
 
                 // Create a JsonObject based on the data we retrieve from rs
 
@@ -85,6 +89,10 @@ public class SingleMovieServlet extends HttpServlet {
                 jsonObject.addProperty("movie_title", movieTitle);
                 jsonObject.addProperty("movie_year", movieYear);
                 jsonObject.addProperty("movie_director", movieDirector);
+                jsonObject.addProperty("movie_gen", movie_gen);
+                jsonObject.addProperty("movie_star", movie_star);
+                jsonObject.addProperty("movie_rating", movie_rating);
+
 
                 jsonArray.add(jsonObject);
             }
