@@ -68,8 +68,11 @@ public class LoginServlet extends HttpServlet {
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
+            int row_count = 0;
+
             // Iterate through each row of rs
             while (rs.next()) {
+                row_count += 1;
 
                 String userUserName = rs.getString("email");
                 String userPassword = rs.getString("password");
@@ -98,15 +101,27 @@ public class LoginServlet extends HttpServlet {
                         responseJsonObject.addProperty("message", "incorrect password");
                     }
                 }
-                response.getWriter().write(responseJsonObject.toString());
+                //out.write(responseJsonObject.toString());
+
             }
             rs.close();
             statement.close();
 
-            // Write JSON string to output
-            out.write(responseJsonObject.toString());
-            // Set response status to 200 (OK)
-            response.setStatus(200);
+            if (row_count == 0) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("errorMessage", "Error: Username or Password Incorrect");
+                out.write(jsonObject.toString());
+
+                // Log error to localhost log
+                request.getServletContext().log("Error: Username or Password Incorrect");
+                // Set response status to 500 (Internal Server Error)
+                response.setStatus(500);
+            } else {
+                // Write JSON string to output
+                out.write(responseJsonObject.toString());
+                // Set response status to 200 (OK)
+                response.setStatus(200);
+            }
 
         } catch (Exception e) {
             // Write error message JSON object to output
