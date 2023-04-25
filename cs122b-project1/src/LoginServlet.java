@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet {
                 String userPassword = rs.getString("password");
 
                 // Create a JsonObject based on the data we retrieve from rs
-                JsonArray jsonArray = new JsonArray();
+                //JsonArray jsonArray = new JsonArray();
 
                 if (username.equals(userUserName) && password.equals(userPassword)) {
                     // Login success:
@@ -95,11 +95,12 @@ public class LoginServlet extends HttpServlet {
                     // Log to localhost log
                     request.getServletContext().log("Login failed");
                     // sample error messages. in practice, it is not a good idea to tell user which one is incorrect/not exist.
-                    if (!username.equals(userUserName)) {
+                    /*if (!username.equals(userUserName)) {
                         responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
                     } else {
                         responseJsonObject.addProperty("message", "incorrect password");
-                    }
+                    }*/
+                    responseJsonObject.addProperty("message", "incorrect password");
                 }
                 //out.write(responseJsonObject.toString());
 
@@ -110,6 +111,11 @@ public class LoginServlet extends HttpServlet {
             if (row_count == 0) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("errorMessage", "Error: Username or Password Incorrect");
+
+                // Login fail due to invalid username
+                responseJsonObject.addProperty("status", "fail");
+                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+
                 out.write(jsonObject.toString());
 
                 // Log error to localhost log

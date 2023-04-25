@@ -7,6 +7,7 @@ let login_form = $("#login_form");
 function handleLoginResult(resultDataString) {
     console.log(resultDataString["message"]);
     let resultDataJson = resultDataString;
+    //let resultDataJson = JSON.parse(resultDataString);
 
     console.log("handle login response");
     console.log(resultDataJson);
