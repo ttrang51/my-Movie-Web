@@ -10,7 +10,10 @@
 <a class="btn btn-primary" href="/cs122b_project1_api_example_war/index.html" role="button">Back to Movie List</a>
 
 <form ACTION="form" METHOD="POST">
-    Star name: <input TYPE="TEXT" name="name"> (Use % to replace any strings. e.g. Arnold%)<br>
+    Movie Title: <input TYPE="TEXT" name="movie_title"> (Use % to replace any strings. e.g. Terminator%)<br>
+    Director Name: <input TYPE="TEXT" name="director_name"> (Use % to replace any strings. e.g. Arnold%)<br>
+    Year: <input type="number" min="2001" max="2019" step="1" value="2001" name="year"/><br>
+    Star name: <input TYPE="TEXT" name="star_name"> (Use % to replace any strings. e.g. Arnold%)<br>
 
     <input TYPE="SUBMIT" VALUE="Search Star">
 

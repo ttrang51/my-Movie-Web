@@ -57,10 +57,14 @@ public class MSearchServlet extends HttpServlet {
             Statement statement = dbCon.createStatement();
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
-            String name = request.getParameter("name");
+            String movie_title = request.getParameter("movie_title");
+            String movie_year = request.getParameter("year");
+            String director_name = request.getParameter("director_name");
+            String star_name = request.getParameter("star_name");
+
 
             // Generate a SQL query
-            String query = String.format("SELECT * from stars where name like '%s'", name);
+            String query = String.format("SELECT * from stars where name like '%s'", star_name);
 
 
             // Log to localhost log
