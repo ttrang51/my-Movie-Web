@@ -56,15 +56,85 @@ public class MSearchServlet extends HttpServlet {
             // Declare a new statement
             Statement statement = dbCon.createStatement();
 
+            // An array to as flags for search conditions
+            int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
+                                            // order: title, year, director, star
+            String[] con = {"title", "year", "director", "star"};
+
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String movie_title = request.getParameter("movie_title");
             String movie_year = request.getParameter("year");
             String director_name = request.getParameter("director_name");
             String star_name = request.getParameter("star_name");
 
+            flag[0] = movie_title.equals("") ? 0 : 1;
+            flag[1] = movie_title.equals("") ? 0 : 1;
+            flag[2] = movie_title.equals("") ? 0 : 1;
+            flag[3] = movie_title.equals("") ? 0 : 1;
 
-            // Generate a SQL query
-            String query = String.format("SELECT * from stars where name like '%s'", star_name);
+            int num = 0;
+            for (int i : flag){
+                if (i == 1) num++;
+            }
+            String query = "";
+            String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                    "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                    "where gim.genreId = g.id group by movieId) as t,\n" +
+                    "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                    "group_concat(sim.starId separator ',') as starId\n" +
+                    "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
+                    "movies as m, ratings as rat\n" +
+                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";
+            if (num == 1) { // Single query search
+                // Query search by movie title
+                if (flag[0] == 1 && flag[1] != 1 && flag[2] != 1 && flag[3] != 1) {
+                    query = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                            "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                            "where gim.genreId = g.id group by movieId) as t,\n" +
+                            "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                            "group_concat(sim.starId separator ',') as starId\n" +
+                            "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
+                            "movies as m, ratings as rat\n" +
+                            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and m.title like '% " + movie_title + "%'";
+                }
+                // Query search by movie year
+                else if (flag[0] != 1 && flag[1] == 1 && flag[2] != 1 && flag[3] != 1) {
+                    query = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                            "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                            "where gim.genreId = g.id group by movieId) as t,\n" +
+                            "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                            "group_concat(sim.starId separator ',') as starId\n" +
+                            "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
+                            "movies as m, ratings as rat\n" +
+                            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and m.year = " + movie_year;
+                }
+                // Query search by director
+                else if (flag[0] != 1 && flag[1] != 1 && flag[2] == 1 && flag[3] != 1) {
+                    query = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                            "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                            "where gim.genreId = g.id group by movieId) as t,\n" +
+                            "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                            "group_concat(sim.starId separator ',') as starId\n" +
+                            "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
+                            "movies as m, ratings as rat\n" +
+                            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and m.director like '%" + director_name + "%'";
+                }
+                // Query search by star
+                else {
+                    query = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+                            "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
+                            "where gim.genreId = g.id group by movieId) as t,\n" +
+                            "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                            "group_concat(sim.starId separator ',') as starId\n" +
+                            "from stars_in_movies as sim, stars as s where sim.starId = s.id and s.name like '%tom%' group by movieId) as z,\n" +
+                            "movies as m, ratings as rat\n" +
+                            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId\n";
+                }
+            }
+            else {  // Combined query
+
+            }
+
 
 
             // Log to localhost log
