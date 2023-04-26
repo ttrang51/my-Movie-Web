@@ -1,5 +1,5 @@
 with r(movieId, rating) as (select movieId, rating from ratings order by rating desc limit 20) 
-select r.movieId as Id, m.title, m.year, m.director, t.genres, z.stars, z.starId, r.rating 
+select r.movieId as Idstarsstarsstars, m.title, m.year, m.director, t.genres, z.stars, z.starId, r.rating 
 from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g 
 where gim.genreId = g.id group by movieId) as t, 
 (select movieId, substring_index(group_concat(s.name separator ','), ',', 3) as stars, 

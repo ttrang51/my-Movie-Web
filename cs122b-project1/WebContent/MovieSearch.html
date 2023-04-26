@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Form Example</title>
+    <title>Movie Search</title>
 </head>
 
 <<!--body BGCOLOR="#FDF5E6">-->
@@ -9,11 +9,11 @@
 
 <a class="btn btn-primary" href="/cs122b_project1_api_example_war/index.html" role="button">Back to Movie List</a>
 
-<form ACTION="form" METHOD="POST">
-    Movie Title: <input TYPE="TEXT" name="movie_title"> (Use % to replace any strings. e.g. Terminator%)<br>
-    Director Name: <input TYPE="TEXT" name="director_name"> (Use % to replace any strings. e.g. Arnold%)<br>
-    Year: <input type="number" min="2001" max="2019" step="1" value="2001" name="year"/><br>
-    Star name: <input TYPE="TEXT" name="star_name"> (Use % to replace any strings. e.g. Arnold%)<br>
+<form ACTION="form" METHOD="GET">
+    Movie Title: <input TYPE="TEXT" name="movie_title"> (Search by movie's title)<br>
+    Director Name: <input TYPE="TEXT" name="director_name"> (Search by director)<br>
+    Year: <input type="number" min="2001" max="2019" step="1" value="2001" name="year"/> (Search by year)<br>
+    Star name: <input TYPE="TEXT" name="star_name"> (Search by star's name)<br>
 
     <input TYPE="SUBMIT" VALUE="Search Star">
 
