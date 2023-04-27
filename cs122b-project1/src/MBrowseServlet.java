@@ -68,7 +68,7 @@ public class MBrowseServlet extends HttpServlet {
                 query = baseQuery + "t.genres like '%" + byGenre + "%'";
             else {
                 if (byTitle.equals("*"))
-                    query = baseQuery + "m.title like '[^a-zA-Z0-9]%'";      // didnt work yet
+                    query = baseQuery + "m.title REGEXP '^[^A-Za-z0-9]'";
                 else
                     query = baseQuery + "m.title like '" + byGenre + "%'";
             }
