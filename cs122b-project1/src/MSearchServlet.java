@@ -71,6 +71,7 @@ public class MSearchServlet extends HttpServlet {
                 if (i == 1) num++;
             }
             String query = "";
+
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
                     "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
                     "where gim.genreId = g.id group by movieId) as t,\n" +

@@ -60,11 +60,6 @@ public class LoginServlet extends HttpServlet {
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
 
-            // Set the parameter represented by "?" in the query to the id we get from url,
-            // num 1 indicates the first "?" in the query
-            //statement.setString(1, id);
-            //statement.setString(2, id);
-
             // Perform the query
             ResultSet rs = statement.executeQuery();
 

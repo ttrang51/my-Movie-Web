@@ -1,12 +1,21 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,17 +28,28 @@ import java.util.Map;
 @WebServlet(name = "IndexServlet", urlPatterns = "/api/cart")
 public class cartItems extends HttpServlet {
 
+    // Create a dataSource which registered in web.xml
+    private DataSource dataSource;
+
+    public void init(ServletConfig config) {
+        try {
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * handles GET requests to store session information
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        String sessionId = session.getId();
+        /*String sessionId = session.getId();
         long lastAccessTime = session.getLastAccessedTime();
 
         JsonObject responseJsonObject = new JsonObject();
         responseJsonObject.addProperty("sessionID", sessionId);
-        responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());
+        responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());*/
 
         //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
@@ -41,13 +61,59 @@ public class cartItems extends HttpServlet {
         request.getServletContext().log("getting " + previousItems.size() + " items");
         JsonArray previousItemsJsonArray = new JsonArray();
 
+        // Output stream to STDOUT
+        PrintWriter out = response.getWriter();
+
+
+        // Get a connection from dataSource and let resource manager close the connection after usage.
+        try (Connection conn = dataSource.getConnection()) {
+            // Get a connection from dataSource
+
+            // Construct a query with parameter represented by "?"
+            String query = "";
+
+
+            // Declare our statement
+            PreparedStatement statement = conn.prepareStatement(query);
+
+
+            // Perform the query
+            ResultSet rs = statement.executeQuery();
+
+            // Iterate through each row of rs
+            while (rs.next()) {
+
+                String userUserName = rs.getString("email");
+                String userPassword = rs.getString("password");
+
+                // Create a JsonObject based on the data we retrieve from rs
+                //JsonArray jsonArray = new JsonArray();
+
+
+            }
+            rs.close();
+            statement.close();
+
+        } catch (Exception e) {
+            // Write error message JSON object to output
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("errorMessage", e.getMessage());
+            out.write(jsonObject.toString());
+
+            // Log error to localhost log
+            request.getServletContext().log("Error:", e);
+            // Set response status to 500 (Internal Server Error)
+            response.setStatus(500);
+        } finally {
+            out.close();
+        }
 
         // add items to json array
         //previousItems.forEach(previousItemsJsonArray::add);
-        responseJsonObject.add("previousItems", previousItemsJsonArray);
+        //responseJsonObject.add("previousItems", previousItemsJsonArray);
 
         // write all the data into the jsonObject
-        response.getWriter().write(responseJsonObject.toString());
+        //response.getWriter().write(responseJsonObject.toString());
     }
 
     /**
