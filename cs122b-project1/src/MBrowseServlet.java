@@ -62,8 +62,8 @@ public class MBrowseServlet extends HttpServlet {
             //String[] con = {"title", "year", "director", "star"};
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
-            String genre = request.getParameter("movie_genre");
-            String title = request.getParameter("movie_title");
+            String byGenre = request.getParameter("movie_genre");
+            String byTitle = request.getParameter("movie_title");
 
             String query = "";
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
@@ -75,7 +75,14 @@ public class MBrowseServlet extends HttpServlet {
                     "movies as m, ratings as rat\n" +
                     "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";
 
-
+            if (!byGenre.isEmpty())
+                query = baseQuery + "t.genres like '%" + byGenre + "%'";
+            else {
+                if (byTitle.equals("*"))
+                    query = baseQuery + "m.title like '[^a-zA-Z0-9]'";      // didnt work yet
+                else
+                    query = baseQuery + "m.title like '" + byGenre + "%'";
+            }
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);
