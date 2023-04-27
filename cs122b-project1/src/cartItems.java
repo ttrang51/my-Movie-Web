@@ -59,40 +59,55 @@ public class cartItems extends HttpServlet {
         }
         // Log to localhost log
         request.getServletContext().log("getting " + previousItems.size() + " items");
-        JsonArray previousItemsJsonArray = new JsonArray();
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
-
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
             // Get a connection from dataSource
 
-            // Construct a query with parameter represented by "?"
+            // Construct a query to fetch movies and its price
             String query = "";
-
+            String baseQuery = "select m.title, m.price from movies as m where ";
+            query = query + baseQuery;
+            for (String title : previousItems.keySet()) {
+                query = query + "m.title = '" + title + "' or ";
+            }
+            query = query.substring(0, query.length() - 4);     // Eliminate the last 'or '
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
-
-
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
-            // Iterate through each row of rs
+            JsonArray previousItemsJsonArray = new JsonArray();
+
+            // Iterate through each row of rs. rs should be in format title|price
             while (rs.next()) {
 
-                String userUserName = rs.getString("email");
-                String userPassword = rs.getString("password");
+                String m_title = rs.getString("title");
+                String m_price = rs.getString("price");
 
                 // Create a JsonObject based on the data we retrieve from rs
-                //JsonArray jsonArray = new JsonArray();
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("movie_title", m_title);
+                jsonObject.addProperty("movie_price", m_price);
+                jsonObject.addProperty("amount", previousItems.get(m_title));
 
+                previousItemsJsonArray.add(jsonObject);
 
             }
             rs.close();
             statement.close();
+
+            // Log to localhost log
+            request.getServletContext().log("getting " + previousItemsJsonArray.size() + " results");
+
+            // Write JSON string to output
+            out.write(previousItemsJsonArray.toString());
+            // Set response status to 200 (OK)
+            response.setStatus(200);
 
         } catch (Exception e) {
             // Write error message JSON object to output
