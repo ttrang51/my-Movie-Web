@@ -44,22 +44,11 @@ public class MBrowseServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-        // Building page head with title
-        out.println("<html><head><title>MovieDBExample: Found Records</title></head>");
-
-        // Building page body
-        out.println("<body><h1>MovieDBExample: Found Records</h1>");
-
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
 
             // Declare our statement
             Statement statement = conn.createStatement();
-
-            // An array to as flags for search conditions
-            //int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
-            // order: title, year, director, star
-            //String[] con = {"title", "year", "director", "star"};
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String byGenre = request.getParameter("movie_genre");
@@ -79,7 +68,7 @@ public class MBrowseServlet extends HttpServlet {
                 query = baseQuery + "t.genres like '%" + byGenre + "%'";
             else {
                 if (byTitle.equals("*"))
-                    query = baseQuery + "m.title like '[^a-zA-Z0-9]'";      // didnt work yet
+                    query = baseQuery + "m.title like '[^a-zA-Z0-9]%'";      // didnt work yet
                 else
                     query = baseQuery + "m.title like '" + byGenre + "%'";
             }
