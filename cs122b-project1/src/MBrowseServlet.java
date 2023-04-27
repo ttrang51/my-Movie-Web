@@ -44,38 +44,16 @@ public class MBrowseServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-        // Building page head with title
-        out.println("<html><head><title>MovieDBExample: Found Records</title></head>");
-
-        // Building page body
-        out.println("<body><h1>MovieDBExample: Found Records</h1>");
-
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
 
             // Declare our statement
             Statement statement = conn.createStatement();
 
-            // An array to as flags for search conditions
-            int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
-            // order: title, year, director, star
-            //String[] con = {"title", "year", "director", "star"};
-
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
-            String title = request.getParameter("movie_title");
-            String year = request.getParameter("year");
-            String director_name = request.getParameter("director_name");
-            String star_name = request.getParameter("star_name");
+            String byGenre = request.getParameter("movie_genre");
+            String byTitle = request.getParameter("movie_title");
 
-            flag[0] = title.equals("") ? 0 : 1;
-            flag[1] = year.equals("") ? 0 : 1;
-            flag[2] = director_name.equals("") ? 0 : 1;
-            flag[3] = star_name.equals("") ? 0 : 1;
-
-            int num = 0;
-            for (int i : flag){
-                if (i == 1) num++;
-            }
             String query = "";
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
                     "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
@@ -85,42 +63,14 @@ public class MBrowseServlet extends HttpServlet {
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
                     "movies as m, ratings as rat\n" +
                     "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";
-            String subStr1 = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
-                    "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
-                    "where gim.genreId = g.id group by movieId) as t,\n" +
-                    "(select movieId, group_concat(s.name separator ',') as stars,\n" +
-                    "group_concat(sim.starId separator ',') as starId\n" +
-                    "from stars_in_movies as sim, stars as s where sim.starId = s.id and s.name like '%";
-            String subStr2 = "%' group by movieId) as z,\n" +
-                    "movies as m, ratings as rat\n" +
-                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId\n";
 
-            if (num == 1) { // Single condition query search
-                // By movie title, year or director
-                if (flag[3] != 1) {
-                    if (flag[1] == 1)
-                        query = baseQuery + "m.year =" + year;
-                    else if (flag[0] == 1)
-                        query = baseQuery + "m.title like '%" + title + "%'";
-                    else
-                        query = baseQuery + "m.director like '%" + director_name + "%'";
-                }
-                // Query search by star
-                else {
-                    query = subStr1 + star_name + subStr2;
-                }
-            }
-            else {  // Combined query
-                if (flag[3] == 1)
-                    query = subStr1 + star_name + subStr1;
+            if (!byGenre.isEmpty())
+                query = baseQuery + "t.genres like '%" + byGenre + "%'";
+            else {
+                if (byTitle.equals("*"))
+                    query = baseQuery + "m.title like '[^a-zA-Z0-9]%'";      // didnt work yet
                 else
-                    query = baseQuery;
-                if (flag[0] == 1)
-                    query += "m.title =" + title + " ";
-                if (flag[1] == 1)
-                    query += "m.year =" + year + " ";
-                if (flag[2] == 1)
-                    query += "m.director =" + director_name;
+                    query = baseQuery + "m.title like '" + byGenre + "%'";
             }
 
             // Log to localhost log

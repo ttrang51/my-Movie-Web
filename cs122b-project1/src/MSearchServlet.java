@@ -44,12 +44,6 @@ public class MSearchServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-        // Building page head with title
-        out.println("<html><head><title>MovieDBExample: Found Records</title></head>");
-
-        // Building page body
-        out.println("<body><h1>MovieDBExample: Found Records</h1>");
-
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
 
@@ -112,7 +106,7 @@ public class MSearchServlet extends HttpServlet {
             }
             else {  // Combined query
                 if (flag[3] == 1)
-                    query = subStr1 + star_name + subStr1;
+                    query = subStr1 + star_name + subStr2;
                 else
                     query = baseQuery;
                 if (flag[0] == 1)
