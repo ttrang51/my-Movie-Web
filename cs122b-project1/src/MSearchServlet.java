@@ -78,7 +78,7 @@ public class MSearchServlet extends HttpServlet {
                     "group_concat(sim.starId separator ',') as starId\n" +
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
                     "movies as m, ratings as rat\n" +
-                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";
+                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId ";
             String subStr1 = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
                     "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
                     "where gim.genreId = g.id group by movieId) as t,\n" +
@@ -87,17 +87,17 @@ public class MSearchServlet extends HttpServlet {
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id and s.name like '%";
             String subStr2 = "%' group by movieId) as z,\n" +
                     "movies as m, ratings as rat\n" +
-                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId\n";
+                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId ";
 
             if (num == 1) { // Single condition query search
                 // By movie title, year or director
                 if (flag[3] != 1) {
                     if (flag[1] == 1)
-                        query = baseQuery + "m.year =" + year;
+                        query = baseQuery + "and m.year =" + year;
                     else if (flag[0] == 1)
-                        query = baseQuery + "m.title like '%" + title + "%'";
+                        query = baseQuery + "and m.title like '%" + title + "%'";
                     else
-                        query = baseQuery + "m.director like '%" + director_name + "%'";
+                        query = baseQuery + "and m.director like '%" + director_name + "%'";
                 }
                 // Query search by star
                 else {
@@ -110,11 +110,11 @@ public class MSearchServlet extends HttpServlet {
                 else
                     query = baseQuery;
                 if (flag[0] == 1)
-                    query += "m.title =" + title + " ";
+                    query += "and m.title like '%" + title + "%' ";
                 if (flag[1] == 1)
-                    query += "m.year =" + year + " ";
+                    query += "and m.year =" + year + " ";
                 if (flag[2] == 1)
-                    query += "m.director =" + director_name;
+                    query += "and m.director like '%" + director_name + "%'";
             }
 
             // Log to localhost log

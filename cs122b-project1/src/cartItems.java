@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This IndexServlet is declared in the web annotation below,
@@ -29,14 +31,19 @@ public class cartItems extends HttpServlet {
         responseJsonObject.addProperty("sessionID", sessionId);
         responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());
 
-        ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
+        //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
+
+        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
         if (previousItems == null) {
-            previousItems = new ArrayList<String>();
+            previousItems = new HashMap<>();
         }
         // Log to localhost log
         request.getServletContext().log("getting " + previousItems.size() + " items");
         JsonArray previousItemsJsonArray = new JsonArray();
-        previousItems.forEach(previousItemsJsonArray::add);
+
+
+        // add items to json array
+        //previousItems.forEach(previousItemsJsonArray::add);
         responseJsonObject.add("previousItems", previousItemsJsonArray);
 
         // write all the data into the jsonObject
@@ -52,23 +59,28 @@ public class cartItems extends HttpServlet {
         HttpSession session = request.getSession();
 
         // get the previous items in a ArrayList
-        ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
+        //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
+        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
+
         if (previousItems == null) {
-            previousItems = new ArrayList<String>();
-            previousItems.add(item);
+            previousItems = new HashMap<>();
+            previousItems.put(item, 1);
             session.setAttribute("previousItems", previousItems);
         } else {
             // prevent corrupted states through sharing under multi-threads
             // will only be executed by one thread at a time
             synchronized (previousItems) {
-                previousItems.add(item);
+                if (previousItems.get(item) == null)
+                    previousItems.put(item, 1);
+                else
+                    previousItems.put(item, previousItems.get(item) + 1);
             }
         }
 
         JsonObject responseJsonObject = new JsonObject();
 
         JsonArray previousItemsJsonArray = new JsonArray();
-        previousItems.forEach(previousItemsJsonArray::add);
+        //previousItems.forEach(previousItemsJsonArray::add);
         responseJsonObject.add("previousItems", previousItemsJsonArray);
 
         response.getWriter().write(responseJsonObject.toString());
