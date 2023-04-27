@@ -20,8 +20,8 @@ import java.sql.Statement;
  * generates output as a html <table>
  */
 
-// Declaring a WebServlet called FormServlet, which maps to url "/form"
-@WebServlet(name = "FormServlet", urlPatterns = "/form")
+// Declaring a WebServlet called FormServlet, which maps to url "/MovieSearch"
+@WebServlet(name = "FormServlet", urlPatterns = "/MovieSearch")
 public class MSearchServlet extends HttpServlet {
 
     // Create a dataSource which registered in web.xml
