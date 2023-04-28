@@ -101,8 +101,8 @@ jQuery.ajax({
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
 
-let genre = getParameterByName(genre);
-let prefix = getParameterByName(prefix);
+let genre = getParameterByName("genre");
+let prefix = getParameterByName("prefix");
 
 // Makes another HTTP GET request to MBrowse
 jQuery.ajax({
