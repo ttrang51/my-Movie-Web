@@ -21,7 +21,7 @@ import java.sql.Statement;
  */
 
 // Declaring a WebServlet called FormServlet, which maps to url "/form"
-@WebServlet(name = "FormServlet", urlPatterns = "/form")
+@WebServlet(name = "FormServlet", urlPatterns = "/MovieBrowse")
 public class MBrowseServlet extends HttpServlet {
 
     // Create a dataSource which registered in web.xml
@@ -57,7 +57,7 @@ public class MBrowseServlet extends HttpServlet {
             String query = "";
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
                     "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
-                    "where gim.genreId = g.id group by movieId) as t,\n" +
+                    "where gim.genreId = g.id group by movieId order by g.name asc) as t,\n" +
                     "(select movieId, group_concat(s.name separator ',') as stars,\n" +
                     "group_concat(sim.starId separator ',') as starId\n" +
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
@@ -68,7 +68,7 @@ public class MBrowseServlet extends HttpServlet {
                 query = baseQuery + "t.genres like '%" + byGenre + "%'";
             else {
                 if (byTitle.equals("*"))
-                    query = baseQuery + "m.title like '[^a-zA-Z0-9]%'";      // didnt work yet
+                    query = baseQuery + "m.title REGEXP '^[^A-Za-z0-9]'";
                 else
                     query = baseQuery + "m.title like '" + byGenre + "%'";
             }
