@@ -16,9 +16,16 @@ where gim.genreId = g.id group by movieId) as t,
 group_concat(sim.starId separator ',') as starId
 from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,
 movies as m, ratings as rat
-where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and m.title like '%term%'
+where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and m.title like '%term%';
 
-
+select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating
+from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g
+where gim.genreId = g.id group by movieId) as t,
+(select movieId, substring_index(group_concat(s.name separator ','), ',', 3) as stars,
+substring_index(group_concat(sim.starId separator ','), ',', 3) as starId
+from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,
+movies as m, ratings as rat
+where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId;
 
 
 
