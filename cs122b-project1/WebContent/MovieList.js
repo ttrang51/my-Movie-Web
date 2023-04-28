@@ -81,6 +81,16 @@ function handleMovieResult(resultData) {
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
+
+    let paginationElement = jQuery("#pages");
+
+    for (let i= 1; i < Math.ceil(resultData.length / 100.0); i++) {
+        paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">" + i + "</a></li>");
+
+    }
+    paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">Next</a></li>");
+
+
 }
 
 
