@@ -47,7 +47,6 @@ public class MoviesServlet extends HttpServlet {
 
             // Declare our statement
             Statement statement = conn.createStatement();
-
       
             String query = "with r(movieId, rating) as (select movieId, rating\n" +
                         "from ratings order by rating desc limit 20),\n" +

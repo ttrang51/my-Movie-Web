@@ -53,7 +53,6 @@ public class MSearchServlet extends HttpServlet {
             // An array to as flags for search conditions
             int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
                                             // order: title, year, director, star
-            //String[] con = {"title", "year", "director", "star"};
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String title = request.getParameter("movie_title");
@@ -71,11 +70,10 @@ public class MSearchServlet extends HttpServlet {
                 if (i == 1) num++;
             }
             String query = "";
-
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
-                    "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
-                    "where gim.genreId = g.id group by movieId order by g.name asc) as t,\n" +
-                    "(select movieId, group_concat(s.name separator ',') as stars,\n" +
+                    "from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g\n" +
+                    "where gim.genreId = g.id group by movieId) as t,\n" +
+                    "(select movieId, group_concat(s.name order by s.name asc separator ',') as stars,\n" +
                     "group_concat(sim.starId separator ',') as starId\n" +
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
                     "movies as m, ratings as rat\n" +
