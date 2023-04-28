@@ -21,7 +21,7 @@ import java.sql.Statement;
  */
 
 // Declaring a WebServlet called FormServlet, which maps to url "/form"
-@WebServlet(name = "MBrowseServlet", urlPatterns = "/api/movie-browse")
+@WebServlet(name = "MBrowseServlet", urlPatterns = "/api/movies-browse")
 public class MBrowseServlet extends HttpServlet {
 
     // Create a dataSource which registered in web.xml
@@ -39,7 +39,7 @@ public class MBrowseServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        response.setContentType("text/html");    // Response mime type
+        response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
@@ -55,11 +55,11 @@ public class MBrowseServlet extends HttpServlet {
             String byTitle = request.getParameter("prefix");
 
             String query = "";
-            String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+            String baseQuery = "select m.title, m.id, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
                     "from (select movieId, GROUP_CONCAT(g.name) as genres from genres_in_movies as gim, genres as g\n" +
                     "where gim.genreId = g.id group by movieId order by g.name asc) as t,\n" +
-                    "(select movieId, group_concat(s.name separator ',') as stars,\n" +
-                    "group_concat(sim.starId separator ',') as starId\n" +
+                    "(select movieId, group_concat(s.name order by s.name separator ',') as stars,\n" +
+                    "group_concat(sim.starId order by s.name separator ',') as starId\n" +
                     "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
                     "movies as m, ratings as rat\n" +
                     "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";

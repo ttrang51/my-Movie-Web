@@ -93,21 +93,27 @@ let year = getParameterByName('year');
 let director_name = getParameterByName('director_name');
 let star_name = getParameterByName('star_name');
 
-// Makes the HTTP GET request and registers on success callback function handleStarResult
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
-    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-});
+let genre = getParameterByName('genre');
+let prefix = getParameterByName('prefix');
 
-let genre = getParameterByName(genre);
-let prefix = getParameterByName(prefix);
+if (title == null && year == null && director_name == null && star_name == null) {
 
 // Makes another HTTP GET request to MBrowse
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "api/movies-browse?genres=" + genre + "&prefix=" + prefix, // Setting request url, which is mapped by MoviesServlet in Movies.java
-    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-});
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies-browse?genre=" + genre + "&prefix=" + prefix, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+
+else {
+// Makes the HTTP GET request and registers on success callback function handleStarResult
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    })
+};
+
