@@ -21,7 +21,7 @@
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 0; i < resultData.length; i++) {
 
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -66,11 +66,13 @@
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
+// Get parameters from URL
+let title = getParameterByName('movie_title');
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by MoviesServlet in Movies.java
+    url: "api/movies-search?movie_title=" + title, // Setting request url, which is mapped by MoviesServlet in Movies.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });

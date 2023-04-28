@@ -21,7 +21,7 @@ import java.sql.Statement;
  */
 
 // Declaring a WebServlet called FormServlet, which maps to url "/MovieSearch"
-@WebServlet(name = "FormServlet", urlPatterns = "/MovieSearch")
+@WebServlet(name = "MSearchServlet", urlPatterns = "/api/movies-search")
 public class MSearchServlet extends HttpServlet {
 
     // Create a dataSource which registered in web.xml
@@ -39,7 +39,7 @@ public class MSearchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        response.setContentType("text/html");    // Response mime type
+        response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
