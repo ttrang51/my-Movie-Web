@@ -100,3 +100,14 @@ jQuery.ajax({
     url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
+
+let genre = getParameterByName(genre);
+let prefix = getParameterByName(prefix);
+
+// Makes another HTTP GET request to MBrowse
+jQuery.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    url: "api/movies-browse?genres=" + genre + "&prefix=" + prefix, // Setting request url, which is mapped by MoviesServlet in Movies.java
+    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+});
