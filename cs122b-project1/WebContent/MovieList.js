@@ -34,7 +34,7 @@ function getParameterByName(target) {
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
- function handleMovieResult(resultData) {
+function handleMovieResult(resultData) {
     console.log("handleStarResult: populating movies table from resultData");
 
     // Populate the movies table
@@ -61,8 +61,8 @@ function getParameterByName(target) {
         stars_array = resultData[i]["movie_star"].split(","); // Length 3
         stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3
 
-        rowHTML += 
-            "<th>" + 
+        rowHTML +=
+            "<th>" +
             '<a href="single-star.html?id=' + stars_ids_array[0] + '">'
             + stars_array[0] +     // display star_name for the link text
             '</a>, ' +
@@ -97,6 +97,6 @@ let star_name = getParameterByName('star_name');
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies-search?movie_title=" + title + "&director_name=" + year + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
+    url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
