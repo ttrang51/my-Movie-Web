@@ -8,6 +8,27 @@
  *      2. Populate the data to correct html elements.
  */
 
+/**
+ * Retrieve parameter from request URL, matching by parameter name
+ * @param target String
+ * @returns {*}
+ */
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -68,11 +89,14 @@
  */
 // Get parameters from URL
 let title = getParameterByName('movie_title');
+let year = getParameterByName('year');
+let director_name = getParameterByName('director_name');
+let star_name = getParameterByName('star_name');
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies-search?movie_title=" + title, // Setting request url, which is mapped by MoviesServlet in Movies.java
+    url: "api/movies-search?movie_title=" + title + "&director_name=" + year + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
