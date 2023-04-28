@@ -21,7 +21,7 @@ import java.sql.Statement;
  */
 
 // Declaring a WebServlet called FormServlet, which maps to url "/form"
-@WebServlet(name = "MBrowseServlet", urlPatterns = "/api/MovieBrowse")
+@WebServlet(name = "MBrowseServlet", urlPatterns = "/api/movie-browse")
 public class MBrowseServlet extends HttpServlet {
 
     // Create a dataSource which registered in web.xml
@@ -51,8 +51,8 @@ public class MBrowseServlet extends HttpServlet {
             Statement statement = conn.createStatement();
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
-            String byGenre = request.getParameter("movie_genre");
-            String byTitle = request.getParameter("movie_title");
+            String byGenre = request.getParameter("genre");
+            String byTitle = request.getParameter("prefix");
 
             String query = "";
             String baseQuery = "select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
