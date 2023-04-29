@@ -32,6 +32,33 @@
         <input type="number" min="2001" max="2019" step="1" value="" placeholder="Year" name="year"/>
         <input type="text" placeholder="Star Name" name="star_name">
         <input type="submit" value="Search">
+
+    </form><br>
+
+    <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
+
+    <select name="result_limit" id="limit-select">
+        <option value="100" selected="selected">100</option>
+        <option value="50">50</option>
+        <option value="25">25</option>
+        <option value="10">10</option>
+    </select>
+
+    <form ACTION="MovieList.html" METHOD="GET">
+        <select name="sort">
+            <option value="1" name="sort">Rating asc, title asc</option>
+            <option value="2" name="sort">Rating asc, title desc</option>
+            <option value="3" name="sort">Rating desc, title desc</option>
+            <option value="4" name="sort">Rating desc, title asc</option>
+            <option value="5" name="sort">Title asc, rating asc</option>
+            <option value="6" name="sort">Title asc, rating desc</option>
+            <option value="7" name="sort">Title desc, rating desc</option>
+            <option value="8" name="sort">Title desc, rating asc</option>
+        </select>
+        <input type="submit" value="Update">
+    </form>
+
+
     </form>
 
     <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
@@ -41,6 +68,7 @@
         <option value="25">25</option>
         <option value="10">10</option>
     </select>
+
 
     
     <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
