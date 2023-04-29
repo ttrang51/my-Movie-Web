@@ -153,4 +153,5 @@ else {
     })
 };
 
-
+let genre = getParameterByName("genre");
+let prefix = getParameterByName("prefix");
