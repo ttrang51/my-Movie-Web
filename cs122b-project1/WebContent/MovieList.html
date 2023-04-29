@@ -32,6 +32,7 @@
         <input type="number" min="2001" max="2019" step="1" value="" placeholder="Year" name="year"/>
         <input type="text" placeholder="Star Name" name="star_name">
         <input type="submit" value="Search">
+
     </form><br>
 
     <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
@@ -56,6 +57,17 @@
         </select>
         <input type="submit" value="Update">
     </form>
+
+
+    </form>
+
+    <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
+    <select name="result_limit" id="limit-select" form="search_form" onchange="onLimitChange()">
+        <option value="100" selected="selected">100</option>
+        <option value="50">50</option>
+        <option value="25">25</option>
+        <option value="10">10</option>
+    </select>
 
 
     
