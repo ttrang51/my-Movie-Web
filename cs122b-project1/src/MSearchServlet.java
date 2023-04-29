@@ -102,6 +102,8 @@ public class MSearchServlet extends HttpServlet {
                     query = query + "and z.stars like '%" + star_name + "%' ";
             }
 
+
+
             // Log to localhost log
             request.getServletContext().log("query：" + query);
 

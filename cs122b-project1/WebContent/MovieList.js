@@ -41,9 +41,25 @@ function handleMovieResult(resultData) {
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
 
-    // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < resultData.length; i++) {
+    // Get the number to limit restults by
+    let l = document.getElementById("limit-select");
+    let limit_by = l.value;
 
+    // Get the url parameter values
+    const url = window.location.search;
+    const urlParams = new URLSearchParams(url);
+
+    // default page number is 1
+    let page_num = "1";
+
+    if (urlParams.has('page')) {
+        page_num = urlParams.get('page');
+    }
+
+    let offset_results = parseInt(limit_by) * (parseInt(page_num)-1);
+
+    // Iterate through resultData, no more than 10 entries
+    for (let i = offset_results; i < limit_by; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -83,10 +99,20 @@ function handleMovieResult(resultData) {
     }
 
     let paginationElement = jQuery("#pages");
+    let currWindow = window.location.href;
 
-    for (let i= 1; i < Math.ceil(resultData.length / 100.0); i++) {
-        paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">" + i + "</a></li>");
+    for (let i= 1; i < Math.ceil(resultData.length / parseFloat(limit_by)); i++) {
+        if (urlParams.has('page')) {
+            page_num = urlParams.get('page');
 
+            paginationElement.append(
+                "<li class=\"page-item\">" +
+                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+        } else {
+            paginationElement.append(
+                "<li class=\"page-item\">" +
+                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+        }
     }
     paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">Next</a></li>");
 
@@ -127,5 +153,4 @@ else {
     })
 };
 
-let genre = getParameterByName("genre");
-let prefix = getParameterByName("prefix");
+
