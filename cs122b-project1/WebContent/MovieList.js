@@ -36,8 +36,8 @@ function getParameterByName(target) {
  * @returns None
  */
 function onLimitChange() {
-    var select_element = document.getElementById("limit-select");
-    var value = select_element.value;
+    let select_element = document.getElementById("limit-select");
+    let value = select_element.value;
 
     const url = window.location.search;
     const urlParams = new URLSearchParams(url);
@@ -76,7 +76,7 @@ function handleMovieResult(resultData) {
 
     console.log(limit_by);
 
-    let offset_results = parseInt(limit_by) * (parseInt(page_num)-1);
+    let offset_results = limit_by * (parseInt(page_num)-1);
 
     // Iterate through resultData, no more than 10 entries
     for (let i = offset_results; i < limit_by; i++) {
