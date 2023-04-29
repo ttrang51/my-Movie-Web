@@ -25,17 +25,7 @@
     
     <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Back to Home Page</a>
 
-    <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
-
-    <select name="result_limit" id="limit-select">
-        <option value="100" selected="selected">100</option>
-        <option value="50">50</option>
-        <option value="25">25</option>
-        <option value="10">10</option>
-    </select>
-
-
-    <form ACTION="MovieList.html" METHOD="GET">
+    <form ACTION="MovieList.html" METHOD="GET" id="search_form">
         <strong>Search by:</strong>
         <input type="text" placeholder="Title" name="movie_title">
         <input type="text" placeholder="Director Name" name="director_name">
@@ -43,6 +33,14 @@
         <input type="text" placeholder="Star Name" name="star_name">
         <input type="submit" value="Search">
     </form>
+
+    <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
+    <select name="result_limit" id="limit-select" form="search_form" onchange="onLimitChange()">
+        <option value="100" selected="selected">100</option>
+        <option value="50">50</option>
+        <option value="25">25</option>
+        <option value="10">10</option>
+    </select>
 
     
     <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->

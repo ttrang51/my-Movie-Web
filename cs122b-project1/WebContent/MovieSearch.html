@@ -9,7 +9,7 @@
 
 <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Back to Home Page</a>
 
-<form ACTION="MovieList.html" METHOD="GET">
+<form ACTION="MovieList.html" METHOD="GET" id="search_form">
     Movie Title: <input TYPE="TEXT" name="movie_title"> (Search by movie's title)<br>
     Director Name: <input TYPE="TEXT" name="director_name"> (Search by director)<br>
     Year: <input type="number" min="2001" max="2019" step="1" value="" name="year"/> (Search by year)<br>
@@ -18,6 +18,14 @@
     <input TYPE="SUBMIT" VALUE="Submit">
 
 </form>
+
+<label for="limit-select">Limit how many results are displayed per page:</label>
+<select name="result_limit" id="limit-select" form="search_form">
+    <option value="100" selected="selected">100</option>
+    <option value="50">50</option>
+    <option value="25">25</option>
+    <option value="10">10</option>
+</select>
 
 </body>
 </html>
