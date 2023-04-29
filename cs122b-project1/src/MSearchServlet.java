@@ -8,12 +8,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A servlet that takes input from a html <form> and talks to MySQL moviedbexample,
@@ -40,6 +43,8 @@ public class MSearchServlet extends HttpServlet {
             throws IOException {
 
         response.setContentType("application/json"); // Response mime type
+
+        HttpSession session = request.getSession();
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
@@ -102,7 +107,7 @@ public class MSearchServlet extends HttpServlet {
                     query = query + "and z.stars like '%" + star_name + "%' ";
             }
 
-
+            session.setAttribute("query", query);
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);

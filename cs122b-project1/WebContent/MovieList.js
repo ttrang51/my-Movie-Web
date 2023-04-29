@@ -13,6 +13,7 @@
  * @param target String
  * @returns {*}
  */
+
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -28,7 +29,6 @@ function getParameterByName(target) {
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -132,26 +132,39 @@ let star_name = getParameterByName('star_name');
 let genre = getParameterByName('genre');
 let prefix = getParameterByName('prefix');
 
-if (title == null && year == null && director_name == null && star_name == null) {
+let sort = getParameterByName('sort');
 
-// Makes another HTTP GET request to MBrowse
+if (sort != null){
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "api/movies-browse?genre=" + genre + "&prefix=" + prefix, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        url: "api/movies-filter?sort=" + sort, // Setting request url, which is mapped by MoviesServlet in Movies.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
-
 else {
-// Makes the HTTP GET request and registers on success callback function handleStarResult
-    jQuery.ajax({
-        dataType: "json", // Setting return data type
-        method: "GET", // Setting request method
-        url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
-        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-    })
-};
+    if (title == null && year == null && director_name == null && star_name == null) {
 
-let genre = getParameterByName("genre");
-let prefix = getParameterByName("prefix");
+// Makes another HTTP GET request to MBrowse
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            url: "api/movies-browse?genre=" + genre + "&prefix=" + prefix, // Setting request url, which is mapped by MoviesServlet in Movies.java
+            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        });
+    }
+
+    else {
+// Makes the HTTP GET request and registers on success callback function handleStarResult
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            url: "api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name, // Setting request url, which is mapped by MoviesServlet in Movies.java
+            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        })
+    };
+}
+
+
+
+
