@@ -8,6 +8,14 @@
  *      2. Populate the data to correct html elements.
  */
 
+
+function cartButtonHandler(target){
+
+    alert('Added to shopping cart!');
+    console.log(target.toString());
+
+}
+
 function changePage(p) {
     // Get the url parameter values
     const url = window.location.search;
@@ -98,10 +106,11 @@ function handleMovieResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
+            '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">'
             + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_id"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
 
@@ -139,11 +148,12 @@ function handleMovieResult(resultData) {
             '</a>, '
             + "</th>";
 
-
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        String: mltitle = resultData[i]["movie_name"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(mltitle)'>+</button></th>";
         rowHTML += "</tr>";
 
-        // Append the row created to the table body, which will refresh the page
+            // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
 
@@ -155,7 +165,7 @@ function handleMovieResult(resultData) {
         lim = urlParams.get('result_limit');
     }
 
-    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(l)); i++) {
+    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(m)); i++) {
         if (urlParams.has('page')) {
             page_num = urlParams.get('page');
 
@@ -169,7 +179,6 @@ function handleMovieResult(resultData) {
         }
     }
     paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" onclick=\"changePage(\"next\")\">Next</a></li>");
-
 
 }
 

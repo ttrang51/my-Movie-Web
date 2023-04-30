@@ -29,7 +29,7 @@ function handleMovieResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
+            '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">'
             + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";

@@ -8,7 +8,11 @@
  *      2. Use jQuery to talk to backend API to get the json data.
  *      3. Populate the data to correct html elements.
  */
+function cartButtonHandler(target){
+    alert('Added to shopping cart!');
+    console.log(target.toString());
 
+}
 
 /**
  * Retrieve parameter from request URL, matching by parameter name
@@ -106,7 +110,22 @@ function handleResult(resultData) {
 
         rowHTML += "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        String: mtitle = resultData[i]["movie_title"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(mtitle)'>+</button></th>";
+
         rowHTML += "</tr>";
+
+        /*let cartButton = document.querySelector("#add-to-cart-btn");
+        cartButton.onclick = function(event) {
+            event.preventDefault();
+            alert('Clicked');
+            /*jQuery.ajax({
+                dataType: "json", // Setting return data type
+                method: "POST", // Setting request method
+                url: "api/cart", // Setting request url, which is mapped by MoviesServlet in Movies.java
+                success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+            });
+        }*/
 
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
