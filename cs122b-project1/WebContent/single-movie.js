@@ -110,7 +110,9 @@ function handleResult(resultData) {
 
         rowHTML += "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler()'>+</button></th>";
+        String: Id = resultData[i]["movie_title"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(Id)'>+</button></th>";
+
         rowHTML += "</tr>";
 
         /*let cartButton = document.querySelector("#add-to-cart-btn");

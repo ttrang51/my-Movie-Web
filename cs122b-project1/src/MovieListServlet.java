@@ -56,36 +56,77 @@ public class MovieListServlet extends HttpServlet {
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String sort_Option = request.getParameter("sort");
-            String orderBy_sortOp = " order by ";
+            String orderBy_sortOp = "";
+            if (sort_Option != null) {
+                orderBy_sortOp = " order by ";
 
-            // limit implementation can be here too
+                // Check sorting option
+                if (sort_Option.equals("1"))
+                    orderBy_sortOp = orderBy_sortOp + "rat.rating asc, m.title asc ";
+                else if (sort_Option.equals("2"))
+                    orderBy_sortOp = orderBy_sortOp + "rat.rating asc, m.title desc ";
+                else if (sort_Option.equals("3"))
+                    orderBy_sortOp = orderBy_sortOp + "rat.rating desc, m.title desc ";
+                else if (sort_Option.equals("4"))
+                    orderBy_sortOp = orderBy_sortOp + "rat.rating desc, m.title asc ";
+                else if (sort_Option.equals("5"))
+                    orderBy_sortOp = orderBy_sortOp + "m.title asc, rat.rating asc ";
+                else if (sort_Option.equals("6"))
+                    orderBy_sortOp = orderBy_sortOp + "m.title asc, rat.rating desc ";
+                else if (sort_Option.equals("7"))
+                    orderBy_sortOp = orderBy_sortOp + "m.title desc, rat.rating desc ";
+                else
+                    orderBy_sortOp = orderBy_sortOp + "m.title desc, rat.rating asc ";
 
-            // Check sorting option
-            if (sort_Option.equals("1"))
-                orderBy_sortOp = orderBy_sortOp + "rat.rating asc, m.title asc ";
-            else if (sort_Option.equals("2"))
-                orderBy_sortOp = orderBy_sortOp + "rat.rating asc, m.title desc ";
-            else if (sort_Option.equals("3"))
-                orderBy_sortOp = orderBy_sortOp + "rat.rating desc, m.title desc ";
-            else if (sort_Option.equals("4"))
-                orderBy_sortOp = orderBy_sortOp + "rat.rating desc, m.title asc ";
-            else if (sort_Option.equals("5"))
-                orderBy_sortOp = orderBy_sortOp + "m.title asc, rat.rating asc ";
-            else if (sort_Option.equals("6"))
-                orderBy_sortOp = orderBy_sortOp + "m.title asc, rat.rating desc ";
-            else if (sort_Option.equals("7"))
-                orderBy_sortOp = orderBy_sortOp + "m.title desc, rat.rating desc ";
-            else
-                orderBy_sortOp = orderBy_sortOp + "m.title desc, rat.rating asc ";
+                // Keep the latest sort option
+                session.setAttribute("sort", orderBy_sortOp);
+            }
 
+            //Retrieve parameter "result_limit" from the http request
+            String limit_Option = request.getParameter("result_limit");
+            String limit_Op = "";
+            if (limit_Option != null) {
+                limit_Op = " limit ";
+
+                if (limit_Option.equals("100")) {
+                    limit_Op = limit_Op + "100 ";
+                } else if (limit_Option.equals("50")) {
+                    limit_Op = limit_Op + "50 ";
+                } else if (limit_Option.equals("25")) {
+                    limit_Op = limit_Op + "25 ";
+                } else { // if limit_Option equals 10
+                    limit_Op = limit_Op + "10 ";
+                }
+
+                // Keep the latest limit option
+                session.setAttribute("result_limit", limit_Option);
+            }
+
+            //Retrieve parameter "page" from the http request, page number * limit by = offset returned value
+            String page_Num = request.getParameter("page");
+            String offset = "";
+            if (page_Num != null) {
+
+                String currLimit = (String) session.getAttribute("result_limit");
+
+                if (currLimit != null && page_Num != "1") {
+                    offset = "offset " + ((Integer.parseInt(page_Num) - 1) * Integer.parseInt(currLimit)) + " ";
+                }
+
+                // Keep the latest page number
+                session.setAttribute("page", page_Num);
+            } else {
+                page_Num = (String) session.getAttribute("page");
+
+                String currLimit = (String) session.getAttribute("result_limit");
+
+                if (currLimit != null  && page_Num != "1") { // No need for OFFSET bc it will be zero
+                    offset = "offset " + ((Integer.parseInt(page_Num) - 1) * Integer.parseInt(currLimit)) + " ";
+                }
+            }
 
             String baseQuery = (String) session.getAttribute("query");
-            String query = baseQuery + orderBy_sortOp;
-
-            // Keep the latest sort option
-            session.setAttribute("sort", orderBy_sortOp);
-            // Keep the latest limit option
-            // ...
+            String query = baseQuery + orderBy_sortOp + limit_Op + offset;
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);

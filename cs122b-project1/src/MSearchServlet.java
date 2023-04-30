@@ -102,6 +102,8 @@ public class MSearchServlet extends HttpServlet {
 
             session.setAttribute("query", query);
 
+            session.setAttribute("page", "1");
+
             // Log to localhost log
             request.getServletContext().log("query：" + query);
 

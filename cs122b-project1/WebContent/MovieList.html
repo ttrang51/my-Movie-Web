@@ -36,7 +36,7 @@
     </form><br>
 
 
-    <form ACTION="MovieList.html" METHOD="GET">
+    <form ACTION="MovieList.html" METHOD="GET" id="sort_form">
         <select name="sort">
             <option value="1" name="sort">Rating asc, title asc</option>
             <option value="2" name="sort">Rating asc, title desc</option>
@@ -47,15 +47,15 @@
             <option value="7" name="sort">Title desc, rating desc</option>
             <option value="8" name="sort">Title desc, rating asc</option>
         </select>
-        <input type="submit" value="Update">
+        <input type="submit" value="Update Sort and Limit">
     </form>
 
 
     </form>
 
     <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
-    <select name="result_limit" id="limit-select" form="search_form" onchange="onLimitChange()">
-        <option value="100" selected="selected">100</option>
+    <select name="result_limit" id="limit-select" form="sort_form" >
+        <option value="100" >100</option>
         <option value="50">50</option>
         <option value="25">25</option>
         <option value="10">10</option>
@@ -86,7 +86,7 @@
 
     <nav aria-label="Page navigation">
         <ul id=pages class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" onclick="changePage('prev')">Previous</a></li>
         </ul>
     </nav>
     

@@ -8,12 +8,44 @@
  *      2. Populate the data to correct html elements.
  */
 
+
 function cartButtonHandler(target){
 
     alert('Added to shopping cart!');
     console.log(target.toString());
 
 }
+
+function changePage(p) {
+    // Get the url parameter values
+    const url = window.location.search;
+    const urlParams = new URLSearchParams(url);
+
+    // default page number is 1
+    let page_num = 1;
+
+    if (urlParams.has('page')) {
+        page_num = parseInt(urlParams.get('page'));
+    }
+
+    let page = 1;
+    if (p == "prev" && page_num > 1) {
+        page = page_num - 1;
+    } else if (p == "next") {
+        page = page_num + 1;
+    } else {
+        return // Dont do anything
+    }
+
+
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies-filter?page=" + page, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+
 /**
  * Retrieve parameter from request URL, matching by parameter name
  * @param target String
@@ -62,10 +94,12 @@ function handleMovieResult(resultData) {
         page_num = urlParams.get('page');
     }
 
-    let offset_results = parseInt(limit_by) * (parseInt(page_num)-1);
+    //let limit_by = parseInt(urlParams.get("result_limit"));
+
+    //let offset_results = limit_by * (parseInt(page_num)-1);
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = offset_results; i < limit_by; i++) {
+    for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -114,8 +148,8 @@ function handleMovieResult(resultData) {
             + "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        String: Id = resultData[i]["movie_id"];
-        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(Id)'>+</button></th>";
+        String: id = resultData[i]["movie_title"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(id)'>+</button></th>";
         rowHTML += "</tr>";
 
             // Append the row created to the table body, which will refresh the page
@@ -125,20 +159,26 @@ function handleMovieResult(resultData) {
     let paginationElement = jQuery("#pages");
     let currWindow = window.location.href;
 
-    for (let i= 1; i < Math.ceil(resultData.length / parseFloat(limit_by)); i++) {
+    let m = "100";
+    if (urlParams.has('result_limit')) {
+        m = urlParams.get('result_limit');
+    }
+
+    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(m)); i++) {
         if (urlParams.has('page')) {
             page_num = urlParams.get('page');
 
             paginationElement.append(
                 "<li class=\"page-item\">" +
-                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+                "<a class=\"page-link\" onclick=\"changePage(\"" + i + "\")\">" + i + "</a>" + "</li>");
         } else {
             paginationElement.append(
                 "<li class=\"page-item\">" +
-                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+                "<a class=\"page-link\" onclick=\"changePage(\"" + i + "\")\">" + i + "</a>" + "</li>");
         }
     }
-    paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">Next</a></li>");
+    paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" onclick=\"changePage(\"next\")\">Next</a></li>");
+
 }
 
 
@@ -155,12 +195,15 @@ let genre = getParameterByName('genre');
 let prefix = getParameterByName('prefix');
 
 let sort = getParameterByName('sort');
+let limit = getParameterByName('result_limit');
+let page = getParameterByName('page');
 
-if (sort != null){
+
+if (sort != null || limit != null){
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "api/movies-filter?sort=" + sort, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        url: "api/movies-filter?sort=" + sort + "&result_limit=" + limit, // Setting request url, which is mapped by MoviesServlet in Movies.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
