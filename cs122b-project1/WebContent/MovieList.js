@@ -13,7 +13,6 @@
  * @param target String
  * @returns {*}
  */
-
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -30,26 +29,6 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-/**
- * Reload window to display results with set limit size
- * @param None
- * @returns None
- */
-function onLimitChange() {
-    let select_element = document.getElementById("limit-select");
-    let value = select_element.value;
-
-    const url = window.location.search;
-    const urlParams = new URLSearchParams(url);
-
-    urlParams.set('result_limit', value);
-
-    console.log(urlParams.toString());
-
-    //location.reload();
-    window.location = "MovieList.html?" + urlParams.toString();
-    
-}
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -62,6 +41,10 @@ function handleMovieResult(resultData) {
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
 
+    // Get the number to limit restults by
+    let l = document.getElementById("limit-select");
+    let limit_by = l.value;
+
     // Get the url parameter values
     const url = window.location.search;
     const urlParams = new URLSearchParams(url);
@@ -73,9 +56,7 @@ function handleMovieResult(resultData) {
         page_num = urlParams.get('page');
     }
 
-    let limit_by = parseInt(urlParams.get("result_limit"));
-
-    let offset_results = limit_by * (parseInt(page_num)-1);
+    let offset_results = parseInt(limit_by) * (parseInt(page_num)-1);
 
     // Iterate through resultData, no more than 10 entries
     for (let i = offset_results; i < limit_by; i++) {
@@ -183,4 +164,3 @@ else {
         })
     }
 };
-
