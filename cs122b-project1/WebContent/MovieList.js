@@ -43,7 +43,6 @@ function changePage(p) {
  * @param target String
  * @returns {*}
  */
-
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -71,6 +70,10 @@ function handleMovieResult(resultData) {
     // Populate the movies table
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
+
+    // Get the number to limit restults by
+    let l = document.getElementById("limit-select");
+    let limit_by = l.value;
 
     // Get the url parameter values
     const url = window.location.search;
@@ -101,7 +104,24 @@ function handleMovieResult(resultData) {
             "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
+
+        genre_array = resultData[i]["movie_gen"].split(",");
+        rowHTML += "<th>";
+        for (let i = 0; i < Math.min(5, genre_array.length); i++) {
+            if (i == genre_array.length - 1){
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>, ';
+            }
+        }
+        rowHTML += "</th>";
 
         stars_array = resultData[i]["movie_star"].split(","); // Length 3
         stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3
@@ -201,4 +221,3 @@ else {
         })
     }
 };
-

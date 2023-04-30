@@ -75,14 +75,7 @@ public class MSearchServlet extends HttpServlet {
                 if (i == 1) num++;
             }
             String query = "";
-            String baseQuery = "select m.title, m.id, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
-                    "from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g\n" +
-                    "where gim.genreId = g.id group by movieId) as t,\n" +
-                    "(select movieId, group_concat(s.name order by s.name separator ',') as stars,\n" +
-                    "group_concat(sim.starId order by s.name separator ',') as starId\n" +
-                    "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
-                    "movies as m, ratings as rat\n" +
-                    "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId ";
+            String baseQuery = SQLQueryTemplate.MOVIE_SEARCH_PAGE_;
 
             if (num == 1) { // Single condition query search
                 if (flag[1] == 1)

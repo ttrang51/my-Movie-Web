@@ -53,11 +53,7 @@ public class SingleStarServlet extends HttpServlet {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = "select s.name, s.birthYear, a.titles, a.movieId\n" +
-                    "from  (select starId, group_concat(m.title separator ',') as titles,\n" +
-                    "group_concat(sim.movieId separator ',') as movieId\n" + 
-                    "from stars_in_movies as sim, movies as m where sim.movieId = m.id group by starId) as a, stars as s\n" +
-                    "where a.starId = ? and s.Id = ?";
+            String query = SQLQueryTemplate.EXTENDED_SINGLE_STAR_PAGE_;
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);

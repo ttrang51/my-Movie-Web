@@ -28,5 +28,20 @@ from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId
 movies as m, ratings as rat
 where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId;
 
+select s.name, s.birthYear, a.titles, a.movieId
+from  (select starId, group_concat(m.title order by m.year desc, m.title asc separator ',') as titles,
+group_concat(sim.movieId order by m.year desc, m.title asc separator ',') as movieId
+from stars_in_movies as sim, movies as m where sim.movieId = m.id group by starId) as a, stars as s
+where a.starId = ? and s.Id = ?;
+
+select m.title, m.year, m.director, t.genres, z.stars, z.starId, rat.rating
+from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g
+where gim.genreId = g.id group by movieId) as t,
+(select movieId, group_concat(s.name order by s.name separator ',') as stars,
+group_concat(sim.starId order by s.name separator ',') as starId
+from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,
+movies as m, ratings as rat
+where t.movieId = ? and z.movieId = ? and m.Id = ? and rat.movieId = ?;
+
 
 
