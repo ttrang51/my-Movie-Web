@@ -150,9 +150,9 @@ function handleMovieResult(resultData) {
     let paginationElement = jQuery("#pages");
     let currWindow = window.location.href;
 
-    let l = "100";
+    let lim = "100";
     if (urlParams.has('result_limit')) {
-        l = urlParams.get('result_limit');
+        lim = urlParams.get('result_limit');
     }
 
     for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(l)); i++) {
