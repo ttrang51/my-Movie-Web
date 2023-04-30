@@ -46,7 +46,8 @@ function onLimitChange() {
 
     console.log(urlParams.toString());
 
-    location.reload();
+    //location.reload();
+    window.location = "MovieList.html?" + urlParams.toString();
     
 }
 
@@ -73,8 +74,6 @@ function handleMovieResult(resultData) {
     }
 
     let limit_by = parseInt(urlParams.get("result_limit"));
-
-    console.log(limit_by);
 
     let offset_results = limit_by * (parseInt(page_num)-1);
 
