@@ -110,8 +110,8 @@ function handleResult(resultData) {
 
         rowHTML += "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        String: Id = resultData[i]["movie_title"];
-        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(Id)'>+</button></th>";
+        String: mtitle = resultData[i]["movie_title"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(mtitle)'>+</button></th>";
 
         rowHTML += "</tr>";
 

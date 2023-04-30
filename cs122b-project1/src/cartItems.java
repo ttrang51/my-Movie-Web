@@ -71,10 +71,10 @@ public class cartItems extends HttpServlet {
 
             // Construct a query to fetch movies and its price
             String query = "";
-            String baseQuery = "select m.title, m.price from movies as m where ";
+            String baseQuery = "select m.id, m.price from movies as m where ";
             query = query + baseQuery;
-            for (String title : previousItems.keySet()) {
-                query = query + "m.title = '" + title + "' or ";
+            for (String m_id : previousItems.keySet()) {
+                query = query + "m.id = '" + m_id + "' or ";
             }
             query = query.substring(0, query.length() - 4);     // Eliminate the last 'or '
 

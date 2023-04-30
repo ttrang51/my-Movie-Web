@@ -110,6 +110,7 @@ function handleMovieResult(resultData) {
             + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_id"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
 
@@ -148,8 +149,8 @@ function handleMovieResult(resultData) {
             + "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        String: id = resultData[i]["movie_title"];
-        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(id)'>+</button></th>";
+        String: mltitle = resultData[i]["movie_name"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(mltitle)'>+</button></th>";
         rowHTML += "</tr>";
 
             // Append the row created to the table body, which will refresh the page

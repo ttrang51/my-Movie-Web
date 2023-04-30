@@ -34,5 +34,9 @@ public class SQLQueryTemplate {
             "movies as m, ratings as rat\n" +
             "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId and ";
 
+    public static final String CHECK_OUT_PAGE_ = "SELECT * \n" +
+            "FROM creditcards \n" +
+            "where id = ? and firstName = ? and lastName = ? and expiration = ?";
+
 
 }
