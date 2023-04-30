@@ -8,6 +8,12 @@
  *      2. Populate the data to correct html elements.
  */
 
+function cartButtonHandler(target){
+
+    alert('Added to shopping cart!');
+    console.log(target.toString());
+
+}
 /**
  * Retrieve parameter from request URL, matching by parameter name
  * @param target String
@@ -66,7 +72,7 @@ function handleMovieResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
+            '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">'
             + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";
@@ -107,11 +113,12 @@ function handleMovieResult(resultData) {
             '</a>, '
             + "</th>";
 
-
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        String: Id = resultData[i]["movie_id"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(Id)'>+</button></th>";
         rowHTML += "</tr>";
 
-        // Append the row created to the table body, which will refresh the page
+            // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
 
@@ -132,8 +139,6 @@ function handleMovieResult(resultData) {
         }
     }
     paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">Next</a></li>");
-
-
 }
 
 

@@ -53,7 +53,7 @@ public class cartItems extends HttpServlet {
 
         //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
-        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
+        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("cartItems");
         if (previousItems == null) {
             previousItems = new HashMap<>();
         }
@@ -62,6 +62,8 @@ public class cartItems extends HttpServlet {
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
+
+        JsonArray previousItemsJsonArray = new JsonArray();
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
@@ -80,8 +82,6 @@ public class cartItems extends HttpServlet {
             PreparedStatement statement = conn.prepareStatement(query);
             // Perform the query
             ResultSet rs = statement.executeQuery();
-
-            JsonArray previousItemsJsonArray = new JsonArray();
 
             // Iterate through each row of rs. rs should be in format title|price
             while (rs.next()) {
