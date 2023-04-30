@@ -72,7 +72,24 @@ function handleMovieResult(resultData) {
             "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
+
+        genre_array = resultData[i]["movie_gen"].split(",");
+        rowHTML += "<th>";
+        for (let i = 0; i < Math.min(5, genre_array.length); i++) {
+            if (i == genre_array.length - 1){
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>, ';
+            }
+        }
+        rowHTML += "</th>";
 
         stars_array = resultData[i]["movie_star"].split(","); // Length 3
         stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3

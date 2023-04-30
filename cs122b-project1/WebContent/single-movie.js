@@ -55,13 +55,34 @@ function handleResult(resultData) {
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
+    for (let i = 0; i < Math.min(20, resultData.length); i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
         rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
+
+        genre_array = resultData[i]["movie_gen"].split(",");
+
+        rowHTML += "<th>";
+        for (let i = 0; i < Math.min(5, genre_array.length); i++) {
+            if (i == genre_array.length - 1){
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="MovieList.html?genre=' + genre_array[i] + '">'
+                    + genre_array[i] +     // display movie_name for the link text
+                    '</a>, ';
+            }
+        }
+        rowHTML += "</th>";
+
+        //rowHTML += "<th>" + resultData[i]["movie_gen"] + "</th>";
+
 
         stars_array = resultData[i]["movie_star"].split(","); // Length 3
         stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3
