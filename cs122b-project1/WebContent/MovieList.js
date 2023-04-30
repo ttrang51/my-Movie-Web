@@ -8,6 +8,36 @@
  *      2. Populate the data to correct html elements.
  */
 
+function changePage(p) {
+    // Get the url parameter values
+    const url = window.location.search;
+    const urlParams = new URLSearchParams(url);
+
+    // default page number is 1
+    let page_num = 1;
+
+    if (urlParams.has('page')) {
+        page_num = parseInt(urlParams.get('page'));
+    }
+
+    let page = 1;
+    if (p == "prev" && page_num > 1) {
+        page = page_num - 1;
+    } else if (p == "next") {
+        page = page_num + 1;
+    } else {
+        return // Dont do anything
+    }
+
+
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/movies-filter?page=" + page, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+
 /**
  * Retrieve parameter from request URL, matching by parameter name
  * @param target String
@@ -30,26 +60,6 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-/**
- * Reload window to display results with set limit size
- * @param None
- * @returns None
- */
-function onLimitChange() {
-    let select_element = document.getElementById("limit-select");
-    let value = select_element.value;
-
-    const url = window.location.search;
-    const urlParams = new URLSearchParams(url);
-
-    urlParams.set('result_limit', value);
-
-    console.log(urlParams.toString());
-
-    //location.reload();
-    window.location = "MovieList.html?" + urlParams.toString();
-    
-}
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -73,12 +83,12 @@ function handleMovieResult(resultData) {
         page_num = urlParams.get('page');
     }
 
-    let limit_by = parseInt(urlParams.get("result_limit"));
+    //let limit_by = parseInt(urlParams.get("result_limit"));
 
-    let offset_results = limit_by * (parseInt(page_num)-1);
+    //let offset_results = limit_by * (parseInt(page_num)-1);
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = offset_results; i < limit_by; i++) {
+    for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -120,20 +130,25 @@ function handleMovieResult(resultData) {
     let paginationElement = jQuery("#pages");
     let currWindow = window.location.href;
 
-    for (let i= 1; i < Math.ceil(resultData.length / parseFloat(limit_by)); i++) {
+    let l = "100";
+    if (urlParams.has('result_limit')) {
+        l = urlParams.get('result_limit');
+    }
+
+    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(l)); i++) {
         if (urlParams.has('page')) {
             page_num = urlParams.get('page');
 
             paginationElement.append(
                 "<li class=\"page-item\">" +
-                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+                "<a class=\"page-link\" onclick=\"changePage(\"" + i + "\")\">" + i + "</a>" + "</li>");
         } else {
             paginationElement.append(
                 "<li class=\"page-item\">" +
-                "<a class=\"page-link\" href=" + currWindow + "&page=" + i + ">" + i + "</a>" + "</li>");
+                "<a class=\"page-link\" onclick=\"changePage(\"" + i + "\")\">" + i + "</a>" + "</li>");
         }
     }
-    paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" href=\"#\">Next</a></li>");
+    paginationElement.append("<li class=\"page-item\"><a class=\"page-link\" onclick=\"changePage(\"next\")\">Next</a></li>");
 
 
 }
@@ -152,12 +167,15 @@ let genre = getParameterByName('genre');
 let prefix = getParameterByName('prefix');
 
 let sort = getParameterByName('sort');
+let limit = getParameterByName('result_limit');
+let page = getParameterByName('page');
 
-if (sort != null){
+
+if (sort != null || limit != null){
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        url: "api/movies-filter?sort=" + sort, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        url: "api/movies-filter?sort=" + sort + "&result_limit=" + limit, // Setting request url, which is mapped by MoviesServlet in Movies.java
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
