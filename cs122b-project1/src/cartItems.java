@@ -160,7 +160,7 @@ public class cartItems extends HttpServlet {
                 }
             }
         }
-
+        /*
         JsonObject responseJsonObject = new JsonObject();
         JsonArray responseJsonArray = new JsonArray();
         //previousItems.forEach(previousItemsJsonArray::add);
@@ -171,5 +171,10 @@ public class cartItems extends HttpServlet {
             responseJsonArray.add(responseJsonObject);
         }
         response.getWriter().write(responseJsonObject.toString());
+
+         */
+        Map<String, Integer> cartItems2 = (Map<String, Integer>) session.getAttribute("cartItems");
+        System.out.println("Session Item Added: " + cartItems2.get(item));
     }
+
 }
