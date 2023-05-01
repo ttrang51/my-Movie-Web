@@ -82,7 +82,7 @@ function getParameterByName(target) {
 function handleCartResult(resultData) {
 
     for (let i = 0; i < resultData.length; i++) {
-        console.log(resultData[i]["previousItems"]);
+        console.log(resultData[i]["movie_id"]);
     }
 
 }

@@ -23,14 +23,14 @@ function handleSessionData(resultDataString) {
  * Handle the items in item list
  * @param resultArray jsonObject, needs to be parsed to html
  */
-function handleCartArray(resultArray) {
-    console.log(resultArray);
+function handleCartArray(resultDataJson) {
+    console.log(resultDataJson);
     let item_list = $("#item_list");
     // change it to html list
     let res = "<ul>";
-    for (let i = 0; i < resultArray.length; i++) {
+    for (let i = 0; i < resultDataJson.length; i++) {
         // each item will be in a bullet point
-        res += "<li>" + resultArray[i] + "</li>";
+        res += "<li>" + resultDataJson[i]["movie_id"] + "</li>";
     }
     res += "</ul>";
 
@@ -55,9 +55,9 @@ function handleCartInfo(cartEvent) {
     $.ajax("api/cart", {
         method: "POST",
         data: cart.serialize(),
-        success: resultDataString => {
-            let resultDataJson = JSON.parse(resultDataString);
-            handleCartArray(resultDataJson["previousItems"]);
+        success: resultData => {
+            let resultDataJson = resultData;
+            handleCartArray(resultDataJson);
         }
     });
 

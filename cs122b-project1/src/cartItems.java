@@ -142,33 +142,34 @@ public class cartItems extends HttpServlet {
 
         // get the previous items in a ArrayList
         //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
-        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
+        Map<String, Integer> cartItems = (Map<String, Integer>) session.getAttribute("cartItems");
+        //JsonObject cartItems = (JsonObject) session.getAttribute("cartItems");
 
-        if (previousItems == null) {
-            previousItems = new HashMap<>();
-            previousItems.put(item, 1);
-            session.setAttribute("previousItems", previousItems);
+        if (cartItems.isEmpty()) {
+            cartItems.put(item, 1);
+            session.setAttribute("cartItems", cartItems);
         } else {
             // prevent corrupted states through sharing under multi-threads
             // will only be executed by one thread at a time
-            synchronized (previousItems) {
-                if (previousItems.get(item) == null)
-                    previousItems.put(item, 1);
-                else
-                    previousItems.put(item, previousItems.get(item) + 1);
+            synchronized (cartItems) {
+                if (cartItems.get(item) == null)
+                    cartItems.put(item, 1);
+                else {
+                    cartItems.put(item, cartItems.get(item) + 1);
+                    session.setAttribute("cartItems", cartItems);
+                }
             }
         }
 
         JsonObject responseJsonObject = new JsonObject();
-        JsonArray previousItemsJsonArray = new JsonArray();
+        JsonArray responseJsonArray = new JsonArray();
         //previousItems.forEach(previousItemsJsonArray::add);
 
-        for (Map.Entry<String,Integer> entry : previousItems.entrySet()) {
-            previousItemsJsonArray.add(entry.getKey());
+        for (Map.Entry<String,Integer> entry : cartItems.entrySet()) {
+            responseJsonObject.addProperty("movie_id", entry.getKey());
+            responseJsonObject.addProperty("amount", entry.getValue());
+            responseJsonArray.add(responseJsonObject);
         }
-
-        responseJsonObject.add("previousItems", previousItemsJsonArray);
-
         response.getWriter().write(responseJsonObject.toString());
     }
 }
