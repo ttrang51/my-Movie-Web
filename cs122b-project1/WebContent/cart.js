@@ -23,20 +23,30 @@ function handleSessionData(resultDataString) {
  * Handle the items in item list
  * @param resultArray jsonObject, needs to be parsed to html
  */
-function handleCartArray(resultArray) {
-    console.log(resultArray);
-    let item_list = $("#item_list");
+function handleCartArray(resultData) {
+    let cart_table = jQuery("#cart_table_body");
     // change it to html list
-    let res = "<ul>";
-    for (let i = 0; i < resultArray.length; i++) {
-        // each item will be in a bullet point
-        res += "<li>" + resultArray[i] + "</li>";
-    }
-    res += "</ul>";
+    console.log("gets here");
 
-    // clear the old array and show the new array in the frontend
-    item_list.html("");
-    item_list.append(res);
+    for (let i = 0; i < resultData.length; i++) {
+        // Concatenate the html tags with resultData jsonObject
+        let rowHTML = "";
+        rowHTML += "<tr>";
+        rowHTML +=
+            "<th>" +
+            // Add a link to single-movie.html with id passed with GET url parameter
+            resultData[i]["movie_title"] +     // display star_name for the link text
+            "</th>";
+
+        rowHTML += "<th>" + resultData[i]["movie_price"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["quantity"] + "</th>";
+
+        rowHTML += "<th>$" + resultData[i]["quantity"] * resultData[i]["movie_price"] + "</th>";
+        rowHTML += "</tr>";
+
+        // Append the row created to the table body, which will refresh the page
+        cart_table.append(rowHTML);
+    }
 }
 
 /**
@@ -53,22 +63,21 @@ function handleCartInfo(cartEvent) {
     cartEvent.preventDefault();
 
     $.ajax("api/cart", {
-        method: "POST",
+        method: "GET",
         data: cart.serialize(),
-        success: resultDataString => {
-            let resultDataJson = JSON.parse(resultDataString);
-            handleCartArray(resultDataJson["previousItems"]);
+        success: resultData=> handleCartArray(resultData)
         }
-    });
+    );
 
     // clear input form
     cart[0].reset();
 }
 
-$.ajax("api/cart", {
+jQuery.ajax({
+    dataType: "json", // Setting return data type
     method: "GET",
-    success: handleSessionData
+    url: "api/cart",
+    success: (resultData) => handleCartArray(resultData)
 });
 
-// Bind the submit action of the form to a event handler function
-cart.submit(handleCartInfo);
+

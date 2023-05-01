@@ -54,7 +54,7 @@ public class cartItems extends HttpServlet {
 
         //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
-        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("cartItems");
+        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
         if (previousItems == null) {
             previousItems = new HashMap<>();
         }
@@ -159,16 +159,15 @@ public class cartItems extends HttpServlet {
             }
         }
 
-        JsonObject responseJsonObject = new JsonObject();
         JsonArray previousItemsJsonArray = new JsonArray();
-        //previousItems.forEach(previousItemsJsonArray::add);
 
         for (Map.Entry<String,Integer> entry : previousItems.entrySet()) {
-            previousItemsJsonArray.add(entry.getKey());
+            JsonObject prev_i = new JsonObject();
+            prev_i.addProperty("quantity", entry.getValue());
+            prev_i.addProperty("id", entry.getKey());
+            previousItemsJsonArray.add(prev_i);
         }
 
-        responseJsonObject.add("previousItems", previousItemsJsonArray);
-
-        response.getWriter().write(responseJsonObject.toString());
+        response.getWriter().write(previousItemsJsonArray.toString());
     }
 }
