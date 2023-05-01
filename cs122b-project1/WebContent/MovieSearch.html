@@ -6,17 +6,22 @@
 
 <<!--body BGCOLOR="#FDF5E6">-->
 <h1 ALIGN="CENTER">Movie Search</h1>
-
-<a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Back to Home Page</a>
-
+<p style="text-align: center">
+    <a class="btn btn-primary" href="/cs122b_project1_api_example_war/home_page.html" role="button">Home Page</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Checkout</a><br>
+</p>
+<p style="text-align: center">
+<strong>Search By:</strong>
+</p>
 <form ACTION="MovieList.html" METHOD="GET" id="search_form">
-    Movie Title: <input TYPE="TEXT" name="movie_title"> (Search by movie's title)<br>
-    Director Name: <input TYPE="TEXT" name="director_name"> (Search by director)<br>
-    Year: <input type="number" min="2001" max="2019" step="1" value="" name="year"/> (Search by year)<br>
-    Star name: <input TYPE="TEXT" name="star_name"> (Search by star's name)<br>
+    <p style="text-align: center">
+        <input TYPE="TEXT" name="movie_title" placeholder="Title"><br>
+        <input TYPE="TEXT" name="director_name" placeholder="Director"><br>
+        <input type="number" min="2001" max="2019" step="1" value="" name="year" placeholder="Year"/><br>
+        <input TYPE="TEXT" name="star_name" placeholder="Star"><br>
+        <input TYPE="SUBMIT" VALUE="Search">
+    </p>
 
-    <input TYPE="SUBMIT" VALUE="Submit">
-    <input type=”hidden” value="1" name="page"/>
 </form>
 
 </body>
