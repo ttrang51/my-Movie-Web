@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * This IndexServlet is declared in the web annotation below,
  * which is mapped to the URL pattern /api/index.
@@ -136,7 +137,7 @@ public class cartItems extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String item = request.getParameter("item");
-        System.out.println(item);
+        System.out.println("Item Added: " + item);
         HttpSession session = request.getSession();
 
         // get the previous items in a ArrayList
@@ -159,9 +160,13 @@ public class cartItems extends HttpServlet {
         }
 
         JsonObject responseJsonObject = new JsonObject();
-
         JsonArray previousItemsJsonArray = new JsonArray();
         //previousItems.forEach(previousItemsJsonArray::add);
+
+        for (Map.Entry<String,Integer> entry : previousItems.entrySet()) {
+            previousItemsJsonArray.add(entry.getKey());
+        }
+
         responseJsonObject.add("previousItems", previousItemsJsonArray);
 
         response.getWriter().write(responseJsonObject.toString());

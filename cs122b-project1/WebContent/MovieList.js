@@ -9,10 +9,17 @@
  */
 
 
-function cartButtonHandler(target){
+function cartButtonHandler(target, movie_id){
 
     alert('Added to shopping cart!');
     console.log(target.toString());
+
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "POST", // Setting request method
+        url: "api/cart?item=" + movie_id, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleCartResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
 
 }
 
@@ -67,6 +74,18 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+
+/**
+ * Handles the data returned by the shopping cart API, read the jsonObject and populate data into html elements
+ * @param resultData jsonObject
+ */
+function handleCartResult(resultData) {
+
+    for (let i = 0; i < resultData.length; i++) {
+        console.log(resultData[i]["previousItems"]);
+    }
+
+}
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -149,8 +168,9 @@ function handleMovieResult(resultData) {
             + "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
-        String: mltitle = resultData[i]["movie_name"];
-        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(mltitle)'>+</button></th>";
+        //String: let mltitle = resultData[i]["movie_name"];
+        //String: let movie_id = resultData[i]["movie_id"];
+        rowHTML += "<th><button id='add-to-cart-btn' onclick='cartButtonHandler(\"" + resultData[i]["movie_name"] + "\",\"" + resultData[i]["movie_id"] + "\")'>+</button></th>";
         rowHTML += "</tr>";
 
             // Append the row created to the table body, which will refresh the page
@@ -165,7 +185,7 @@ function handleMovieResult(resultData) {
         lim = urlParams.get('result_limit');
     }
 
-    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(m)); i++) {
+    for (let i= 1; i <= Math.ceil(resultData.length / parseFloat(lim)); i++) {
         if (urlParams.has('page')) {
             page_num = urlParams.get('page');
 
