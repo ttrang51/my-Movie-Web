@@ -15,7 +15,7 @@ function addToCartAlert(){
 
 function cartButtonHandler(target, movie_id){
 
-    //alert('Added to shopping cart!');
+    alert('Added to shopping cart!');
     console.log(target.toString());
 
     jQuery.ajax({

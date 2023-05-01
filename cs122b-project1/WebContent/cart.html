@@ -21,17 +21,7 @@ Welcome to Fablix!
 <a class="btn btn-primary" href="/cs122b-project1-api-example/MovieList.html" role="button">Movie List</a>
 <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Checkout</a><br>
 
-<form ACTION="#" id="cart" METHOD="post">
-  <label>Item Purchased</label>
-  <br>
-  <label>
-    <!--<input name="item" required="required" type="text">-->
-  </label>
-  <input type="submit" VALUE="add">
-<form ACTION="checkout.html" id="cart" METHOD="POST">
-  <label>Cart</label>
-  <input TYPE="SUBMIT" VALUE="Checkout">
-</form>
+<h2> Shopping Cart </h2>
 <div id="item_list"></div>
 
 <table id=cart_table class="table table-striped table-success table-hover">
@@ -50,6 +40,10 @@ Welcome to Fablix!
   <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
   <tbody id=cart_table_body></tbody>
 </table>
+
+<form ACTION="checkout.html" id="cart" METHOD="POST">
+  <input TYPE="SUBMIT" VALUE="Proceed to payment">
+</form>
 
 <!-- include your own JS file -->
 <script src='https://code.jquery.com/jquery-3.1.0.min.js'></script>
