@@ -76,7 +76,7 @@ public class SingleMovieServlet extends HttpServlet {
             // CHANGE TO GET INFO ABOUT MOVIE NOT STAR
             while (rs.next()) {
 
-                //String movieId = rs.getString("id");
+                //String movieId = rs.getString("movieId");
                 String movieTitle = rs.getString("title");
                 String movieYear = rs.getString("year");
                 String movieDirector = rs.getString("director");

@@ -12,6 +12,8 @@ function cartButtonHandler(target){
     alert('Added to shopping cart!');
     console.log(target.toString());
 
+
+
 }
 
 /**
