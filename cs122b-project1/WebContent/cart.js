@@ -20,11 +20,11 @@ function getParameterByName(target) {
  * Handle the data returned by IndexServlet
  * @param resultDataString jsonObject, consists of session info
  */
-function handleSessionData(resultDataString) {
-    let resultDataJson = JSON.parse(resultDataString);
+function handleSessionData(resultDataJson) {
+    //let resultDataJson = JSON.parse(resultDataString);
 
     console.log("handle session response");
-    console.log(resultDataJson);
+    //console.log(resultDataJson);
     console.log(resultDataJson["sessionID"]);
 
     // show the session information
@@ -42,7 +42,6 @@ function handleSessionData(resultDataString) {
 function handleCartArray(resultData) {
     let cart_table = jQuery("#cart_table_body");
     // change it to html list
-    console.log("gets here");
 
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
@@ -55,9 +54,9 @@ function handleCartArray(resultData) {
             "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_price"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["quantity"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["amount"] + "</th>";
 
-        rowHTML += "<th>$" + resultData[i]["quantity"] * resultData[i]["movie_price"] + "</th>";
+        rowHTML += "<th>$" + parseInt(resultData[i]["amount"]) * parseFloat(resultData[i]["movie_price"]) + "</th>";
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
@@ -98,11 +97,12 @@ function handleCartInfo(cartEvent) {
     cart[0].reset();
 }
 
+/*
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET",
     url: "api/cart",
     success: (resultData) => handleCartArray(resultData)
 });
-
+*/
 

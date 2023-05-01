@@ -54,9 +54,10 @@ public class cartItems extends HttpServlet {
 
         //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
-        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("previousItems");
+        Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("cartItems");
         if (previousItems == null) {
             previousItems = new HashMap<>();
+            session.setAttribute("cartItems", previousItems);
         }
         // Log to localhost log
         request.getServletContext().log("getting " + previousItems.size() + " items");
@@ -69,14 +70,19 @@ public class cartItems extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
             // Get a connection from dataSource
-
             // Construct a query to fetch movies and its price
-            String query = "";
-            String baseQuery = "select m.id, m.price from movies as m where ";
-            query = query + baseQuery;
+            String query = "select m.id, m.title, m.price from movies as m where ";
             for (String m_id : previousItems.keySet()) {
                 query = query + "m.id = '" + m_id + "' or ";
             }
+
+            if (previousItems.isEmpty()) {
+                request.getServletContext().log("getting NO results");
+                // Set response status to 200 (OK)
+                response.setStatus(200);
+                return;// NO items in cart
+            }
+
             query = query.substring(0, query.length() - 4);     // Eliminate the last 'or '
 
             // Declare our statement
@@ -84,21 +90,25 @@ public class cartItems extends HttpServlet {
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
+            float checkout_price = 0;
             // Iterate through each row of rs. rs should be in format title|price
             while (rs.next()) {
 
                 String m_title = rs.getString("title");
+                String m_id = rs.getString("id");
                 String m_price = rs.getString("price");
+                checkout_price +=  previousItems.get(m_id) *  Integer.parseInt(m_price);
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_title", m_title);
                 jsonObject.addProperty("movie_price", m_price);
-                jsonObject.addProperty("amount", previousItems.get(m_title));
+                jsonObject.addProperty("amount", previousItems.get(m_id));
 
                 previousItemsJsonArray.add(jsonObject);
 
             }
+            session.setAttribute("checkoutTotal", checkout_price);
             rs.close();
             statement.close();
 
@@ -145,19 +155,24 @@ public class cartItems extends HttpServlet {
         Map<String, Integer> cartItems = (Map<String, Integer>) session.getAttribute("cartItems");
         //JsonObject cartItems = (JsonObject) session.getAttribute("cartItems");
 
-        if (cartItems.isEmpty()) {
+        if (cartItems == null) {
+            cartItems = new HashMap<>();
+            session.setAttribute("cartItems", cartItems);
+        }
+        if (cartItems.get(item) == null) {
             cartItems.put(item, 1);
             session.setAttribute("cartItems", cartItems);
         } else {
             // prevent corrupted states through sharing under multi-threads
             // will only be executed by one thread at a time
+            //cartItems = new HashMap<String, Integer>();
             synchronized (cartItems) {
                 if (cartItems.get(item) == null)
                     cartItems.put(item, 1);
                 else {
                     cartItems.put(item, cartItems.get(item) + 1);
-                    session.setAttribute("cartItems", cartItems);
                 }
+                session.setAttribute("cartItems", cartItems);
             }
         }
         /*
@@ -175,6 +190,8 @@ public class cartItems extends HttpServlet {
          */
         Map<String, Integer> cartItems2 = (Map<String, Integer>) session.getAttribute("cartItems");
         System.out.println("Session Item Added: " + cartItems2.get(item));
+
+        //response.setStatus(200);
     }
 
 }
