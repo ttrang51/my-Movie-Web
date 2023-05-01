@@ -6,11 +6,11 @@
 #### https://uci.zoom.us/rec/share/O8wP-WrdcUKToFNuwvYcWvppWR8-wloYoIUrE9sPIDfN2a_MEfn9sRbihd26xd4.DTi780T1M92emRyF?startTime=1682924305000
 
 ### Contribution
-Anthonny -- contribute to the Webcontent/front-end work. 
+Anthonny -- handle limit/pagination feature. 
 
-Thi Thuy Trang Tran -- contribute the backend with SQL query work.
+Thi Thuy Trang Tran -- handle search and browse features, rating/title sorting, extended single movie/star pages, checkout and confirmation pages, website formatting.
 
-We're both contributing the technical setup, server side, peer-review and inspection.
+Cooperated work: login feature, shopping cart feature, peer-review, testing and inspection
 
 
 ### USE of LIKE in SQL Queries
