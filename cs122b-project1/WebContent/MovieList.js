@@ -8,17 +8,21 @@
  *      2. Populate the data to correct html elements.
  */
 
+function addToCartAlert(){
+    alert('Added to shopping cart!');
+}
+
 
 function cartButtonHandler(target, movie_id){
 
-    alert('Added to shopping cart!');
+    //alert('Added to shopping cart!');
     console.log(target.toString());
 
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "POST", // Setting request method
         url: "api/cart?item=" + movie_id, // Setting request url, which is mapped by MoviesServlet in Movies.java
-        success: (resultData) => handleCartResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        success: (resultData) => addToCartAlert() // Setting callback function to handle data returned successfully by the StarsServlet
     });
 
 }
@@ -82,9 +86,7 @@ function getParameterByName(target) {
 function handleCartResult(resultData) {
 
     for (let i = 0; i < resultData.length; i++) {
-
-        console.log(resultData[i]["id"]);
-        console.log(resultData[i]["quantity"]);
+        console.log(resultData[i]["movie_id"]);
     }
 
 }

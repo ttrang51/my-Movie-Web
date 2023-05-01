@@ -1,5 +1,21 @@
 let cart = $("#cart");
 
+
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 /**
  * Handle the data returned by IndexServlet
  * @param resultDataString jsonObject, consists of session info
@@ -12,11 +28,11 @@ function handleSessionData(resultDataString) {
     console.log(resultDataJson["sessionID"]);
 
     // show the session information
-    $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
-    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
+    //$("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
+    //$("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
 
     // show cart information
-    handleCartArray(resultDataJson["previousItems"]);
+    handleCartArray(resultDataJson);
 }
 
 /**
@@ -49,6 +65,17 @@ function handleCartArray(resultData) {
     }
 }
 
+function handleCartArray2(resultDataJson) {
+    console.log('POST dumped');
+}
+
+jQuery.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    url: "api/cart",
+    success: (resultData) => handleSessionData(resultData)
+});
+
 /**
  * Submit form content with POST method
  * @param cartEvent
@@ -61,13 +88,11 @@ function handleCartInfo(cartEvent) {
      * event handler when the event is triggered.
      */
     cartEvent.preventDefault();
-
-    $.ajax("api/cart", {
-        method: "GET",
+    let item = getParameterByName('item')
+    $.ajax("api/cart?item=" + item, {
+        method: "POST",
         data: cart.serialize(),
-        success: resultData=> handleCartArray(resultData)
-        }
-    );
+    });
 
     // clear input form
     cart[0].reset();

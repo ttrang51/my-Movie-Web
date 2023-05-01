@@ -77,27 +77,51 @@ public class MSearchServlet extends HttpServlet {
             String query = "";
             String baseQuery = SQLQueryTemplate.MOVIE_SEARCH_PAGE_;
 
-            if (num == 1) { // Single condition query search
-                if (flag[1] == 1)
-                    query = baseQuery + "and m.year = " + year;
-                else if (flag[0] == 1)
-                    query = baseQuery + "and m.title like '%" + title + "%'";
-                else if (flag[2] == 1)
-                    query = baseQuery + "and m.director like '%" + director_name + "%'";
-                else
-                    query = baseQuery + "and z.stars like '%" + star_name + "%'";
+            if (flag[0] == 0 && flag[1] == 0 && flag[2] == 0 && flag[3] == 0){
+                if (session.getAttribute("query") != null)
+                    query = (String) session.getAttribute("query");
+                if (session.getAttribute("sort") != null){
+                    String sort_query = (String)session.getAttribute("sort");
+                    query = query + " " + sort_query + " ";
+                }
+                if (session.getAttribute("result_limit") != null){
+                    String limit_Option = (String)session.getAttribute("result_limit");
+                    String limit_Op = "";
+                    if (limit_Option.equals("100")) {
+                        limit_Op = limit_Op + "100 ";
+                    } else if (limit_Option.equals("50")) {
+                        limit_Op = limit_Op + "50 ";
+                    } else if (limit_Option.equals("25")) {
+                        limit_Op = limit_Op + "25 ";
+                    } else { // if limit_Option equals 10
+                        limit_Op = limit_Op + "10 ";
+                    }
+                    query = query + limit_Op;
+                }
             }
+            else {
+                if (num == 1) { // Single condition query search
+                    if (flag[1] == 1)
+                        query = baseQuery + "and m.year = " + year;
+                    else if (flag[0] == 1)
+                        query = baseQuery + "and m.title like '%" + title + "%'";
+                    else if (flag[2] == 1)
+                        query = baseQuery + "and m.director like '%" + director_name + "%'";
+                    else
+                        query = baseQuery + "and z.stars like '%" + star_name + "%'";
+                }
 
-            else {  // Combined query
-                query = baseQuery;
-                if (flag[0] == 1)
-                    query = query + "and m.title like '%" + title + "%' ";
-                if (flag[1] == 1)
-                    query = query + "and m.year =" + year + " ";
-                if (flag[2] == 1)
-                    query = query + "and m.director like '%" + director_name + "%'";
-                if (flag[3] == 1)
-                    query = query + "and z.stars like '%" + star_name + "%' ";
+                else {  // Combined query
+                    query = baseQuery;
+                    if (flag[0] == 1)
+                        query = query + "and m.title like '%" + title + "%' ";
+                    if (flag[1] == 1)
+                        query = query + "and m.year =" + year + " ";
+                    if (flag[2] == 1)
+                        query = query + "and m.director like '%" + director_name + "%'";
+                    if (flag[3] == 1)
+                        query = query + "and z.stars like '%" + star_name + "%' ";
+                }
             }
 
             session.setAttribute("query", query);
