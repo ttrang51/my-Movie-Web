@@ -23,8 +23,8 @@
 
     <h1 class="display-1">Movie Results</h1>
     
-    <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Back to Home Page</a>
-    <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Check Out</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Home Page</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Checkout</a>
 
     <form ACTION="MovieList.html" METHOD="GET" id="search_form">
         <strong>Search by:</strong>
@@ -48,20 +48,15 @@
             <option value="7" name="sort">Title desc, rating desc</option>
             <option value="8" name="sort">Title desc, rating asc</option>
         </select>
-        <input type="submit" value="Update Sort and Limit">
+        <label for="limit-select">Page Limit: </label>
+        <select name="result_limit" id="limit-select" form="sort_form" >
+            <option value="100" >100</option>
+            <option value="50">50</option>
+            <option value="25">25</option>
+            <option value="10">10</option>
+        </select>
+        <input type="submit" value="Filter">
     </form>
-
-
-    </form>
-
-    <label for="limit-select">Limit how many results are displayed per page (Refresh page after changing):</label>
-    <select name="result_limit" id="limit-select" form="sort_form" >
-        <option value="100" >100</option>
-        <option value="50">50</option>
-        <option value="25">25</option>
-        <option value="10">10</option>
-    </select>
-
 
     
     <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
@@ -71,7 +66,6 @@
         <tr>
             <!-- Titles of each column-->
             <th>Title</th>
-            <th>MovieId</th>
             <th>Year</th>
             <th>Director</th>
             <th>Genres</th>

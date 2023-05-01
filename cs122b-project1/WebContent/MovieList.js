@@ -129,7 +129,7 @@ function handleMovieResult(resultData) {
             + resultData[i]["movie_name"] +     // display star_name for the link text
             '</a>' +
             "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_id"] + "</th>";
+
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_dir"] + "</th>";
 

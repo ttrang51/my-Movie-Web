@@ -22,8 +22,18 @@
     <body>
     <h1 class="display-1">Single Movie Page</h1>
 
-    <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Back to Home Page</a>
-    <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Check Out</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/home_page.html" role="button">Home Page</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/MovieList.html" role="button">Movie List</a>
+    <a class="btn btn-primary" href="/cs122b-project1-api-example/checkout.html" role="button">Checkout</a><br>
+
+    <form ACTION="MovieList.html" METHOD="GET" id="search_form">
+        <strong>Search by:</strong>
+        <input type="text" placeholder="Title" name="movie_title">
+        <input type="text" placeholder="Director Name" name="director_name">
+        <input type="number" min="2001" max="2019" step="1" value="" placeholder="Year" name="year"/>
+        <input type="text" placeholder="Star Name" name="star_name">
+        <input type="submit" value="Search">
+    </form>
 
 
     
