@@ -1,4 +1,3 @@
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import javax.naming.InitialContext;
@@ -33,6 +32,35 @@ public class LoginServlet extends HttpServlet {
      */
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Output stream to STDOUT
+        PrintWriter out = response.getWriter();
+
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+        JsonObject responseJsonObject = new JsonObject();
+
+        // Verify reCAPTCHA
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            
+            responseJsonObject.addProperty("status", "fail");
+            // Log to localhost log
+            request.getServletContext().log("reCAPTCHA verification failed");
+            String e_message = e.getMessage();
+            responseJsonObject.addProperty("message", e_message);
+
+            out.write(responseJsonObject.toString());
+
+            // Set response status to 200
+            response.setStatus(200);
+
+            out.close();
+            return;
+        }
+
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
@@ -42,10 +70,6 @@ public class LoginServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
-        // Output stream to STDOUT
-        PrintWriter out = response.getWriter();
-
-        JsonObject responseJsonObject = new JsonObject();
 
         // Demo
         // Get a connection from dataSource and let resource manager close the connection after usage.
