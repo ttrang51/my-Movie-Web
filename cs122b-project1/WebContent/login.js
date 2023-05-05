@@ -5,11 +5,9 @@ let login_form = $("#login_form");
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    console.log(resultDataString["message"]);
     let resultDataJson = resultDataString;
     //let resultDataJson = JSON.parse(resultDataString);
 
-    console.log("handle login response");
     console.log(resultDataJson);
     console.log(resultDataJson["status"]);
 
@@ -19,7 +17,6 @@ function handleLoginResult(resultDataString) {
     } else {
         // If login fails, the web page will display
         // error messages on <div> with id "login_error_message"
-        console.log("show error message");
         console.log(resultDataJson["message"]);
         $("#login_error_message").text(resultDataJson["message"]);
     }
