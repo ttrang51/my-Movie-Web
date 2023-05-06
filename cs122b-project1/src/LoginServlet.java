@@ -41,16 +41,17 @@ public class LoginServlet extends HttpServlet {
 
         JsonObject responseJsonObject = new JsonObject();
 
+        response.setContentType("application/json"); // Response mime type
+
         // Verify reCAPTCHA
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
         } catch (Exception e) {
             
-            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("status", "reCAPTCHA fail");
             // Log to localhost log
             request.getServletContext().log("reCAPTCHA verification failed");
-            String e_message = e.getMessage();
-            responseJsonObject.addProperty("message", e_message);
+            responseJsonObject.addProperty("message", "reCAPTCHA verification failed");
 
             out.write(responseJsonObject.toString());
 
@@ -68,8 +69,6 @@ public class LoginServlet extends HttpServlet {
         /* This example only allows username/password to be test/test
         /  in the real project, you should talk to the database to verify username/password
         */
-
-        response.setContentType("application/json"); // Response mime type
 
 
         // Demo
