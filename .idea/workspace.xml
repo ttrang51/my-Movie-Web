@@ -11,9 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="745bcd34-470e-4bef-a2e7-86eef2ba62da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs122b-project1/WebContent/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/WebContent/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs122b-project1/WebContent/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/WebContent/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs122b-project1/src/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/src/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs122b-project1/WebContent/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/WebContent/WEB-INF/web.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +191,7 @@
       <workItem from="1682471619517" duration="1722000" />
       <workItem from="1682723165799" duration="4198000" />
       <workItem from="1683221830722" duration="1326000" />
-      <workItem from="1683263883787" duration="2735000" />
+      <workItem from="1683263883787" duration="3803000" />
     </task>
     <servers />
   </component>
