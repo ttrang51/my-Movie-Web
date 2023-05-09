@@ -15,6 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Dictionary;
 
+import org.jasypt.util.password.PasswordEncryptor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
     // Create a dataSource which registered in web.
@@ -98,10 +101,14 @@ public class LoginServlet extends HttpServlet {
                 // Create a JsonObject based on the data we retrieve from rs
                 //JsonArray jsonArray = new JsonArray();
 
+
+                // use the same encryptor to compare the user input password with encrypted password stored in DB
+                Boolean loginSuccess = new StrongPasswordEncryptor().checkPassword(password, userPassword);
+
                 if (username.equals(userUserName)) {
                     row_count += 1;
                     // Login success:
-                    if (password.equals(userPassword)) {
+                    if (loginSuccess) {
                         
                         request.getSession().setAttribute("user", new User(username));
 

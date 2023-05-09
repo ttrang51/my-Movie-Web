@@ -11,8 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="745bcd34-470e-4bef-a2e7-86eef2ba62da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs122b-project1/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cs122b-project1/src/UpdateSecurePassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/src/UpdateSecurePassword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs122b-project1/src/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/src/LoginServlet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +195,7 @@
       <workItem from="1683263883787" duration="3803000" />
       <workItem from="1683657838085" duration="425000" />
       <workItem from="1683658277052" duration="151000" />
-      <workItem from="1683658582031" duration="6000" />
+      <workItem from="1683658582031" duration="824000" />
     </task>
     <servers />
   </component>
