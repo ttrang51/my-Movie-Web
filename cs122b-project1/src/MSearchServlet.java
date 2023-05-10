@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class MSearchServlet extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
 
             // Declare our statement
-            Statement statement = conn.createStatement();
+            //Statement statement = conn.createStatement();
 
             // An array to as flags for search conditions
             int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
@@ -74,10 +75,13 @@ public class MSearchServlet extends HttpServlet {
             for (int i : flag){
                 if (i == 1) num++;
             }
-            String query = "";
-            String baseQuery = SQLQueryTemplate.MOVIE_SEARCH_PAGE_;
 
+            String query = SQLQueryTemplate.U_MOVIE_SEARCH_PAGE_;
+
+            // Generate base Query
+            boolean not_Search = false;
             if (flag[0] == 0 && flag[1] == 0 && flag[2] == 0 && flag[3] == 0){
+                not_Search = true;
                 if (session.getAttribute("query") != null)
                     query = (String) session.getAttribute("query");
                 if (session.getAttribute("sort") != null){
@@ -100,39 +104,46 @@ public class MSearchServlet extends HttpServlet {
                 }
             }
             else {
-                if (num == 1) { // Single condition query search
-                    if (flag[1] == 1)
-                        query = baseQuery + "and m.year = " + year;
-                    else if (flag[0] == 1)
-                        query = baseQuery + "and m.title like '%" + title + "%'";
-                    else if (flag[2] == 1)
-                        query = baseQuery + "and m.director like '%" + director_name + "%'";
-                    else
-                        query = baseQuery + "and z.stars like '%" + star_name + "%'";
-                }
-
-                else {  // Combined query
-                    query = baseQuery;
-                    if (flag[0] == 1)
-                        query = query + "and m.title like '%" + title + "%' ";
-                    if (flag[1] == 1)
-                        query = query + "and m.year =" + year + " ";
-                    if (flag[2] == 1)
-                        query = query + "and m.director like '%" + director_name + "%'";
-                    if (flag[3] == 1)
-                        query = query + "and z.stars like '%" + star_name + "%' ";
+                if (flag[1] == 1) { // Single condition query search
+                    query = query + "and m.year = ?";
                 }
             }
 
-            session.setAttribute("query", query);
+            // Plug in parameters
+            PreparedStatement statement = conn.prepareStatement(query);
+            // At first set non-presented parameter to empty
+            if (flag[0] == 0)
+                statement.setString(1, "%%"); // 1: title
+            else
+                statement.setString(1, "%" + title + "%");
 
+            if (flag[2] == 0)
+                statement.setString(2, "%%"); // 2: director
+            else
+                statement.setString(2, "%" + director_name + "%");
+
+            if (flag[3] == 0)
+                statement.setString(3, "%%"); // 3: star
+            else
+                statement.setString(3, "%" + star_name + "%");
+            // Check year
+            if (flag[1] == 1) { // year
+                int yearInteger = Integer.parseInt(year);
+                statement.setInt(4, yearInteger);
+            }
+
+            // Perform the query
+            ResultSet rs = statement.executeQuery();
+
+            String queryString = statement.toString();
+            queryString = queryString.substring( queryString.indexOf( ": " ) + 2 );
+
+            session.setAttribute("previousQuery", queryString);
             session.setAttribute("page", "1");
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);
 
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
 
             JsonArray jsonArray = new JsonArray();
 

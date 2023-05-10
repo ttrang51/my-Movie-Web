@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -51,34 +52,48 @@ public class MBrowseServlet extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
 
-            // Declare our statement
-            Statement statement = conn.createStatement();
-
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String byGenre = request.getParameter("genre");
             String byTitle = request.getParameter("prefix");
 
-            String query = "";
-            String baseQuery = SQLQueryTemplate.MOVIE_BROWSE_PAGE_;
+            if (byTitle.equals("null"))
+                byTitle = "";
 
-            if (!byGenre.isEmpty())
-                query = baseQuery + "t.genres like '%" + byGenre + "%'";
-            else {
+            String query = SQLQueryTemplate.U_MOVIE_BROWSE_PAGE_;
+
+            // Prepared query
+            if (!byTitle.equals("")){
                 if (byTitle.equals("*"))
-                    query = baseQuery + "m.title REGEXP '^[^A-Za-z0-9]'";
+                    query = query + " and m.title REGEXP '^[^A-Za-z0-9]'";
                 else
-                    query = baseQuery + "m.title like '" + byTitle + "%'";
+                    query = query + " and m.title like ?";
             }
 
-            session.setAttribute("query", query);
 
+            // Plug in parameters
+            PreparedStatement statement = conn.prepareStatement(query);
+            if (!byTitle.equals("")){
+                statement.setString(1, "%%");
+                if (!byTitle.equals("*")) {
+                    statement.setString(2, byTitle + "%");
+                }
+            }
+            else
+                statement.setString(1, "%" + byGenre + "%");
+
+
+            // Perform the query
+            ResultSet rs = statement.executeQuery();
+
+            //System.out.println(statement);
+            String queryString = statement.toString();
+            queryString = queryString.substring( queryString.indexOf( ": " ) + 2 );
+
+            session.setAttribute("previousQuery", queryString);
             session.setAttribute("page", "1");
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);
-
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
 
             JsonArray jsonArray = new JsonArray();
 

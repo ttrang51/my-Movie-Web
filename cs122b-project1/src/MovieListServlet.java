@@ -57,9 +57,9 @@ public class MovieListServlet extends HttpServlet {
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String sort_Option = request.getParameter("sort");
             String orderBy_sortOp = "";
+
             if (sort_Option != null) {
                 orderBy_sortOp = " order by ";
-
                 // Check sorting option
                 if (sort_Option.equals("1"))
                     orderBy_sortOp = orderBy_sortOp + "rat.rating asc, m.title asc ";
@@ -125,7 +125,7 @@ public class MovieListServlet extends HttpServlet {
                 }
             }
 
-            String baseQuery = (String) session.getAttribute("query");
+            String baseQuery = (String) session.getAttribute("previousQuery");
             String query = baseQuery + orderBy_sortOp + limit_Op + offset;
 
             // Log to localhost log
@@ -133,6 +133,7 @@ public class MovieListServlet extends HttpServlet {
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
+
 
             JsonArray jsonArray = new JsonArray();
 

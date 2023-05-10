@@ -45,14 +45,6 @@ public class cartItems extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        /*String sessionId = session.getId();
-        long lastAccessTime = session.getLastAccessedTime();
-
-        JsonObject responseJsonObject = new JsonObject();
-        responseJsonObject.addProperty("sessionID", sessionId);
-        responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());*/
-
-        //ArrayList<String> previousItems = (ArrayList<String>) session.getAttribute("previousItems");
 
         Map<String, Integer> previousItems = (Map<String, Integer>) session.getAttribute("cartItems");
         if (previousItems == null) {
@@ -71,9 +63,10 @@ public class cartItems extends HttpServlet {
         try (Connection conn = dataSource.getConnection()) {
             // Get a connection from dataSource
             // Construct a query to fetch movies and its price
-            String query = "select m.id, m.title, m.price from movies as m where ";
+            String query = SQLQueryTemplate.CART_PAGE_;
+
             for (String m_id : previousItems.keySet()) {
-                query = query + "m.id = '" + m_id + "' or ";
+                query = query + "m.id = ? or ";
             }
 
             if (previousItems.isEmpty()) {
@@ -87,6 +80,15 @@ public class cartItems extends HttpServlet {
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
+            // fill in the movie id
+            int index = 1;
+            for (String m_id : previousItems.keySet()) {
+                statement.setString(index, m_id);
+                index++;
+            }
+
+            System.out.println(statement);
+
             // Perform the query
             ResultSet rs = statement.executeQuery();
 

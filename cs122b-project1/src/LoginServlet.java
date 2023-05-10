@@ -62,27 +62,20 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
-
-
-        // Demo
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = "select c.email, c.password\n" +
-                    "from customers as c\n" +
-                    "where c.email = " + "'" + username + "'";
+            String query = SQLQueryTemplate.LOGIN_PAGE_;
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
+
+            statement.setString(1, username);
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
@@ -95,8 +88,6 @@ public class LoginServlet extends HttpServlet {
                 String userUserName = rs.getString("email");
                 String userPassword = rs.getString("password");
 
-                // Create a JsonObject based on the data we retrieve from rs
-                //JsonArray jsonArray = new JsonArray();
 
                 if (username.equals(userUserName)) {
                     row_count += 1;
