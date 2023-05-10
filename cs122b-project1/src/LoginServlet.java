@@ -93,7 +93,7 @@ public class LoginServlet extends HttpServlet {
 
 
 
-                // use the same encryptor to compare the user input password with encrypted password stored in DB
+                // use the encryptor to compare the user input password with encrypted password stored in DB
                 Boolean loginSuccess = new StrongPasswordEncryptor().checkPassword(password, userPassword);
 
                 if (username.equals(userUserName)) {
