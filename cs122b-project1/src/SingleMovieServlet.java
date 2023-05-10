@@ -55,7 +55,6 @@ public class SingleMovieServlet extends HttpServlet {
             // Construct a query with parameter represented by "?"
             String query = SQLQueryTemplate.EXTENDED_SINGLE_MOVIE_PAGE_;
 
-
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
 

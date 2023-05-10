@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -44,28 +45,12 @@ public class MoviesServlet extends HttpServlet {
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
-
-            // Declare our statement
-            Statement statement = conn.createStatement();
       
-            String query = "with r(movieId, rating) as (select movieId, rating\n" +
-                        "from ratings order by rating desc limit 20),\n" +
-                        "g(movieId, genres) as (select movieId, GROUP_CONCAT(g.name) as genres\n" + 
-                        "from genres_in_movies as gim, genres as g\n" +
-                        "where gim.genreId = g.id\n" +
-                        "group by movieId),\n" +
-                        "s(movieId, stars, starId) as(select movieId, substring_index(group_concat(s.name separator ','), ',', 3) as stars,\n" +
-                        "substring_index(group_concat(sim.starId separator ','), ',', 3) as starId\n" +
-                        "from stars_in_movies as sim, stars as s\n" +
-                        "where sim.starId = s.id\n" +
-                        "group by movieId)\n" +
-                        "select Id, m.title, m.year, m.director, genres, stars, s.starId, rating\n" +
-                        "from movies as m, r, g, s\n" +
-                        "where r.movieId = m.Id and r.movieId = g.movieId and r.movieId = s.movieId\n" +
-                        "order by rating desc;";
+            String query = SQLQueryTemplate.TOP_20_MOVIES_LIST_PAGE_;
+            PreparedStatement statement = conn.prepareStatement(query);
 
             // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
 
             JsonArray jsonArray = new JsonArray();
 
