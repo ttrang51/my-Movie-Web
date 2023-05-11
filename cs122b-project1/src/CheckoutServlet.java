@@ -74,7 +74,6 @@ public class CheckoutServlet extends HttpServlet {
                 // Insert transaction into sale table
                 HttpSession session = request.getSession();
 
-
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
             }
