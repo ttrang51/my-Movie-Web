@@ -80,5 +80,13 @@ public class SQLQueryTemplate {
             "where r.movieId = m.Id and r.movieId = g.movieId and r.movieId = s.movieId\n" +
             "order by rating desc;";
 
+    public static final String uADD_STAR_PAGE_ = "SET @prefix = 'nm';\n" +
+            "SET @largest_varchar_id = (select max(id) from stars);\n" +
+            "SET @numeric_part = CAST(SUBSTRING(@largest_varchar_id, 3) AS UNSIGNED) + 1;\n" +
+            "SET @new_varchar_id = CONCAT(@prefix, @numeric_part);\n" +
+            "insert into stars (id, name, birthYear) values (@new_varchar_id, ?, ?);";
+
+    public static final String ADD_STAR_PAGE_ = "select add_star(?, ?) as star_id";
+
 
 }

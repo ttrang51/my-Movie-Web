@@ -91,8 +91,6 @@ public class LoginServlet extends HttpServlet {
                 String userUserName = rs.getString("email");
                 String userPassword = rs.getString("password");
 
-
-
                 // use the encryptor to compare the user input password with encrypted password stored in DB
                 Boolean loginSuccess = new StrongPasswordEncryptor().checkPassword(password, userPassword);
 
