@@ -9,7 +9,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="745bcd34-470e-4bef-a2e7-86eef2ba62da" name="Changes" comment="" />
+    <list default="true" id="745bcd34-470e-4bef-a2e7-86eef2ba62da" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs122b-project1/WebContent/MovieBrowse.html" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/WebContent/MovieBrowse.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs122b-project1/src/MoviesServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/src/MoviesServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cs122b-project1/src/SQLQueryTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/cs122b-project1/src/SQLQueryTemplate.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,9 +23,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="JavaScript File" />
         <option value="Class" />
-        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -190,7 +195,7 @@
       <workItem from="1683221830722" duration="1326000" />
       <workItem from="1683263883787" duration="3803000" />
       <workItem from="1683607594584" duration="24352000" />
-      <workItem from="1683758358314" duration="20527000" />
+      <workItem from="1683758358314" duration="27223000" />
     </task>
     <servers />
   </component>

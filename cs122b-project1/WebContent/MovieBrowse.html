@@ -11,37 +11,6 @@
     <a class="btn btn-primary" href="/cs122b-project1-api-example/cart.html" role="button">Checkout</a><br>
 </p>
 <body>
-<p style="text-align: center">
-<h2 ALIGN="CENTER">Browse by Genre</h2>
-<p style="text-align: center"><a href="MovieList.html?genre=Action&prefix=">Action</a>
-    <a href="MovieList.html?genre=Adult&prefix=">Adult</a>
-    <a href="MovieList.html?genre=Adventure&prefix=">Adventure</a>
-    <a href="MovieList.html?genre=Animation&prefix=">Animation</a></p>
-
-<p style="text-align: center"><a href="MovieList.html?genre=Biography&prefix=">Biography</a>
-    <a href="MovieList.html?genre=Comedy&prefix=">Comedy</a>
-    <a href="MovieList.html?genre=Crime&prefix=">Crime</a>
-    <a href="MovieList.html?genre=Documentary&prefix=">Documentary</a></p>
-
-<p style="text-align: center"><a href="MovieList.html?genre=Drama&prefix=">Drama</a>
-    <a href="MovieList.html?genre=Family&prefix=">Family</a>
-    <a href="MovieList.html?genre=Fantasy&prefix=">Fantasy</a>
-    <a href="MovieList.html?genre=History&prefix=">History</a></p>
-
-<p style="text-align: center"><a href="MovieList.html?genre=Horror&prefix=">Horror</a>
-    <a href="MovieList.html?genre=Music&prefix=">Music</a>
-    <a href="MovieList.html?genre=Musical&prefix=">Musical</a>
-    <a href="MovieList.html?genre=Mystery&prefix=">Mystery</a></p>
-
-<p style="text-align: center"><a href="MovieList.html?genre=Reality-TV&prefix=">Reality-TV</a>
-    <a href="MovieList.html?genre=Romance&prefix=">Romance</a>
-    <a href="MovieList.html?genre=Sci-Fi&prefix=">Sci-Fi</a>
-    <a href="MovieList.html?genre=Sport&prefix=">Sport</a></p>
-
-<p style="text-align: center"><a href="MovieList.html?genre=Thriller&prefix=">Thriller</a>
-    <a href="MovieList.html?genre=War&prefix=">War</a>
-    <a href="MovieList.html?genre=Western&prefix=">Western</a></p>
-</p>
 
 <p style="text-align: center">
 <h2 ALIGN="CENTER">Browse by Prefix</h2>
@@ -72,7 +41,8 @@
     <a href="MovieList.html?genre=&prefix=y">Y</a>
     <a href="MovieList.html?genre=&prefix=z">Z</a></p>
 
-<p style="text-align: center"><a href="MovieList.html?genre=&prefix=0">0</a>
+<p style="text-align: center">
+    <a href="MovieList.html?genre=&prefix=0">0</a>
     <a href="MovieList.html?genre=&prefix=1">1</a>
     <a href="MovieList.html?genre=&prefix=2">2</a>
     <a href="MovieList.html?genre=&prefix=3">3</a>
@@ -84,5 +54,16 @@
     <a href="MovieList.html?genre=&prefix=9">9</a>
     <a href="MovieList.html?genre=&prefix=*">*</a></p>
 </p>
+
+<h2 ALIGN="CENTER">Browse by Genre</h2>
+<div id="genre_list"></div>
+
+<!-- Load jQuery and Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="MovieBrowse.js"></script>
+
 </body>
 </html>
