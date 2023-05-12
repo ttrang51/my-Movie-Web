@@ -1,7 +1,7 @@
 Use moviedb;
 -- Change DELIMITER to $$
 DELIMITER $$
-CREATE PROCEDURE test_add (
+CREATE PROCEDURE add_movie (
 	IN m_title VARCHAR(100), 
     IN m_year INT, 
     IN m_director VARCHAR(100),
@@ -46,7 +46,11 @@ BEGIN -- begin of else
     set @genre_id = (select id from genres where name = genre_name);
     -- link genre to newly added movie
     insert into genres_in_movies (genreId, movieId) values (@genre_id, @new_movie_id);
-SELECT "movie is new" as answer;
+    
+    -- link movie to ratings
+    insert into ratings (movieId, rating, numVotes) values (@new_movie_id, 0.0, 0);
+    
+SELECT @new_movie_id as answer;
 END; -- end of else
 END IF;
 

@@ -86,5 +86,6 @@ public class SQLQueryTemplate {
 
     public static final String ADD_STAR_PAGE_ = "select add_star(?, ?) as star_id";
 
+    public static final String ADD_MOVIE_PAGE_ = "call add_movie(?, ?, ?, ?, ?, ?)";
 
 }

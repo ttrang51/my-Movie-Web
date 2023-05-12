@@ -10,20 +10,20 @@ function handleAddStarResult(resultDataString) {
     let resultDataJson = resultDataString;
     //let resultDataJson = JSON.parse(resultDataString);
 
-    console.log("handle checkout response");
+    console.log("handle add star response");
     console.log(resultDataJson);
     console.log(resultDataJson["status"]);
 
     // If login succeeds, it will redirect the user to index.html
     if (resultDataJson["status"] === "success") {
         //window.location.replace("confirmation.html");
-        $("#add_star_error_message").text(resultDataJson["message"]);
+        $("#add_star_message").text(resultDataJson["message"]);
     } else {
         // If login fails, the web page will display
         // error messages on <div> with id "checkout_error_message"
         console.log("show error message");
         console.log(resultDataJson["message"]);
-        $("#add_star_error_message").text(resultDataJson["message"]);
+        $("#add_star_message").text(resultDataJson["message"]);
     }
 }
 

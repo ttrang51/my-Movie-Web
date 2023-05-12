@@ -158,18 +158,22 @@ function handleMovieResult(resultData) {
         stars_array = resultData[i]["movie_star"].split(","); // Length 3
         stars_ids_array = resultData[i]["movie_star_ids"].split(","); // Length 3
 
-        rowHTML +=
-            "<th>" +
-            '<a href="single-star.html?id=' + stars_ids_array[0] + '">'
-            + stars_array[0] +     // display star_name for the link text
-            '</a>, ' +
-            '<a href="single-star.html?id=' + stars_ids_array[1] + '">'
-            + stars_array[1] +     // display star_name for the link text
-            '</a>, ' +
-            '<a href="single-star.html?id=' + stars_ids_array[2] + '">'
-            + stars_array[2] +     // display star_name for the link text
-            '</a>, '
-            + "</th>";
+        rowHTML += "<th>";
+        for (let i = 0; i < Math.min(3, stars_array.length); i++) {
+            if (i == stars_array.length - 1){
+                rowHTML +=
+                    '<a href="single-star.html?id=' + stars_ids_array[i] + '">'
+                    + stars_array[i] +     // display star_name for the link text
+                    '</a>';
+            }
+            else {
+                rowHTML +=
+                    '<a href="single-star.html?id=' + stars_ids_array[i] + '">'
+                    + stars_array[i] +     // display star_name for the link text
+                    '</a>, ';
+            }
+        }
+        rowHTML += "</th>";
 
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         //String: let mltitle = resultData[i]["movie_name"];
