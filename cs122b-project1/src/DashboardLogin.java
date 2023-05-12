@@ -1,4 +1,5 @@
 
+
 import com.google.gson.JsonObject;
 
 import javax.naming.InitialContext;
@@ -17,7 +18,7 @@ import java.sql.ResultSet;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-@WebServlet(name = "DashboardLogin", urlPatterns = "/_dashboard_login")
+@WebServlet(name = "DashboardLogin", urlPatterns = "/_dashboard/api/login")
 public class DashboardLogin extends HttpServlet {
     // Create a dataSource which registered in web.
     private DataSource dataSource;
@@ -89,8 +90,6 @@ public class DashboardLogin extends HttpServlet {
 
                 String userUserName = rs.getString("email");
                 String userPassword = rs.getString("password");
-
-
 
                 // use the encryptor to compare the user input password with encrypted password stored in DB
                 Boolean loginSuccess = new StrongPasswordEncryptor().checkPassword(password, userPassword);

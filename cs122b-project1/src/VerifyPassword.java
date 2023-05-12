@@ -34,7 +34,7 @@ public class VerifyPassword {
 		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 		Statement statement = connection.createStatement();
 
-		String query = String.format("SELECT * from customers where email='%s'", email);
+		String query = String.format("SELECT * from employees where email='%s'", email);
 
 		ResultSet rs = statement.executeQuery(query);
 
