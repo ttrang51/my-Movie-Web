@@ -62,6 +62,8 @@ public class SQLQueryTemplate {
 
     public static final String LOGIN_PAGE_ = "select c.email, c.password from customers as c where c.email = ?";
 
+    public static final String DASHBOARD_LOGIN_PAGE_ = "select c.email, c.password from employees as c where c.email = ?";
+
     public static final String TOP_20_MOVIES_LIST_PAGE_ = "with r(movieId, rating) as (select movieId, rating\n" +
             "from ratings order by rating desc limit 20),\n" +
             "g(movieId, genres) as (select movieId, GROUP_CONCAT(g.name) as genres\n" +
