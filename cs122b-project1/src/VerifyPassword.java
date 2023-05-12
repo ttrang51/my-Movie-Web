@@ -19,8 +19,8 @@ public class VerifyPassword {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		System.out.println(verifyCredentials("a@email.com", "a2"));
-		System.out.println(verifyCredentials("a@email.com", "a3"));
+		System.out.println(verifyCredentials("classta@email.edu", "classta"));
+		//System.out.println(verifyCredentials("a@email.com", "a3"));
 
 	}
 
