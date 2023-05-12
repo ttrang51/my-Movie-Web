@@ -1,4 +1,5 @@
 
+
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,11 +52,11 @@ public class DashboardFilter implements Filter {
         allowedURIs.add("/_dashboard/login.html");
         allowedURIs.add("/_dashboard");
         allowedURIs.add("_dashboard/login.js");
-        allowedURIs.add("api/_dashboard/login");
+        allowedURIs.add("/api/_dashboard/login");
         allowedURIs.add("/_dashboard/login");
         allowedURIs.add("/cs122b-project1-api-example/_dashboard_login");
-        allowedURIs.add("api/_dashboard_login");
-        allowedURIs.add("/_dashboard_login");
+        allowedURIs.add("api/login");
+        //allowedURIs.add("/api/login");
     }
 
     public void destroy() {

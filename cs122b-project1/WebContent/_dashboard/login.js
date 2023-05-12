@@ -33,7 +33,7 @@ function submitLoginForm(formSubmitEvent) {
     formSubmitEvent.preventDefault();
 
     $.ajax(
-        "/cs122b-project1-api-example/_dashboard_login", {
+        "api/login", {
             method: "POST",
             // Serialize the login form to the data sent by POST request
             data: login_form.serialize(),
