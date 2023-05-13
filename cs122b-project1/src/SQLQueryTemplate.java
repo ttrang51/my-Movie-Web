@@ -1,3 +1,4 @@
+
 import jakarta.servlet.http.PushBuilder;
 
 public class SQLQueryTemplate {

@@ -6,9 +6,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.sql.*;
 
 public class DomParser {
@@ -16,11 +19,13 @@ public class DomParser {
     private static Connection connection;
 
     // Array list of movies
-    ArrayList<Movie> movies = new ArrayList<Movie>();
+    ArrayList<Movie> movies = new ArrayList<>();
     // HashMap movie to list of cats -- movieId : list(genreId)
     HashMap movie_To_Genres = new HashMap<String, ArrayList<String>>();
     // HashMap genre to its id -- genre_name : genreId (INT)
     HashMap genres = new HashMap<String, Integer>();
+
+    int test_id = 0;
 
     int dup_movie = 0;
     int null_movie = 0;     // null movieId or title
@@ -39,8 +44,12 @@ public class DomParser {
         parseMainDocument();
 
         // iterate through the list and print the data
+        //printData();
+        System.out.println("dup movie: " + dup_movie);
+        System.out.println("null movie: " + null_movie);
+        System.out.println("genres:  " + genres);
+        System.out.println("movie added:  " + movies_add);
         printData();
-
     }
 
     private void parseMainXmlFile() {
@@ -53,14 +62,14 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom = documentBuilder.parse("cs122b-project1/stanford-movies/mains243.xml");
+            dom_movie = documentBuilder.parse("stanford-movies/mains243.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
         }
     }
 
-    private void parseMainDocument() {
+    private void parseMainDocument(){
         // get the document root Element
         Element documentElement = dom_movie.getDocumentElement();
 
@@ -76,17 +85,17 @@ public class DomParser {
             // get the movie object
             Movie new_movie = parseMovie(element);
             // check for duplicated or invalid here
-            if (new_movie.getFid() == null || new_movie.getTitle() == null)
+            if (new_movie.getFid() == null || new_movie.getTitle() == null || new_movie.getCategory().isEmpty())
                 null_movie++;
-            else if (movieTitles.contains(new_movie.getTitle()) || movieIds.contains(new_movie.getFid()))
+            else if (movieTitles.contains(new_movie.getTitle()) && movieIds.contains(new_movie.getFid()))
                 dup_movie++;
             else {      // brand new movie
                 movieTitles.add(new_movie.getTitle());
-                movieIds.add(new_movie.getFid())
+                movieIds.add(new_movie.getFid());
                 movies.add(new_movie);
+                movies_add++;
             }
-            // add it to list
-            movies.add(new_movie);
+            //System.out.println(new_movie.toString());
         }
     }
 
@@ -103,36 +112,50 @@ public class DomParser {
         String dir = getTextValue(element,"dirn");
 
         // Store set of genres to put in this movie
-        HashSet<Integer> genreIds = new HashSet<Intger>();
+        HashSet<Integer> genreIds = new HashSet<Integer>();
 
-        PrepareStatment statement = null;
+        PreparedStatement statement = null;
 
-        // A movie might have multiple <cat*>
-        NodeList cats = element.getElementsByTagName("cat");
-        if (cats.item(i).getFirstChild() != null) {
-            String cat_name = cats.item(i).getFirstChild().getNodeValue();
+        try {
+            // A movie might have multiple <cat*>
+            NodeList cats = element.getElementsByTagName("cat");
 
-            if (!genres.containsKey(cat_name)){     // new genre is not in genres list yet
-                // Add new genre to genres table
-                String query = SQLQueryTemplate.INSERT_TO_GENRES_;
-                statement = connection.prepareStatement(query);
-                statement.setString(1, cat_name);
-                ResultSet rs = statement.executeQuery();
-                while(rs.next()){
-                    String cat_id = rs.getString("genre_id");
-                    genres.put(cat_name, cat_id);
-                    genreIds.add(Integer.parseInt(cat_id));
+            for (int i = 0; i < cats.getLength(); i++) {
+                if (cats.item(i).getFirstChild() != null) {
+
+                    String cat_name = cats.item(i).getFirstChild().getNodeValue();
+                    //System.out.println("cat name: " + cat_name);
+
+                    if (!genres.containsKey(cat_name)){     // new genre is not in genres list yet
+                        // Add new genre to genres table
+                        /*
+                        String query = SQLQueryTemplate.INSERT_TO_GENRES_;
+                        statement = connection.prepareStatement(query);
+                        statement.setString(1, cat_name);
+                        System.out.println("Statement before execution: " + statement);
+                        ResultSet rs = statement.executeQuery();
+                        while(rs.next()){
+                            String cat_id = rs.getString("genre_id");
+                            genres.put(cat_name, cat_id);
+                            genreIds.add(Integer.parseInt(cat_id));
+                        }*/
+                        test_id++;
+                        genres_add++;
+                        genres.put(cat_name, test_id);
+                        genreIds.add(test_id);
+                        //rs.close();
+                    }
+                    else {      // if genre is already in genres list. add this genre id to movie
+                        genreIds.add((Integer.parseInt(genres.get(cat_name).toString())));
+                    }
+                    //statement.close();
                 }
-                genres_add++;
             }
-            else {      // if genre is already in genres list. add this genre id to movie
-                genreIds.add(genres.get(cat_name));
-            }
-            rs.close();
-            statement.close();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
 
-        //System.out.println(fid + ": " + title);
+        //System.out.println("genreIds: " + genreIds);
 
         // create a new Movie with the value read from the xml nodes
         return new Movie(fid,  title,  year,  genreIds,  dir);
@@ -187,24 +210,33 @@ public class DomParser {
     public static void main(String[] args) {
         // create an instance
         DomParser domParser = new DomParser();
+/*
+        try {
 
-        // Incorporate mySQL driver
-        Class.forName("com.mysql.cj.jdbc.Driver");
+            // Incorporate mySQL driver
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 
-        // Connect to the test database
-        connection = DriverManager.getConnection("jdbc:" + mySQLInfo.dbtype + ":///" + mySQLInfo.dbname + "?autoReconnect=true&useSSL=false",
-                mySQLInfo.username, mySQLInfo.password);
+            // Connect to the test database
+            connection = DriverManager.getConnection("jdbc:" + mySQLInfo.dbtype + ":///" + mySQLInfo.dbname + "?autoReconnect=true&useSSL=false",
+                    mySQLInfo.username, mySQLInfo.password);
 
-        if (connection != null) {
-            System.out.println("Connection established!!");
-            System.out.println();
+            if (connection != null) {
+                System.out.println("Connection established!!");
+                System.out.println();
+            }
+            else {
+                System.out.println("No connection");
+            }
+
+            // call run example
+            domParser.runExample();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        else {
-            System.out.println("No connection");
-        }
-
+*/
         // call run example
         domParser.runExample();
+
     }
 
 }
