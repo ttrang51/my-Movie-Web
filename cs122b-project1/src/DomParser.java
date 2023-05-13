@@ -22,18 +22,26 @@ public class DomParser {
     ArrayList<Movie> movies = new ArrayList<>();
     // HashMap movie to list of cats -- movieId : list(genreId)
     HashMap movie_To_Genres = new HashMap<String, ArrayList<String>>();
+
     // HashMap genre to its id -- genre_name : genreId (INT)
     HashMap genres = new HashMap<String, Integer>();
+
+    // HashMap stars to their birth_year -- star_name : list(birth_year)
+    // List of birth year in case same star name with different birth year
+    HashMap stars = new HashMap<String, ArrayList<Integer>>();
 
     int test_id = 0;
 
     int dup_movie = 0;
+    int dup_actor = 0;
     int null_movie = 0;     // null movieId or title
     int movies_add = 0;
     int actors_add = 0;
     int genres_add = 0;
 
     Document dom_movie;
+    Document dom_actor;
+    Document dom_cast;
 
     public void runExample() {
 
@@ -43,13 +51,21 @@ public class DomParser {
         // get each employee element and create a Employee object
         parseMainDocument();
 
+        parseActorXML();
+
+        parseActorDocument();
+
+
         // iterate through the list and print the data
         //printData();
         System.out.println("dup movie: " + dup_movie);
         System.out.println("null movie: " + null_movie);
         System.out.println("genres:  " + genres);
         System.out.println("movie added:  " + movies_add);
-        printData();
+        //printData();
+
+        System.out.println("dup star: " + dup_actor);
+        System.out.println("stars: " + stars);
     }
 
     private void parseMainXmlFile() {
@@ -161,6 +177,71 @@ public class DomParser {
         return new Movie(fid,  title,  year,  genreIds,  dir);
     }
 
+    private void parseActorXML() {
+        // get the factory
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
+        try {
+
+            // using factory get an instance of document builder
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+            // parse using builder to get DOM representation of the XML file
+            dom_actor = documentBuilder.parse("stanford-movies/actors63.xml");
+
+        } catch (ParserConfigurationException | SAXException | IOException error) {
+            error.printStackTrace();
+        }
+    }
+
+    private void parseActorDocument() {
+        // get the document root Element
+        Element documentElement = dom_actor.getDocumentElement();
+
+        // get a nodelist of employee Elements, parse each into Employee object
+        NodeList nodeList = documentElement.getElementsByTagName("actor");
+        if (nodeList != null) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                // get the employee element
+                Element actor = (Element) nodeList.item(i);
+                //parse and add entries into map
+                parseActor(actor);
+            }
+        }
+    }
+
+    private void parseActor(Element element) {
+        String star_name = getTextValue(element, "stagename");
+        int new_birth_year = getIntValue(element, "dob");
+        System.out.println("star name: " + star_name + " byear: " + new_birth_year);
+        int duplicated = 0;     // check if a star is duplicated -- no add in that case
+
+        ArrayList<Integer> append_by = new ArrayList<Integer>();
+        append_by.add(new_birth_year);
+
+        if (stars.containsKey(star_name)) {     // if a star already in stars. check birth year
+            ArrayList<Integer> curr_by = (ArrayList<Integer>) stars.get(star_name);
+            if (curr_by.contains(new_birth_year)) {
+                dup_actor++;
+                duplicated = 1;
+            }
+            else {    // new birth year of the same star
+                curr_by.add(new_birth_year);
+                stars.put(star_name, curr_by);
+            }
+        }
+        else {      // add brand new star into stars
+            stars.put(star_name, append_by);
+        }
+
+        // Insert new star into SQL
+
+    }
+
+
+
+
+
     /**
      * It takes an XML element and the tag name, look for the tag and get
      * the text content
@@ -189,7 +270,7 @@ public class DomParser {
         try {
             return_int = Integer.parseInt(getTextValue(ele, tagName));
         } catch(NumberFormatException e){
-            return return_int;
+            return -1;
         }
         return return_int;
     }
