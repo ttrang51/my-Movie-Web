@@ -9,28 +9,41 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
 
 public class DomParser {
 
-    List<Movie> movies = new ArrayList<>();
+    private static Connection connection;
 
-    List<String> genres = new ArrayList<>();
-    Document dom;
+    // Array list of movies
+    ArrayList<Movie> movies = new ArrayList<Movie>();
+    // HashMap movie to list of cats -- movieId : list(genreId)
+    HashMap movie_To_Genres = new HashMap<String, ArrayList<String>>();
+    // HashMap genre to its id -- genre_name : genreId (INT)
+    HashMap genres = new HashMap<String, Integer>();
+
+    int dup_movie = 0;
+    int null_movie = 0;     // null movieId or title
+    int movies_add = 0;
+    int actors_add = 0;
+    int genres_add = 0;
+
+    Document dom_movie;
 
     public void runExample() {
 
-        // parse the xml file and get the dom object
-        parseXmlFile();
+        // parse the main xml file and get the dom movie object
+        parseMainXmlFile();
 
         // get each employee element and create a Employee object
-        parseDocument();
+        parseMainDocument();
 
         // iterate through the list and print the data
         printData();
 
     }
 
-    private void parseXmlFile() {
+    private void parseMainXmlFile() {
         // get the factory
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
@@ -47,22 +60,33 @@ public class DomParser {
         }
     }
 
-    private void parseDocument() {
+    private void parseMainDocument() {
         // get the document root Element
-        Element documentElement = dom.getDocumentElement();
+        Element documentElement = dom_movie.getDocumentElement();
 
-        // get a nodelist of employee Elements, parse each into Employee object
+        // Using HashSet for better search
+        Set<String> movieTitles = new HashSet<String>();
+        Set<String> movieIds = new HashSet<String>();
+
+        // get a nodelist of movie Elements, parse each into movie object
         NodeList nodeList = documentElement.getElementsByTagName("film");
         for (int i = 0; i < nodeList.getLength(); i++) {
-
-            // get the employee element
+            // get the movie element
             Element element = (Element) nodeList.item(i);
-
-            // get the Employee object
-            Movie m = parseMovie(element);
-
+            // get the movie object
+            Movie new_movie = parseMovie(element);
+            // check for duplicated or invalid here
+            if (new_movie.getFid() == null || new_movie.getTitle() == null)
+                null_movie++;
+            else if (movieTitles.contains(new_movie.getTitle()) || movieIds.contains(new_movie.getFid()))
+                dup_movie++;
+            else {      // brand new movie
+                movieTitles.add(new_movie.getTitle());
+                movieIds.add(new_movie.getFid())
+                movies.add(new_movie);
+            }
             // add it to list
-            movies.add(m);
+            movies.add(new_movie);
         }
     }
 
@@ -71,30 +95,47 @@ public class DomParser {
      * an Employee object for return
      */
     private Movie parseMovie(Element element) {
-
         // for each <movie> element get text or int values of
-        // fid ,year, title, dir, and prod
+        // fid ,year, title, dir, and cats
         String fid = getTextValue(element, "fid");
         int year = getIntValue(element, "year");
         String title = getTextValue(element, "t");
-
-        // Get first director from directors List Element
-        //Element dir_element = (Element) element.getElementsByTagName("dirs").item(0);
         String dir = getTextValue(element,"dirn");
 
-        //Element cat_element = (Element) element.getElementsByTagName("cats").item(0);
-        String cat = getTextValue(element,"cat");
+        // Store set of genres to put in this movie
+        HashSet<Integer> genreIds = new HashSet<Intger>();
 
-        // Check if category is already seen
-        if (!genres.contains(cat)) {
-            genres.add(cat);
+        PrepareStatment statement = null;
+
+        // A movie might have multiple <cat*>
+        NodeList cats = element.getElementsByTagName("cat");
+        if (cats.item(i).getFirstChild() != null) {
+            String cat_name = cats.item(i).getFirstChild().getNodeValue();
+
+            if (!genres.containsKey(cat_name)){     // new genre is not in genres list yet
+                // Add new genre to genres table
+                String query = SQLQueryTemplate.INSERT_TO_GENRES_;
+                statement = connection.prepareStatement(query);
+                statement.setString(1, cat_name);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()){
+                    String cat_id = rs.getString("genre_id");
+                    genres.put(cat_name, cat_id);
+                    genreIds.add(Integer.parseInt(cat_id));
+                }
+                genres_add++;
+            }
+            else {      // if genre is already in genres list. add this genre id to movie
+                genreIds.add(genres.get(cat_name));
+            }
+            rs.close();
+            statement.close();
         }
 
-        System.out.println(fid + ": " + title);
-
+        //System.out.println(fid + ": " + title);
 
         // create a new Movie with the value read from the xml nodes
-        return new Movie(fid,  title,  year,  cat,  dir);
+        return new Movie(fid,  title,  year,  genreIds,  dir);
     }
 
     /**
@@ -146,6 +187,21 @@ public class DomParser {
     public static void main(String[] args) {
         // create an instance
         DomParser domParser = new DomParser();
+
+        // Incorporate mySQL driver
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        // Connect to the test database
+        connection = DriverManager.getConnection("jdbc:" + mySQLInfo.dbtype + ":///" + mySQLInfo.dbname + "?autoReconnect=true&useSSL=false",
+                mySQLInfo.username, mySQLInfo.password);
+
+        if (connection != null) {
+            System.out.println("Connection established!!");
+            System.out.println();
+        }
+        else {
+            System.out.println("No connection");
+        }
 
         // call run example
         domParser.runExample();

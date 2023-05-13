@@ -90,4 +90,6 @@ public class SQLQueryTemplate {
     public static final String ADD_MOVIE_PAGE_ = "call add_movie(?, ?, ?, ?, ?, ?)";
     public static final String BROWSE_PAGE_ = "select * from genres";
 
+    public static final String INSERT_TO_GENRES_ = "select add_genre(?) as genre_id;";
+
 }

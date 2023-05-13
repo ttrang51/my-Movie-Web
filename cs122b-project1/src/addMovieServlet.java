@@ -40,7 +40,6 @@ public class addMovieServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
-
         String movie_title = request.getParameter("movie_title");
         String movie_year = request.getParameter("year");
         String director = request.getParameter("director_name");
