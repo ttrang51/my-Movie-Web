@@ -22,7 +22,7 @@ import java.sql.*;
 
 public class DomParser {
 
-    List<Movie> movies = new ArrayList<>();
+    //List<Movie> movies = new ArrayList<>();
 
     private static Connection connection;
 
@@ -51,7 +51,7 @@ public class DomParser {
     Document dom_actor;
     Document dom_cast;
 
-    List<String> genres = new ArrayList<>();
+    //List<String> genres = new ArrayList<>();
     Document dom;
 
     private DataSource dataSource;
