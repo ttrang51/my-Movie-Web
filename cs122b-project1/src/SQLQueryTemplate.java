@@ -90,4 +90,8 @@ public class SQLQueryTemplate {
     public static final String ADD_MOVIE_PAGE_ = "call add_movie(?, ?, ?, ?, ?, ?)";
     public static final String BROWSE_PAGE_ = "select * from genres";
 
+    public static final String LOAD_MOVIE_DATA_ = "load data infile \"cs122b-project1/movies.csv\" into table movies" +
+                                                "FIELDS TERMINATED BY ','" + 
+                                                "LINES TERMINATED BY '\n';";
+
 }

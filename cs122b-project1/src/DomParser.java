@@ -3,10 +3,23 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.opencsv.CSVWriter;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import jakarta.servlet.ServletConfig;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +29,15 @@ public class DomParser {
 
     List<String> genres = new ArrayList<>();
     Document dom;
+
+    private DataSource dataSource;
+    public void init(ServletConfig config) {
+        try {
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void runExample() {
 
@@ -27,6 +49,10 @@ public class DomParser {
 
         // iterate through the list and print the data
         printData();
+
+        createMovieCSV();
+
+        //insertData();
 
     }
 
@@ -141,6 +167,67 @@ public class DomParser {
         for (Movie movie : movies) {
             System.out.println("\t" + movie.toString());
         }
+    }
+
+
+    private void createMovieCSV() {
+            // first create file object for file placed at location
+        // specified by filepath
+        File file = new File("movies.csv");
+    
+        try {
+            // create FileWriter object with file as parameter
+            FileWriter outputfile = new FileWriter(file);
+    
+            // create CSVWriter object filewriter object as parameter
+            CSVWriter writer = new CSVWriter(outputfile);
+    
+            // create a List which contains String array
+            List<String[]> movie_data = new ArrayList<String[]>();
+
+            int i = 0;
+            for (Movie m : movies) {
+                movie_data.add(m.getCSVFormat());
+                
+                if (i == 5) {
+                    break;
+                }
+
+                i++;
+            }
+            writer.writeAll(movie_data);
+    
+            // closing writer connection
+            writer.close();
+        }
+        catch (IOException e) {
+            
+            e.printStackTrace();
+        }
+    }
+
+
+    private void insertData() {
+
+        try (Connection conn = dataSource.getConnection()) {
+            // Get a connection from dataSource
+
+            // Construct a query with parameter represented by "?"
+            String query = SQLQueryTemplate.LOAD_MOVIE_DATA_;
+
+            PreparedStatement statement = conn.prepareStatement(query);
+
+            // Perform the query
+            ResultSet rs = statement.executeQuery();
+            
+
+
+
+        } catch (Exception e) {
+            System.out.println("Error inserting data:" + e);
+            return;
+        }
+
     }
 
     public static void main(String[] args) {

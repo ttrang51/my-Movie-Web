@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Movie {
 
     private final String fid;
@@ -41,11 +43,16 @@ public class Movie {
 
     public String toString() {
 
-        return "Title:" + getTitle() + ", " +
+        return "ID:" + getFid() + ", "+
+                "Title:" + getTitle() + ", " +
                 "Year:" + getYear() + ", " +
-                "ID:" + getFid() + ", "+
                 "Category:" + getCategory() + ", "+
                 "Director:" + getDirector() + ".";
+    }
+
+    public String[] getCSVFormat() {
+
+        return new String[] {getFid(),getTitle(),((Integer)getYear()).toString(),getDirector()};
     }
 
     public boolean compareTo(Movie otherMovie) {
