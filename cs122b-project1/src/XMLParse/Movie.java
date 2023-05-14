@@ -44,7 +44,6 @@ public class Movie {
 
 
     public String toString() {
-
         return "ID:" + getFid() + ", "+
                 "Title:" + getTitle() + ", " +
                 "Year:" + getYear() + ", " +
