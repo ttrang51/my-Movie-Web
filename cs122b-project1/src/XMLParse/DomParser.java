@@ -3,14 +3,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.opencsv.CSVWriter;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jakarta.servlet.ServletConfig;
-
-import java.io.File;
-import java.io.FileWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,44 +17,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.io.IOException;
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.*;
 import java.sql.*;
 
+
 public class DomParser {
 
-    //List<Movie> movies = new ArrayList<>();
-
-    private static Connection connection;
-
-    // Array list of movies
-    ArrayList<Movie> movies = new ArrayList<>();
-    // HashMap movie to list of cats -- movieId : list(genreId)
-    HashMap movie_to_stars = new HashMap<String, ArrayList<String>>();
-
-    // HashMap genre to its id -- genre_name : genreId (INT)
-    HashMap genres = new HashMap<String, Integer>();
-
-    // HashMap stars to their birth_year -- star_name : list(birth_year)
-    // List of birth year in case same star name with different birth year
-    HashMap stars = new HashMap<String, ArrayList<Integer>>();
-
-    int test_id = 0;
-
-    int dup_movie = 0;
-    int dup_actor = 0;
-    int inconsistent_cast = 0;
-    int null_movie = 0;     // null movieId or title
-    int movies_add = 0;
-    int actors_add = 0;
-    int genres_add = 0;
-
-    Document dom_movie;
-    Document dom_actor;
-    Document dom_cast;
-
-    //List<String> genres = new ArrayList<>();
-    Document dom;
+    private Connection connection;
 
     private DataSource dataSource;
     public void init(ServletConfig config) {
@@ -70,43 +35,69 @@ public class DomParser {
         }
     }
 
+    public DomParser() throws IOException {
+    }
+
+    // Array list of movies
+    ArrayList<Movie> movies = new ArrayList<>();
+
+    // HashMap movie to list of cats -- movieId : list(genreId)
+    HashMap movie_to_stars = new HashMap<String, ArrayList<String>>();
+
+    // HashMap genre to its id -- genre_name : genreId (INT)
+    HashMap genres = new HashMap<String, Integer>();
+
+    // HashMap stars to their birth_year -- star_name : list(birth_year)
+    // List of birth year in case same star name with different birth year
+    HashMap stars = new HashMap<String, ArrayList<Integer>>();
+
+    HashMap stars_to_starID = new HashMap<String, String>();
+
+    // Use to keep track of added movies -- by movie ids
+    HashSet<String> inserted_movies = new HashSet<String>();
+
+
+    int dup_movie = 0;
+    int dup_actor = 0;
+    int inconsistent_cast = 0;
+    int inconsistent_movie = 0;
+    int null_movie = 0;     // null movieId or title
+    int movies_add = 0;
+    int actors_parsed = 0;
+    int genres_add = 0;
+
+    int link_genre_movie = 0;
+
+    int link_star_movie = 0;
+
+    int star_not_found = 0;
+
+    Document dom_movie;
+    Document dom_actor;
+    Document dom_cast;
+
     public void runExample() {
 
         // parse the main xml file and get the dom movie object
         parseMainXmlFile();
 
-        // get each employee element and create a Employee object
         parseMainDocument();
 
+        // parse the actor xml file and get the dom actor object
         parseActorXML();
 
         parseActorDocument();
 
+        // parse the cast xml file and get the dom cast object
         parseCastXML();
 
         parseCastDocument();
 
-
         // iterate through the list and print the data
-        //printData();
-        System.out.println("dup movie: " + dup_movie);
-        System.out.println("null movie: " + null_movie);
-        System.out.println("genres:  " + genres);
-        System.out.println("movie added:  " + movies_add);
-        //printData();
 
-        createMovieCSV();
-
-        //insertData();
-
-        System.out.println("dup star: " + dup_actor);
-        //System.out.println("stars: " + stars);
-        System.out.println("star added:  " + stars.size());
-
-        System.out.println("Cast parsing check: ");
-        System.out.println("Movie to stars with size - " + movie_to_stars.size() + " : " + movie_to_stars);
-        System.out.println("inconsistent cast: " + inconsistent_cast);
-
+        System.out.println("Parsed: " + movies_add + " movies");
+        System.out.println("Parsed:  " + stars.size() + " stars");
+        System.out.println("Parsed: " + genres_add + " genres");
 
     }
 
@@ -143,7 +134,7 @@ public class DomParser {
             // get the movie object
             Movie new_movie = parseMovie(element);
             // check for duplicated or invalid here
-            if (new_movie.getFid() == null || new_movie.getTitle() == null || new_movie.getCategories().isEmpty())
+            if (new_movie.getFid() == null || new_movie.getTitle() == null || new_movie.getCategory().isEmpty())
                 null_movie++;
             else if (movieTitles.contains(new_movie.getTitle()) && movieIds.contains(new_movie.getFid()))
                 dup_movie++;
@@ -182,41 +173,39 @@ public class DomParser {
                 if (cats.item(i).getFirstChild() != null) {
 
                     String cat_name = cats.item(i).getFirstChild().getNodeValue();
-                    //System.out.println("cat name: " + cat_name);
 
-                    if (!genres.containsKey(cat_name)){     // new genre is not in genres list yet
-                        // Add new genre to genres table
-                        /*
-                        String query = SQLQueryTemplate.INSERT_TO_GENRES_;
-                        statement = connection.prepareStatement(query);
-                        statement.setString(1, cat_name);
-                        System.out.println("Statement before execution: " + statement);
-                        ResultSet rs = statement.executeQuery();
-                        while(rs.next()){
-                            int cat_id = rs.getInt("genre_id");
-                            genres.put(cat_name, cat_id);
-                            //genreIds.add(Integer.parseInt(cat_id));
-                            genreIds.add(cat_id);
+                    if (cat_name == null) {
+                        //System.out.println("cat name is null");
+                        continue;
+                    }
+                    else {
+                        cat_name = cat_name.trim();     // there are some genre with same name but abundant whitespace
+                        if (!genres.containsKey(cat_name)){     // new genre is not in genres list yet
+                            // Add new genre to genres table
+                            String query = SQLQueryTemplateParse.INSERT_TO_GENRES_;
+                            statement = connection.prepareStatement(query);
+                            statement.setString(1, cat_name);
+                            //System.out.println("Statement before execution: " + statement);
+                            ResultSet rs = statement.executeQuery();
+                            genres_add++;
+                            while(rs.next()){
+                                int cat_id = rs.getInt("genre_id");
+                                genres.put(cat_name, cat_id);
+                                genreIds.add(cat_id);
+                            }
+                            rs.close();
                         }
-                        */
-                        test_id++;
-                        genres_add++;
-                        genres.put(cat_name, test_id);
-                        genreIds.add(test_id);
-                        //rs.close();
+                        else {      // if genre is already in genres list. add this genre id to movie
+                            genreIds.add((Integer.parseInt(genres.get(cat_name).toString())));
+                        }
+                        if (statement != null)
+                            statement.close();
                     }
-                    else {      // if genre is already in genres list. add this genre id to movie
-                        genreIds.add((Integer.parseInt(genres.get(cat_name).toString())));
-                    }
-                    //statement.close();
                 }
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-        //System.out.println("genreIds: " + genreIds);
-
         // create a new Movie with the value read from the xml nodes
         return new Movie(fid,  title,  year,  genreIds,  dir);
     }
@@ -279,6 +268,34 @@ public class DomParser {
         }
 
         // Insert new star into SQL
+        try {
+
+            // if not duplicated star. insert into stars table
+            if (duplicated == 0) {
+
+                String query = SQLQueryTemplateParse.INSERT_TO_STARS_;
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, star_name);
+                // check if year is null
+                if (new_birth_year == -1)
+                    statement.setNull(2, Types.INTEGER);
+                else
+                    statement.setInt(2, new_birth_year);
+
+                //System.out.println("query before execution: " + statement);
+                ResultSet rs = statement.executeQuery();
+                //actors_parsed++;
+
+                if (rs.next()) {
+                    String new_star_id = rs.getString("star_id");
+                    stars_to_starID.put(star_name, new_star_id);
+                }
+                rs.close();
+                statement.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -287,7 +304,6 @@ public class DomParser {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
         try {
-
             // using factory get an instance of document builder
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -309,7 +325,6 @@ public class DomParser {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 // get the employee element
                 Element cast = (Element) nodeList.item(i);
-
                 //parse and add entries into map
                 parseCast(cast);
             }
@@ -335,7 +350,6 @@ public class DomParser {
         }
         movie_to_stars.put(fid, star_names);
     }
-
 
 
 
@@ -385,99 +399,189 @@ public class DomParser {
         }
     }
 
-
-    private void createMovieCSV() {
-            // first create file object for file placed at location
-        // specified by filepath
-        File file = new File("movies.csv");
-    
+    private void insertToMovies() {
         try {
-            // create FileWriter object with file as parameter
-            FileWriter outputfile = new FileWriter(file);
-    
-            // create CSVWriter object filewriter object as parameter
-            CSVWriter writer = new CSVWriter(outputfile);
-    
-            // create a List which contains String array
-            List<String[]> movie_data = new ArrayList<String[]>();
+            // duplicated movie will not be added -- implemented in the stored procedure
+            String query = SQLQueryTemplateParse.INSERT_TO_MOVIES_;
+            //PreparedStatement statement = connection.prepareStatement(query);
+            CallableStatement statement = connection.prepareCall(query);
+            // set for batch insert
+            connection.setAutoCommit(false);
+            int batchCount = 0;
 
-            int i = 0;
-            for (Movie m : movies) {
-                movie_data.add(m.getCSVFormat());
-                
-                if (i == 5) {
-                    break;
+            for (int i = 0; i < movies.size(); i++) {
+                String movieId = movies.get(i).getFid();
+                String m_title = movies.get(i).getTitle();
+                int m_year = movies.get(i).getYear();
+                String m_director = movies.get(i).getDirector();
+
+                // m_year is a required field. if year is null then pass
+                if (movieId == null || m_title == null || m_year == -1 || m_director == null || inserted_movies.contains(movieId)) {
+                    inconsistent_movie++;
+                    continue;
                 }
+                inserted_movies.add(movieId);
+                // set values to statement
+                statement.setString(1, movieId);
+                statement.setString(2, m_title);
+                statement.setInt(3, m_year);
+                statement.setString(4, m_director);
+                statement.addBatch();
 
-                i++;
+                batchCount++;
+                if (batchCount % 2000 == 0)  {  // execute every 2000 queries
+                    statement.executeBatch();
+                    connection.commit();
+                }
             }
-            writer.writeAll(movie_data);
-    
-            // closing writer connection
-            writer.close();
-        }
-        catch (IOException e) {
-            
-            e.printStackTrace();
+            // execute the rest of remaining queries in the batch
+            statement.executeBatch();
+            connection.commit();
+
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    private void linkGenreToMovie() {
+        try {
+            // duplicated movie will not be added -- implemented in the stored procedure
+            String query = SQLQueryTemplateParse.LINK_GENRES_TO_MOVIE_;
+            //PreparedStatement statement = connection.prepareStatement(query);
+            CallableStatement statement = connection.prepareCall(query);
+            // set for batch insert
+            connection.setAutoCommit(false);
+            int batchCount = 0;
 
-    private void insertData() {
+            for (int i = 0; i < movies.size(); i++) {
+                String movieId = movies.get(i).getFid();
 
-        try (Connection conn = connection) {
-            // Get a connection from dataSource
+                // if movie is not in the already inserted movies list. then it would not appear in the movies table
+                if (!inserted_movies.contains(movieId)) {
+                    inconsistent_movie++;
+                    continue;
+                }
 
-            // Construct a query with parameter represented by "?"
-            String query = SQLQueryTemplateParse.LOAD_MOVIE_DATA_;
+                HashSet<Integer> genres_set = (HashSet<Integer>) movies.get(i).getCategory();
 
-            Statement statement = conn.createStatement();
+            PreparedStatement statement = conn.prepareStatement(query);
 
             // Perform the query
-            statement.executeUpdate(query);
-            
+            ResultSet rs = statement.executeQuery();
 
-
-
-        } catch (Exception e) {
-            System.out.println("Error inserting data:" + e);
-            return;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
     public static void main(String[] args) {
         // create an instance
         DomParser domParser = new DomParser();
-
+/*
         try {
+            // duplicated movie will not be added -- implemented in the stored procedure
+            String query = SQLQueryTemplateParse.LINK_STARS_TO_MOVIES_;
+            CallableStatement statement = connection.prepareCall(query);
+            // set for batch insert
+            connection.setAutoCommit(false);
+            int batchCount = 0;
 
-            // Incorporate mySQL driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Get the inserted movies list in movies table
+            Iterator<String> iter = inserted_movies.iterator();
+            while (iter.hasNext()) {
+                String movieId = iter.next();
+                // get list of stars from this movieId
+                ArrayList<String> stars_list = (ArrayList<String>) movie_to_stars.get(movieId);
 
-            // Connect to the test database
-            connection = DriverManager.getConnection(mySQLInfo.url,
-                    mySQLInfo.username, mySQLInfo.password);
+                // avoid NullPointerException !!!!
+                if (stars_list == null) {
+                    star_not_found++;
+                    continue;
+                }
 
-            if (connection != null) {
-                System.out.println("Connection established!!");
-                System.out.println();
-                domParser.runExample();
+                for (int i = 0; i < stars_list.size(); i++) {
+                    // get starId from HashMap star_to_starId
+                    String starId = (String) stars_to_starID.get(stars_list.get(i));
+
+                    if (starId == null) {
+                        inconsistent_cast++;
+                        continue;
+                    }
+                    if (starId_to_movieIds.containsKey(starId) && starId_to_movieIds.get(starId).contains(movieId)) {
+                        System.out.println("starId map to movie ids: movieId already in");
+                        continue;
+                    }
+
+                    if (!starId_to_movieIds.containsKey(starId)) {  // add new movieId to new starId
+                        HashSet<String> new_set = new HashSet<String>();
+                        new_set.add(movieId);
+                        starId_to_movieIds.put(starId, new_set);
+                    }
+                    else {  // starId already in HashMap but movieId is new
+                        starId_to_movieIds.get(starId).add(movieId);
+                    }
+
+                    // add each starId with distinct movieId into execute batch
+                    statement.setString(1, starId);
+                    statement.setString(2, movieId);
+                    link_star_movie++;
+                    statement.addBatch();
+                    batchCount++;
+
+                    if (batchCount % 2000 == 0)  {  // execute every 2000 queries
+                        statement.executeBatch();
+                        connection.commit();
+                    }
+                }
             }
-            else {
-                System.out.println("No connection");
-            }
+            // execute the rest of remaining queries in the batch
+            statement.executeBatch();
+            connection.commit();
+
+            statement.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
- 
-        // call run example
-        //domParser.runExample();
-
     }
 
+    public static void main(String[] arg) throws Exception {
+
+        // create an instance
+        DomParser dp = new DomParser();
+/*
+        // Incorporate mySQL driver
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        // Connect to the test database
+        connection = DriverManager.getConnection("jdbc:" + Parameters.dbtype + ":///" + Parameters.dbname + "?autoReconnect=true&useSSL=false",
+                Parameters.username, Parameters.password);
+*/
+        dp.connection = dp.dataSource.getConnection();
+        if (dp.connection != null) {
+            System.out.println("Connection established!!");
+
+            dp.runExample();
+            dp.insertToMovies();
+            dp.linkGenreToMovie();
+            dp.linkStarToMovie();
+
+            System.out.println("Inserted " + dp.genres.size() + " genres");
+            System.out.println("Inserted " + dp.stars_to_starID.size() + " stars");
+            System.out.println("Inserted " + dp.inserted_movies.size() + " movies");
+            System.out.println("Inserted " + dp.link_genre_movie + " into genres_in_movie");
+            System.out.println("Inserted " + dp.link_star_movie + " into stars_in_movie");
+            System.out.println("Inconsistent movies: " + dp.inconsistent_movie);
+            System.out.println("Dup movie: " + dp.dup_movie);
+            System.out.println("Null movie: " + dp.null_movie);
+            System.out.println("Inconsistent stars: " + dp.inconsistent_cast);
+            System.out.println("Dup star: " + dp.dup_movie);
+            System.out.println("Stars not found: " + dp.star_not_found);
+
+        } else {
+            System.out.println("no connection");
+        }
+    }
 }

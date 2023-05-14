@@ -35,7 +35,7 @@ public class Movie {
         return year;
     }
 
-    public HashSet<Integer> getCategories() {
+    public HashSet<Integer> getCategory() {
         return this.categories;
     }
     public String getDirector() {
@@ -44,11 +44,10 @@ public class Movie {
 
 
     public String toString() {
-
         return "ID:" + getFid() + ", "+
                 "Title:" + getTitle() + ", " +
                 "Year:" + getYear() + ", " +
-                "Category:" + getCategories().toString() + ", "+
+                "Category:" + getCategory().toString() + ", "+
                 "Director:" + getDirector() + ".";
     }
 
