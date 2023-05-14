@@ -333,7 +333,6 @@ public class DomParser {
 
 
 
-
     /**
      * It takes an XML element and the tag name, look for the tag and get
      * the text content
@@ -424,14 +423,12 @@ public class DomParser {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = SQLQueryTemplate.LOAD_MOVIE_DATA_;
+            String query = SQLQueryTemplateParse.LOAD_MOVIE_DATA_;
 
             PreparedStatement statement = conn.prepareStatement(query);
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
-            
-
 
 
         } catch (Exception e) {
