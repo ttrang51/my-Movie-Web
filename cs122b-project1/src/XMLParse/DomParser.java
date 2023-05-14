@@ -3,16 +3,28 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import jakarta.servlet.ServletConfig;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import javax.sql.DataSource;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.io.IOException;
-import java.sql.*;
+import java.util.ArrayList;
 import java.util.*;
+import java.sql.*;
 
-public class DomParser implements Parameters {
 
-    private static Connection connection;
+public class DomParser {
+
+    private Connection connection;
 
     private DataSource dataSource;
     public void init(ServletConfig config) {
@@ -563,8 +575,8 @@ public class DomParser implements Parameters {
         connection = DriverManager.getConnection("jdbc:" + Parameters.dbtype + ":///" + Parameters.dbname + "?autoReconnect=true&useSSL=false",
                 Parameters.username, Parameters.password);
 */
-        Connection connection = dataSource.getConnection()
-        if (connection != null) {
+        dp.connection = dp.dataSource.getConnection();
+        if (dp.connection != null) {
             System.out.println("Connection established!!");
 
             dp.runExample();
