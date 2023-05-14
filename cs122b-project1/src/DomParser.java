@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.util.*;
@@ -21,7 +22,7 @@ public class DomParser {
     // Array list of movies
     ArrayList<Movie> movies = new ArrayList<>();
     // HashMap movie to list of cats -- movieId : list(genreId)
-    HashMap movie_To_Genres = new HashMap<String, ArrayList<String>>();
+    HashMap movie_to_stars = new HashMap<String, ArrayList<String>>();
 
     // HashMap genre to its id -- genre_name : genreId (INT)
     HashMap genres = new HashMap<String, Integer>();
@@ -34,6 +35,7 @@ public class DomParser {
 
     int dup_movie = 0;
     int dup_actor = 0;
+    int inconsistent_cast = 0;
     int null_movie = 0;     // null movieId or title
     int movies_add = 0;
     int actors_add = 0;
@@ -55,6 +57,10 @@ public class DomParser {
 
         parseActorDocument();
 
+        parseCastXML();
+
+        parseCastDocument();
+
 
         // iterate through the list and print the data
         //printData();
@@ -65,7 +71,14 @@ public class DomParser {
         //printData();
 
         System.out.println("dup star: " + dup_actor);
-        System.out.println("stars: " + stars);
+        //System.out.println("stars: " + stars);
+        System.out.println("star added:  " + stars.size());
+
+        System.out.println("Cast parsing check: ");
+        System.out.println("Movie to stars with size - " + movie_to_stars.size() + " : " + movie_to_stars);
+        System.out.println("inconsistent cast: " + inconsistent_cast);
+
+
     }
 
     private void parseMainXmlFile() {
@@ -151,10 +164,12 @@ public class DomParser {
                         System.out.println("Statement before execution: " + statement);
                         ResultSet rs = statement.executeQuery();
                         while(rs.next()){
-                            String cat_id = rs.getString("genre_id");
+                            int cat_id = rs.getInt("genre_id");
                             genres.put(cat_name, cat_id);
-                            genreIds.add(Integer.parseInt(cat_id));
-                        }*/
+                            //genreIds.add(Integer.parseInt(cat_id));
+                            genreIds.add(cat_id);
+                        }
+                        */
                         test_id++;
                         genres_add++;
                         genres.put(cat_name, test_id);
@@ -213,7 +228,7 @@ public class DomParser {
     private void parseActor(Element element) {
         String star_name = getTextValue(element, "stagename");
         int new_birth_year = getIntValue(element, "dob");
-        System.out.println("star name: " + star_name + " byear: " + new_birth_year);
+        //System.out.println("star name: " + star_name + " byear: " + new_birth_year);
         int duplicated = 0;     // check if a star is duplicated -- no add in that case
 
         ArrayList<Integer> append_by = new ArrayList<Integer>();
@@ -238,6 +253,59 @@ public class DomParser {
 
     }
 
+    private void parseCastXML() {
+        // get the factory
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+
+        try {
+
+            // using factory get an instance of document builder
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+            // parse using builder to get DOM representation of the XML file
+            dom_cast = documentBuilder.parse("stanford-movies/casts124.xml");
+
+        } catch (ParserConfigurationException | SAXException | IOException error) {
+            error.printStackTrace();
+        }
+    }
+
+    private void parseCastDocument() {
+        // get the document root Element
+        Element documentElement = dom_cast.getDocumentElement();
+
+        // get a nodelist of employee Elements, parse each into Employee object
+        NodeList nodeList = documentElement.getElementsByTagName("filmc");
+        if (nodeList != null) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                // get the employee element
+                Element cast = (Element) nodeList.item(i);
+
+                //parse and add entries into map
+                parseCast(cast);
+            }
+        }
+    }
+
+    private void parseCast(Element element) {
+        String fid = getTextValue(element, "f");
+        // Store list of stars associated with this fid
+        ArrayList<String> star_names = new ArrayList<String>();
+
+        NodeList casts = element.getElementsByTagName("a");
+        HashSet<String> curr_casts = new HashSet<String>();
+        for (int i = 0; i < casts.getLength(); i++) {
+            if (casts.item(i).getFirstChild() != null && !curr_casts.contains(casts.item(i).getFirstChild().getNodeValue())) {
+                String star_name = casts.item(i).getFirstChild().getNodeValue();
+                curr_casts.add(star_name);
+                star_names.add(star_name);
+            }
+            else {
+                inconsistent_cast++;
+            }
+        }
+        movie_to_stars.put(fid, star_names);
+    }
 
 
 
@@ -295,26 +363,28 @@ public class DomParser {
         try {
 
             // Incorporate mySQL driver
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
             // Connect to the test database
-            connection = DriverManager.getConnection("jdbc:" + mySQLInfo.dbtype + ":///" + mySQLInfo.dbname + "?autoReconnect=true&useSSL=false",
+            connection = DriverManager.getConnection(mySQLInfo.url,
                     mySQLInfo.username, mySQLInfo.password);
 
             if (connection != null) {
                 System.out.println("Connection established!!");
                 System.out.println();
+                domParser.runExample();
             }
             else {
                 System.out.println("No connection");
             }
 
-            // call run example
-            domParser.runExample();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-*/
+
+ */
         // call run example
         domParser.runExample();
 
