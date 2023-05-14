@@ -466,19 +466,19 @@ public class DomParser {
 
                 HashSet<Integer> genres_set = (HashSet<Integer>) movies.get(i).getCategory();
 
-            PreparedStatement statement = conn.prepareStatement(query);
+            PreparedStatement s = connection.prepareStatement(query);
 
             // Perform the query
-            ResultSet rs = statement.executeQuery();
-
+            ResultSet rs = s.executeQuery();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         // create an instance
-        DomParser domParser = new DomParser();
+        DomParser dp = new DomParser();
 /*
         try {
             // duplicated movie will not be added -- implemented in the stored procedure
@@ -566,7 +566,7 @@ public class DomParser {
             dp.runExample();
             dp.insertToMovies();
             dp.linkGenreToMovie();
-            dp.linkStarToMovie();
+            //dp.linkStarToMovie();
 
             System.out.println("Inserted " + dp.genres.size() + " genres");
             System.out.println("Inserted " + dp.stars_to_starID.size() + " stars");
