@@ -1,3 +1,4 @@
+package XMLParse;
 
 public class SQLQueryTemplateParse {
     public static final String INSERT_TO_STARS_ = "select add_star(?, ?) as star_id";

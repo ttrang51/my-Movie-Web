@@ -1,3 +1,5 @@
+package XMLParse;
+
 public class mySQLInfo {
     public static final String dbtype = "mysql";
     public static final String url = "jdbc:mysql://localhost:3306/moviedb?allowLoadLocalInfile=true";
