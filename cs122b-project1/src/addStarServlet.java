@@ -66,7 +66,6 @@ public class addStarServlet extends HttpServlet {
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
-
             int row_count = 0;
             // Iterate through each row of rs
             while (rs.next()) {

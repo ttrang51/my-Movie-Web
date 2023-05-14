@@ -8,17 +8,18 @@ public class Movie {
 
     private final int year;
 
-    private final String category;
+    // A movie can have more than one genre/cat
+    //
+    private final ArrayList<Integer> categories;
+
     private final String director;
 
-    public Movie(String fid, String title, int year, String category, String director) {
+    public Movie(String fid, String title, int year, ArrayList<Integer> categories, String director) {
         this.fid = fid;
         this.title = title;
         this.year = year;
-        this.category = category;
+        this.categories = categories;
         this.director = director;
-
-
     }
 
     public String getFid() {
@@ -34,7 +35,7 @@ public class Movie {
     }
 
     public String getCategory() {
-        return category;
+        return this.categories;
     }
     public String getDirector() {
         return director;
@@ -56,12 +57,10 @@ public class Movie {
     }
 
     public boolean compareTo(Movie otherMovie) {
-        if (this.fid == otherMovie.getFid() ) {
+        if (this.fid == otherMovie.getFid() && this.title == otherMovie.getTitle() && this.year == otherMovie.getYear()) {
             // add other attr checks
             return true;
         }
-
         return false;
-
     }
 }
