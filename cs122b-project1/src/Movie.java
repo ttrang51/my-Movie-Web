@@ -1,5 +1,4 @@
-
-import java.util.*;
+import java.util.List;
 
 public class Movie {
 
@@ -11,11 +10,11 @@ public class Movie {
 
     // A movie can have more than one genre/cat
     //
-    private final HashSet<Integer> categories;
+    private final ArrayList<Integer> categories;
 
     private final String director;
 
-    public Movie(String fid, String title, int year, HashSet<Integer> categories, String director) {
+    public Movie(String fid, String title, int year, ArrayList<Integer> categories, String director) {
         this.fid = fid;
         this.title = title;
         this.year = year;
@@ -35,8 +34,8 @@ public class Movie {
         return year;
     }
 
-    public HashSet<Integer> getCategory() {
-        return categories;
+    public String getCategory() {
+        return this.categories;
     }
     public String getDirector() {
         return director;
@@ -44,11 +43,17 @@ public class Movie {
 
 
     public String toString() {
-        return "Title:" + getTitle() + ", " +
+
+        return "ID:" + getFid() + ", "+
+                "Title:" + getTitle() + ", " +
                 "Year:" + getYear() + ", " +
-                "ID:" + getFid() + ", "+
                 "Category:" + getCategory() + ", "+
                 "Director:" + getDirector() + ".";
+    }
+
+    public String[] getCSVFormat() {
+
+        return new String[] {getFid(),getTitle(),((Integer)getYear()).toString(),getDirector()};
     }
 
     public boolean compareTo(Movie otherMovie) {

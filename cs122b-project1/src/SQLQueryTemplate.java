@@ -93,4 +93,8 @@ public class SQLQueryTemplate {
 
     public static final String INSERT_TO_GENRES_ = "select add_genre(?) as genre_id;";
 
+    public static final String LOAD_MOVIE_DATA_ = "load data infile \"cs122b-project1/movies.csv\" into table movies" +
+                                                "FIELDS TERMINATED BY ','" + 
+                                                "LINES TERMINATED BY '\n';";
+
 }
