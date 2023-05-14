@@ -18,8 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.sql.DataSource;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 import java.sql.ResultSet;
 import java.io.IOException;
 import java.util.ArrayList; 
@@ -97,15 +96,16 @@ public class DomParser {
 
         createMovieCSV();
 
-        //insertData();
+        insertData();
 
-        System.out.println("dup star: " + dup_actor);
+        //System.out.println("dup star: " + dup_actor);
         //System.out.println("stars: " + stars);
-        System.out.println("star added:  " + stars.size());
+        //System.out.println("star added:  " + stars.size());
 
-        System.out.println("Cast parsing check: ");
-        System.out.println("Movie to stars with size - " + movie_to_stars.size() + " : " + movie_to_stars);
-        System.out.println("inconsistent cast: " + inconsistent_cast);
+        // System.out.println("Cast parsing check: ");
+
+        // System.out.println("Movie to stars with size - " + movie_to_stars.size() + " : " + movie_to_stars);
+        // System.out.println("inconsistent cast: " + inconsistent_cast);
 
 
     }
@@ -120,7 +120,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_movie = documentBuilder.parse("stanford-movies/mains243.xml");
+            dom_movie = documentBuilder.parse("cs122b-project1/stanford-movies/mains243.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -231,7 +231,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_actor = documentBuilder.parse("stanford-movies/actors63.xml");
+            dom_actor = documentBuilder.parse("cs122b-project1/stanford-movies/actors63.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -292,7 +292,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_cast = documentBuilder.parse("stanford-movies/casts124.xml");
+            dom_cast = documentBuilder.parse("cs122b-project1/stanford-movies/casts124.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -425,16 +425,16 @@ public class DomParser {
 
     private void insertData() {
 
-        try (Connection conn = dataSource.getConnection()) {
+        try (Connection conn = connection) {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
             String query = SQLQueryTemplate.LOAD_MOVIE_DATA_;
 
-            PreparedStatement statement = conn.prepareStatement(query);
+            Statement statement = conn.createStatement();
 
             // Perform the query
-            ResultSet rs = statement.executeQuery();
+            statement.executeUpdate(query);
             
 
 
@@ -448,8 +448,10 @@ public class DomParser {
 
     public static void main(String[] args) {
         // create an instance
+        
         DomParser domParser = new DomParser();
-/*
+
+ 
         try {
 
             // Incorporate mySQL driver
@@ -474,9 +476,9 @@ public class DomParser {
             throw new RuntimeException(e);
         }
 
- */
+        
         // call run example
-        domParser.runExample();
+        //domParser.runExample();
 
     }
 

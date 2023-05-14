@@ -54,7 +54,7 @@ public class Movie {
 
     public String[] getCSVFormat() {
 
-        return new String[] {getFid(),getTitle(),((Integer)getYear()).toString(),getDirector()};
+        return new String[] {getFid(),getTitle(),Integer.toString(getYear()),getDirector()};
     }
 
     public boolean compareTo(Movie otherMovie) {
