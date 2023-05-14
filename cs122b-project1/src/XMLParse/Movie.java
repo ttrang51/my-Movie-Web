@@ -1,4 +1,5 @@
-import java.util.List;
+
+import java.util.*;
 
 public class Movie {
 
@@ -34,7 +35,7 @@ public class Movie {
         return year;
     }
 
-    public String getCategory() {
+    public HashSet<Integer> getCategories() {
         return this.categories;
     }
     public String getDirector() {
@@ -47,7 +48,7 @@ public class Movie {
         return "ID:" + getFid() + ", "+
                 "Title:" + getTitle() + ", " +
                 "Year:" + getYear() + ", " +
-                "Category:" + getCategory() + ", "+
+                "Category:" + getCategories().toString() + ", "+
                 "Director:" + getDirector() + ".";
     }
 

@@ -9,15 +9,20 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jakarta.servlet.ServletConfig;
 
+import java.io.File;
+import java.io.FileWriter;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import javax.sql.DataSource;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.io.IOException;
+import java.util.ArrayList; 
 import java.util.*;
 import java.sql.*;
 
@@ -138,7 +143,7 @@ public class DomParser {
             // get the movie object
             Movie new_movie = parseMovie(element);
             // check for duplicated or invalid here
-            if (new_movie.getFid() == null || new_movie.getTitle() == null || new_movie.getCategory().isEmpty())
+            if (new_movie.getFid() == null || new_movie.getTitle() == null || new_movie.getCategories().isEmpty())
                 null_movie++;
             else if (movieTitles.contains(new_movie.getTitle()) && movieIds.contains(new_movie.getFid()))
                 dup_movie++;
