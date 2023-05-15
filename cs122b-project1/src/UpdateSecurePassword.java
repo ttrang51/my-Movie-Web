@@ -34,12 +34,12 @@ public class UpdateSecurePassword {
         Statement statement = connection.createStatement();
 
         // change the customers table password column from VARCHAR(20) to VARCHAR(128)
-        String alterQuery = "ALTER TABLE employees MODIFY COLUMN password VARCHAR(128)";
+        String alterQuery = "ALTER TABLE customers MODIFY COLUMN password VARCHAR(128)";
         int alterResult = statement.executeUpdate(alterQuery);
-        System.out.println("altering employees table schema completed, " + alterResult + " rows affected");
+        System.out.println("altering customers table schema completed, " + alterResult + " rows affected");
 
         // get the ID and password for each customer
-        String query = "SELECT email, password from employees";
+        String query = "SELECT email, password from customers";
 
         ResultSet rs = statement.executeQuery(query);
 
@@ -59,7 +59,7 @@ public class UpdateSecurePassword {
             String encryptedPassword = passwordEncryptor.encryptPassword(password);
 
             // generate the update query
-            String updateQuery = String.format("UPDATE employees SET password='%s' WHERE email='%s';", encryptedPassword,
+            String updateQuery = String.format("UPDATE customers SET password='%s' WHERE email='%s';", encryptedPassword,
                     id);
             updateQueryList.add(updateQuery);
         }
