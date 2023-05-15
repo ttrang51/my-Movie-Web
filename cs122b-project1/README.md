@@ -49,9 +49,17 @@
 
 ### Inconsistent reasoning
 
-    Inconsistent movies:
-    Inconsistent casts:
-    Inconsistent stars: 
+     -   Inconsistent movies: duplicated movies which have same title and movieId; null movies whose required fields like title, movieId, director, year are empty. These
+    will not be added to movies table. Either be ignored by DomParser or stored procedure insert_movie.
+    -   Inconsistent casts: actors/movies not found. They are in main/actor xml files but are not in cast xml file or the other way around.
+    -   Inconsistent stars: duplicated stars with same name and same birth year will be handled in DomParser. Stars with same name and birth year existed in
+    database are still added as following instruction from task 5. 
+    -   Inconsistent genres: movies existing with no cat are also considered inconsistent hence would not be added to the genres_in_movie table. Genres with not found
+    movieId will also be ignored. These will be handeled by the stored procedure: link_genre_movie.
+    
+    
+http://flablixnightowls.com/
+
     
 
     
