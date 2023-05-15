@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DomParser",
+            "request": "launch",
+            "mainClass": "XMLParse.DomParser",
+            "projectName": "cs122b-project1-api-example"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

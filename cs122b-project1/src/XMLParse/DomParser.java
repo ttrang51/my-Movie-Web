@@ -5,29 +5,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import jakarta.servlet.ServletConfig;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import javax.sql.DataSource;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.*;
 import java.sql.*;
+import java.util.*;
 
+public class DomParser implements Parameters {
 
-public class DomParser {
+    private static Connection connection;
 
-    private Connection connection;
-
+    /*
     private DataSource dataSource;
     public void init(ServletConfig config) {
         try {
@@ -36,6 +25,7 @@ public class DomParser {
             e.printStackTrace();
         }
     }
+     */
 
     public DomParser() throws IOException {
     }
@@ -113,7 +103,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_movie = documentBuilder.parse("cs122b-project1/stanford-movies/mains243.xml");
+            dom_movie = documentBuilder.parse("stanford-movies/mains243.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -222,7 +212,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_actor = documentBuilder.parse("cs122b-project1/stanford-movies/actors63.xml");
+            dom_actor = documentBuilder.parse("stanford-movies/actors63.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -310,7 +300,7 @@ public class DomParser {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // parse using builder to get DOM representation of the XML file
-            dom_cast = documentBuilder.parse("cs122b-project1/stanford-movies/casts124.xml");
+            dom_cast = documentBuilder.parse("stanford-movies/casts124.xml");
 
         } catch (ParserConfigurationException | SAXException | IOException error) {
             error.printStackTrace();
@@ -352,8 +342,6 @@ public class DomParser {
         }
         movie_to_stars.put(fid, star_names);
     }
-
-
 
     /**
      * It takes an XML element and the tag name, look for the tag and get
@@ -468,20 +456,38 @@ public class DomParser {
 
                 HashSet<Integer> genres_set = (HashSet<Integer>) movies.get(i).getCategory();
 
-            PreparedStatement s = connection.prepareStatement(query);
-
-            // Perform the query
-            ResultSet rs = s.executeQuery();
+                for (Integer genre_id : genres_set) {
+                    statement.setInt(1, genre_id);
+                    statement.setString(2, movieId);
+                    link_genre_movie++;
+                    statement.addBatch();
+                    batchCount++;
+                    if (batchCount % 2000 == 0) {
+                        statement.executeBatch();
+                        connection.commit();
+                    }
+                }
+                if (batchCount % 2000 == 0)  {  // execute every 2000 queries
+                    statement.executeBatch();
+                    connection.commit();
+                }
             }
+            // execute the rest of remaining queries in the batch
+            statement.executeBatch();
+            connection.commit();
+
+            statement.close();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        // create an instance
-        DomParser dp = new DomParser();
-/*
+    private void linkStarToMovie() {
+
+        // HashMap starId to movieIds
+        HashMap<String, HashSet<String>> starId_to_movieIds = new HashMap<String, HashSet<String>>();
+
         try {
             // duplicated movie will not be added -- implemented in the stored procedure
             String query = SQLQueryTemplateParse.LINK_STARS_TO_MOVIES_;
@@ -551,24 +557,25 @@ public class DomParser {
 
     public static void main(String[] arg) throws Exception {
 
+        java.util.Date start = new java.util.Date();
+
         // create an instance
         DomParser dp = new DomParser();
-/*
+
         // Incorporate mySQL driver
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         // Connect to the test database
         connection = DriverManager.getConnection("jdbc:" + Parameters.dbtype + ":///" + Parameters.dbname + "?autoReconnect=true&useSSL=false",
                 Parameters.username, Parameters.password);
-*/
-        dp.connection = dp.dataSource.getConnection();
-        if (dp.connection != null) {
+
+        if (connection != null) {
             System.out.println("Connection established!!");
 
             dp.runExample();
             dp.insertToMovies();
             dp.linkGenreToMovie();
-            //dp.linkStarToMovie();
+            dp.linkStarToMovie();
 
             System.out.println("Inserted " + dp.genres.size() + " genres");
             System.out.println("Inserted " + dp.stars_to_starID.size() + " stars");
@@ -581,6 +588,10 @@ public class DomParser {
             System.out.println("Inconsistent stars: " + dp.inconsistent_cast);
             System.out.println("Dup star: " + dp.dup_movie);
             System.out.println("Stars not found: " + dp.star_not_found);
+
+            java.util.Date end = new java.util.Date();
+            int seconds = (int)((end.getTime() - start.getTime()) / 1000);
+            System.out.println("It took " + seconds + "s to complete");
 
         } else {
             System.out.println("no connection");
