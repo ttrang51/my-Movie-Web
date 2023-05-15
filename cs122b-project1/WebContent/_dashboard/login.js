@@ -8,7 +8,7 @@ function handleLoginResult(resultDataJson) {
 
     // If login succeeds, it will redirect the user to index.html
     if (resultDataJson["status"] === "success") {
-        window.location.replace("_dashboard/index.html");
+        window.location.replace("index.html");
 
     } else {
         // If login fails, the web page will display
