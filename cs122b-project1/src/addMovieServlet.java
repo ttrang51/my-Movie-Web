@@ -16,7 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
-@WebServlet(name = "addMovieServlet", urlPatterns = "/api/add_movie")
+@WebServlet(name = "addMovieServlet", urlPatterns = "/_dashboard/api/add_movie")
 public class addMovieServlet extends HttpServlet {
     // Create a dataSource which registered in web.
     private DataSource dataSource;
@@ -94,7 +94,7 @@ public class addMovieServlet extends HttpServlet {
                 }
                 else {
                     responseJsonObject.addProperty("status", "success");
-                    responseJsonObject.addProperty("message", "New movie with id: " + message + " is added");
+                    responseJsonObject.addProperty("message", "New movie with: " + message + " is added");
                 }
             }
             rs.close();

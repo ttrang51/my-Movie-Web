@@ -16,7 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Types;
 
-@WebServlet(name = "addStarServlet", urlPatterns = "/api/add_star")
+@WebServlet(name = "addStarServlet", urlPatterns = "/_dashboard/api/add_star")
 public class addStarServlet extends HttpServlet {
     // Create a dataSource which registered in web.
     private DataSource dataSource;

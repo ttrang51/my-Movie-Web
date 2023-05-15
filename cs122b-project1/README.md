@@ -27,6 +27,11 @@
     Peer-review 
     Testing and Inspection
 
+## Prepared Statement
+    All the pages that accept user input will have its servlet to use PreparedStatement
+    Other pages also use PreparedStatement
+    User input pages: MSearchServlet, addMovieServlet, addStarServlet, LoginServlet, CheckoutServlet, etc.
+
 ## Parsing Time Optimization Strategies
 ### Naive Approach
     Individually perform insert/execute statements which is expensive and time-consuming

@@ -148,6 +148,8 @@ public class MovieListServlet extends HttpServlet {
                 String movie_star = rs.getString("stars");
                 String movie_star_ids = rs.getString("starID");
                 String movie_rating= rs.getString("rating");
+                if (movie_rating.equals("0.0"))
+                    movie_rating = "N/A";
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();

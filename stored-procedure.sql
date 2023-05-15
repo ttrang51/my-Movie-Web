@@ -1,10 +1,9 @@
--- USE moviedbexample;
 USE moviedb;
 
 DELIMITER $$
 CREATE FUNCTION add_star (star_name VARCHAR(100), birth_year INT)
-RETURNS VARCHAR(10)
-DETERMINISTIC
+    RETURNS VARCHAR(10)
+    DETERMINISTIC
 BEGIN
 SET @prefix = 'nm';
 SET @largest_varchar_id = (select max(id) from stars);
@@ -18,13 +17,13 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE add_movie (
-	IN m_title VARCHAR(100), 
-    IN m_year INT, 
+    IN m_title VARCHAR(100),
+    IN m_year INT,
     IN m_director VARCHAR(100),
     IN star_name VARCHAR(100),
     IN birth_year INT,
     IN genre_name VARCHAR(32)
-    )
+)
 BEGIN
 -- check movie duplication
 DECLARE dup INT;
@@ -36,36 +35,38 @@ ELSE
 BEGIN -- begin of else
 	-- generate new movie id
 	SET @prefix = 'tt';
-	SET @largest_varchar_id = (select max(id) from movies);
+	SET @largest_varchar_id = (select max(id) from id_helper);
 	SET @numeric_part = CAST(SUBSTRING(@largest_varchar_id, 3) AS UNSIGNED) + 1;
 	SET @new_movie_id = CONCAT(@prefix, @numeric_part);
-    -- insert new movie
-    insert into movies (id, title, year, director) values (@new_movie_id, m_title, m_year, m_director);
-    
-	-- check if star or genre exists
-    set @star_flag = (select exists(select 1 from stars where name = star_name));
+    -- insert new id back into id_helper
+	insert into id_helper (id) values (@new_movie_id);
+	-- insert new movie
+	insert into movies (id, title, year, director) values (@new_movie_id, m_title, m_year, m_director);
+
+-- check if star or genre exists
+set @star_flag = (select exists(select 1 from stars where name = star_name));
     set @genre_flag = (select exists(select 1 from genres where name = genre_name));
     
     -- add new star if not exist
     if @star_flag != 1 then
 		set @star_id = (select add_star(star_name, birth_year));
-	else 
+else
 		set @star_id = (select id from stars where name = star_name);
-    end if;
+end if;
     -- link star to newly added movie
-    insert into stars_in_movies (starId, movieId) values (@star_id, @new_movie_id);
-    
-    -- add new genre if not exist 
-    if @genre_flag != 1 then
+insert into stars_in_movies (starId, movieId) values (@star_id, @new_movie_id);
+
+-- add new genre if not exist
+if @genre_flag != 1 then
 		insert into genres (name) values (genre_name);
-    end if;
+end if;
     set @genre_id = (select id from genres where name = genre_name);
     -- link genre to newly added movie
-    insert into genres_in_movies (genreId, movieId) values (@genre_id, @new_movie_id);
-    
-    -- link movie to ratings
-    insert into ratings (movieId, rating, numVotes) values (@new_movie_id, 0.0, 0);
-    set @movie = concat('Movie Id: ', @new_movie_id, ' ');
+insert into genres_in_movies (genreId, movieId) values (@genre_id, @new_movie_id);
+
+-- link movie to ratings
+insert into ratings (movieId, rating, numVotes) values (@new_movie_id, 0.0, 0);
+set @movie = concat('Movie Id: ', @new_movie_id, ' ');
     set @genre = concat('Genre Id: ', @genre_id, ' ');
     set @star = concat('Star Id: ', @star_id);
     set @ret = concat(@movie, @genre, @star);
@@ -80,14 +81,14 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE FUNCTION add_genre (genre_name VARCHAR(32))
-RETURNS INT
-DETERMINISTIC
+    RETURNS INT
+    DETERMINISTIC
 BEGIN
 set @genre_flag = (select exists(select 1 from genres where name = genre_name));
 -- add new genre if not exist 
     if @genre_flag != 1 then
 		insert into genres (name) values (genre_name);
-    end if;
+end if;
 SET @new_genre_id = (select id from genres where name = genre_name);
 RETURN @new_genre_id;
 END
@@ -95,10 +96,10 @@ $$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE insert_movie (movie_id VARCHAR(10), 
-	m_title VARCHAR(100), 
-    m_year INT, 
-    m_director VARCHAR(100))
+CREATE PROCEDURE insert_movie (movie_id VARCHAR(10),
+                               m_title VARCHAR(100),
+                               m_year INT,
+                               m_director VARCHAR(100))
 BEGIN
 DECLARE dup INT;
 set @dup = (select exists(select 1 from movies as m 
@@ -107,7 +108,7 @@ IF @dup != 1 THEN
     -- insert new movie
     insert into movies (id, title, year, director) values (movie_id, m_title, m_year, m_director);
     -- link movie to ratings
-    insert into ratings (movieId, rating, numVotes) values (movie_id, 0.0, 0);
+insert into ratings (movieId, rating, numVotes) values (movie_id, 0.0, 0);
 END IF;
 END
 $$

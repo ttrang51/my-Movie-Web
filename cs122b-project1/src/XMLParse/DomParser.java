@@ -88,7 +88,7 @@ public class DomParser implements Parameters {
         // iterate through the list and print the data
 
         System.out.println("Parsed: " + movies_add + " movies");
-        System.out.println("Parsed:  " + stars.size() + " stars");
+        System.out.println("Parsed: " + stars.size() + " stars");
         System.out.println("Parsed: " + genres_add + " genres");
 
     }
@@ -557,8 +557,6 @@ public class DomParser implements Parameters {
 
     public static void main(String[] arg) throws Exception {
 
-      
-
         // create an instance
         DomParser dp = new DomParser();
 
@@ -589,7 +587,6 @@ public class DomParser implements Parameters {
             System.out.println("Dup star: " + dp.dup_movie);
             System.out.println("Stars not found: " + dp.star_not_found);
 
-         
 
         } else {
             System.out.println("no connection");
