@@ -557,7 +557,7 @@ public class DomParser implements Parameters {
 
     public static void main(String[] arg) throws Exception {
 
-        java.util.Date start = new java.util.Date();
+      
 
         // create an instance
         DomParser dp = new DomParser();
@@ -589,9 +589,7 @@ public class DomParser implements Parameters {
             System.out.println("Dup star: " + dp.dup_movie);
             System.out.println("Stars not found: " + dp.star_not_found);
 
-            java.util.Date end = new java.util.Date();
-            int seconds = (int)((end.getTime() - start.getTime()) / 1000);
-            System.out.println("It took " + seconds + "s to complete");
+         
 
         } else {
             System.out.println("no connection");
