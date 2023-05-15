@@ -3,7 +3,7 @@
 
 ## URL of the Demo video
 
-#### https://uci.zoom.us/rec/share/CGzhl0H9pLgmIt_9WyTH-SBEHKmOzQ76YkkBYqXWgYLiKfu4tySZaU1iUX9swTEW.2N7MpbgnJFwxDYRn?startTime=1684132052000
+#### https://uci.zoom.us/rec/share/O8wP-WrdcUKToFNuwvYcWvppWR8-wloYoIUrE9sPIDfN2a_MEfn9sRbihd26xd4.DTi780T1M92emRyF?startTime=1682924305000
 
 ## Contribution
 ***Anthonny***
@@ -27,13 +27,28 @@
     Peer-review 
     Testing and Inspection
 
+## Parsing Time Optimization Strategies
+### Naive Approach
+    Individually perform insert/execute statements which is expensive and time-consuming
+### Batch Insert
+    Reduce overhead of individual insert statements
+    Reduce round trips between the application and the database server by gouping multiple rows in a single batch
+    Minimize parsing overhead as it only needs to parse once for the entire batch of data
+    Provide transactional control as batch insert can be performed within a transaction
+### LOAD DATA
+    Faster parsing for large amount of data as it is designed and optimized for bulk data loading from external sources
+    using an efficient parsing mechanism
+    Reduce network traffic as data is read directly from the file system rather than being sent over the network
+    Minimize logging and indexing during data loading process
+    Provide transactional control
+    Integration with MySQL features
 
 ## Report
 
 ### Numeric report 
 
     Parsed: 8751 movies
-    Parsed: 6839 stars
+    Parsed:  6839 stars
     Parsed: 123 genres
     Inserted 123 genres
     Inserted 6839 stars
@@ -47,16 +62,22 @@
     Dup star: 12
     Stars not found: 1325
 
+
 ### Inconsistent reasoning
 
-     -   Inconsistent movies: duplicated movies which have same title and movieId; null movies whose required fields like title, movieId, director, year are empty. These
+    -   Inconsistent movies: duplicated movies which have same title and movieId; null movies whose required fields like title, movieId, director, year are empty. These
     will not be added to movies table. Either be ignored by DomParser or stored procedure insert_movie.
     -   Inconsistent casts: actors/movies not found. They are in main/actor xml files but are not in cast xml file or the other way around.
     -   Inconsistent stars: duplicated stars with same name and same birth year will be handled in DomParser. Stars with same name and birth year existed in
     database are still added as following instruction from task 5. 
     -   Inconsistent genres: movies existing with no cat are also considered inconsistent hence would not be added to the genres_in_movie table. Genres with not found
     movieId will also be ignored. These will be handeled by the stored procedure: link_genre_movie.
+
+
     
+
+    
+
     
 http://flablixnightowls.com/
 
