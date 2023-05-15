@@ -50,7 +50,7 @@
                     <warSourceDirectory>WebContent</warSourceDirectory>
                 </configuration>
             </plugin>
-<!--         <plugin>
+<!---->            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
@@ -58,7 +58,7 @@
                     <mainClass>XMLParse.DomParser</mainClass>
                 </configuration>
             </plugin>
--->
+
         </plugins>
     </build>
 </project>
