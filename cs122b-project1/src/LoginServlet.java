@@ -48,7 +48,10 @@ public class LoginServlet extends HttpServlet {
 
         // Verify reCAPTCHA
         try {
-            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+            // If the POST is coming from mobile app, do not verify
+            if (!gRecaptchaResponse.equals("mobile")) {
+                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+            }
         } catch (Exception e) {
             
             responseJsonObject.addProperty("status", "reCAPTCHA fail");
