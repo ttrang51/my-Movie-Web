@@ -226,6 +226,20 @@ let prefix = getParameterByName('prefix');
 let sort = getParameterByName('sort');
 let limit = getParameterByName('result_limit');
 let page = getParameterByName('page');
+/*
+let ft_title = getParameterByName('ft_movie_title');
+
+if (ft_title != null) {
+    console.log("getting param ft_movie_title");
+    console.log(ft_title);
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/fulltext-search?ft_movie_title=" + ft_title, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
+*/
 
 
 if (sort != null || limit != null){
@@ -237,9 +251,13 @@ if (sort != null || limit != null){
     });
 }
 else {
-    if (title == null && year == null && director_name == null && star_name == null) {
+    console.log("else in MovieList");
+    console.log("title: " + title + " year: " + year + " director: " + director_name + " star: " + star_name);
+    console.log("genre: " + genre + " prefix: " + prefix);
 
+    if (title == null && year == null && director_name == null && star_name == null) {
 // Makes another HTTP GET request to MBrowse
+        console.log("GET request to Mbrowse");
         jQuery.ajax({
             dataType: "json", // Setting return data type
             method: "GET", // Setting request method
@@ -247,9 +265,9 @@ else {
             success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
         });
     }
-
     else {
 // Makes the HTTP GET request and registers on success callback function handleStarResult
+        console.log("GET request to MSearch");
         jQuery.ajax({
             dataType: "json", // Setting return data type
             method: "GET", // Setting request method
@@ -258,3 +276,21 @@ else {
         })
     }
 };
+
+document.getElementById("ft_search_form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the form from submitting and refreshing the page
+    // Get the form input values
+    let ft_m_title = document.getElementsByName("ft_movie_title")[0].value;
+
+    // Do something with the input values (e.g., display them)
+    console.log("Ft m title:", ft_m_title);
+    // Clear the form after processing
+    document.getElementById("ft_search_form").reset();
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/fulltext-search?ft_movie_title=" + ft_m_title, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+
+});
