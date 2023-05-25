@@ -226,7 +226,7 @@ let prefix = getParameterByName('prefix');
 let sort = getParameterByName('sort');
 let limit = getParameterByName('result_limit');
 let page = getParameterByName('page');
-/*
+
 let ft_title = getParameterByName('ft_movie_title');
 
 if (ft_title != null) {
@@ -239,8 +239,6 @@ if (ft_title != null) {
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
-*/
-
 
 if (sort != null || limit != null){
     jQuery.ajax({
@@ -277,6 +275,7 @@ else {
     }
 };
 
+/*
 document.getElementById("ft_search_form").addEventListener("submit", function(event) {
     event.preventDefault(); // Prevent the form from submitting and refreshing the page
     // Get the form input values
@@ -294,3 +293,5 @@ document.getElementById("ft_search_form").addEventListener("submit", function(ev
     });
 
 });
+
+ */

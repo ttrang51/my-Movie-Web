@@ -45,6 +45,8 @@ public class FTSearchServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
+        System.out.println("FTSearchServlet is called");
+
         HttpSession session = request.getSession();
 
         // Output stream to STDOUT
@@ -53,84 +55,28 @@ public class FTSearchServlet extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
 
-            // Declare our statement
-            //Statement statement = conn.createStatement();
+            JsonArray jsonArray = new JsonArray();
 
-            // An array to as flags for search conditions
-            int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
-            // order: title, year, director, star
+            // get the query string from parameter
+            String title_query = request.getParameter("ft_movie_title");
+            System.out.println("ft title: " + title_query);
 
-            // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
-            String title = request.getParameter("ft_movie_title");
-            String year = request.getParameter("year");
-            String director_name = request.getParameter("director_name");
-            String star_name = request.getParameter("star_name");
-
-            flag[0] = title.equals("") ? 0 : 1;
-            flag[1] = year.equals("") ? 0 : 1;
-            flag[2] = director_name.equals("") ? 0 : 1;
-            flag[3] = star_name.equals("") ? 0 : 1;
-
-            int num = 0;
-            for (int i : flag){
-                if (i == 1) num++;
+            // return the empty json array if query is null or empty
+            if (title_query == null || title_query.trim().isEmpty()) {
+                response.getWriter().write(jsonArray.toString());
+                return;
             }
+            String[] tokens = title_query.split(" ");
 
-            String query = SQLQueryTemplate.U_MOVIE_SEARCH_PAGE_;
-
-            // Generate base Query
-            boolean not_Search = false;
-            if (flag[0] == 0 && flag[1] == 0 && flag[2] == 0 && flag[3] == 0){
-                not_Search = true;
-                if (session.getAttribute("query") != null)
-                    query = (String) session.getAttribute("query");
-                if (session.getAttribute("sort") != null){
-                    String sort_query = (String)session.getAttribute("sort");
-                    query = query + " " + sort_query + " ";
-                }
-                if (session.getAttribute("result_limit") != null){
-                    String limit_Option = (String)session.getAttribute("result_limit");
-                    String limit_Op = "";
-                    if (limit_Option.equals("100")) {
-                        limit_Op = limit_Op + "100 ";
-                    } else if (limit_Option.equals("50")) {
-                        limit_Op = limit_Op + "50 ";
-                    } else if (limit_Option.equals("25")) {
-                        limit_Op = limit_Op + "25 ";
-                    } else { // if limit_Option equals 10
-                        limit_Op = limit_Op + "10 ";
-                    }
-                    query = query + limit_Op;
-                }
-            }
-            else {
-                if (flag[1] == 1) { // Single condition query search
-                    query = query + "and m.year = ?";
-                }
-            }
-
-            // Plug in parameters
+            String query = SQLQueryTemplate.FULL_TEXT_MOVIE_SEARCH_;
             PreparedStatement statement = conn.prepareStatement(query);
-            // At first set non-presented parameter to empty
-            if (flag[0] == 0)
-                statement.setString(1, "%%"); // 1: title
-            else
-                statement.setString(1, "%" + title + "%");
 
-            if (flag[2] == 0)
-                statement.setString(2, "%%"); // 2: director
-            else
-                statement.setString(2, "%" + director_name + "%");
+            String ft_tokens = "";
+            for (String token : tokens)
+                ft_tokens += " +" + token + "*";
 
-            if (flag[3] == 0)
-                statement.setString(3, "%%"); // 3: star
-            else
-                statement.setString(3, "%" + star_name + "%");
-            // Check year
-            if (flag[1] == 1) { // year
-                int yearInteger = Integer.parseInt(year);
-                statement.setInt(4, yearInteger);
-            }
+            System.out.println("tokens list: " + ft_tokens);
+            statement.setString(1, ft_tokens);
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
@@ -143,9 +89,6 @@ public class FTSearchServlet extends HttpServlet {
 
             // Log to localhost log
             request.getServletContext().log("query：" + query);
-
-
-            JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of rs
             while (rs.next()) {

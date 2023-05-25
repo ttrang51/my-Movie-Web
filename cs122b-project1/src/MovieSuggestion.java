@@ -119,17 +119,11 @@ public class MovieSuggestion extends HttpServlet {
             }
             String[] tokens = title_query.split(" ");
 
-            //String query = "select * from movies where title like ? limit 10";
-            String query = SQLQueryTemplate.FULL_TEXT_MOVIE_SEARCH_;
+            String query = SQLQueryTemplate.FULL_TEXT_MOVIE_SUGGESTION_;
             PreparedStatement statement = conn.prepareStatement(query);
 
             String ft_tokens = "";
-            /*for (int i = 0; i < tokens.length; i++) {
-                if (i == 0)
-                    ft_tokens += "+" + tokens[i] + "*";
-                else
-                    ft_tokens += " " + tokens[i] + "*";
-            }*/
+
             for (String token : tokens)
                 ft_tokens += " +" + token + "*";
 
@@ -138,7 +132,6 @@ public class MovieSuggestion extends HttpServlet {
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
-
 
             // Iterate through each row of rs
             int limit = 10;
