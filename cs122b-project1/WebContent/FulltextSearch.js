@@ -20,9 +20,42 @@
  */
 function handleLookup(query, doneCallback) {
     console.log("autocomplete initiated")
-    console.log("sending AJAX request to backend Java Servlet")
+    //console.log("sending AJAX request to backend Java Servlet")
 
     // TODO: if you want to check past query results first, you can do it here
+    let previousQuery = sessionStorage.getItem('previousQuery');
+    if (previousQuery != null) {
+        console.log("previousQuery: " + previousQuery);
+        // check if new query contains the previous one
+        if (query.includes(previousQuery)) {    // if yes, pass the current stored json data with this query to handleLookup
+            console.log("Using cached result");
+            let data = sessionStorage.getItem('suggestions')
+            handleLookupAjaxSuccess(data, query, doneCallback);
+        }
+        else {
+            // sending new HTTP GET request to the Java Servlet endpoint movie-suggestion with the new query
+            // with the query data
+            console.log("sending AJAX request to backend Java Servlet")
+            jQuery.ajax({
+                "method": "GET",
+                // generate the request url from the query.
+                // escape the query string to avoid errors caused by special characters
+                "url": "hero-suggestion?query=" + escape(query),
+                "success": function(data) {
+                    // pass the data, query, and doneCallback function into the success handler
+                    handleLookupAjaxSuccess(data, query, doneCallback)
+                },
+                "error": function(errorData) {
+                    console.log("lookup ajax error")
+                    console.log(errorData)
+                }
+            })
+        }
+    }
+    else {
+        console.log("new session starting with first initialized query" + query);
+    }
+    //sessionStorage.setItem('previousQuery', query)
 
     // sending the HTTP GET request to the Java Servlet endpoint movie-suggestion
     // with the query data
@@ -55,10 +88,22 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 
     // parse the string into JSON
     //var jsonData = JSON.parse(data);
-    let jsonData = data;
+    let previousQuery = sessionStorage.getItem('previousQuery');
+    let jsonData;
+    if (previousQuery != null) {
+        console.log('parse JSON ');
+        //jsonData = JSON.parse(data);
+        jsonData = data;
+    }
+    else
+        jsonData = data;
+
+    //let jsonData = data;
     console.log(jsonData)
 
     // TODO: if you want to cache the result into a global variable you can do it here
+    sessionStorage.setItem('suggestions', jsonData);
+    sessionStorage.setItem('previousQuery', query)
 
     // call the callback function provided by the autocomplete library
     // add "{suggestions: jsonData}" to satisfy the library response format according to
@@ -76,6 +121,9 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 function handleSelectSuggestion(suggestion) {
     // TODO: jump to the specific result page based on the selected suggestion
     console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
+    // jump to the single movie page of the selected suggestion -- this is by mouse click
+    let url = "single-movie.html?id=" + suggestion["data"]["movieID"];
+    window.location.replace(url);
 }
 
 
@@ -102,7 +150,7 @@ $('#autocomplete').autocomplete({
     deferRequestBy: 300,
     // there are some other parameters that you might want to use to satisfy all the requirements
     // TODO: add other parameters, such as minimum characters
-    ft_min_char: 3,
+    minChars: 3,
 });
 
 
@@ -112,6 +160,8 @@ $('#autocomplete').autocomplete({
 function handleNormalSearch(query) {
     console.log("doing normal search with query: " + query);
     // TODO: you should do normal search here
+    // Already handle by form event submitted. For when user either clicks on the 'Search' button or enters
+    // the 'Enter' key without selecting the suggestion entry
 }
 
 // bind pressing enter key to a handler function
@@ -124,31 +174,5 @@ $('#autocomplete').keypress(function(event) {
 })
 
 // TODO: if you have a "search" button, you may want to bind the onClick event as well of that button
-// send to handleNormalSearch()
-/*
-document.getElementById("ft_search_form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the form from submitting and refreshing the page
-    // Get the form input values
-    var movie_title = document.getElementsByName("movie_title")[0].value;
-
-    // Do something with the input values (e.g., display them)
-    console.log("Movie Title from full-text search:", movie_title);
-
-    // Clear the form after processing
-    document.getElementById("ft_search_form").reset();
-    jQuery.ajax({
-        "method": "GET",
-        // generate the request url from the query.
-        // escape the query string to avoid errors caused by special characters
-        "url": "hero-suggestion?query=" + escape(query),
-        "success": function(data) {
-            // pass the data, query, and doneCallback function into the success handler
-            handleLookupAjaxSuccess(data, query, doneCallback)
-        },
-        "error": function(errorData) {
-            console.log("lookup ajax error")
-            console.log(errorData)
-        }
-    })
-});
-*/
+// Already handle by form event submitted. For when user either clicks on the 'Search' button or enters
+// the 'Enter' key without selecting the suggestion entry
