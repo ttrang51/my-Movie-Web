@@ -228,7 +228,7 @@ let limit = getParameterByName('result_limit');
 let page = getParameterByName('page');
 
 let ft_title = getParameterByName('ft_movie_title');
-
+/*
 if (ft_title != null) {
     console.log("getting param ft_movie_title");
     console.log(ft_title);
@@ -239,7 +239,7 @@ if (ft_title != null) {
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
-
+*/
 if (sort != null || limit != null){
     jQuery.ajax({
         dataType: "json", // Setting return data type
@@ -248,10 +248,21 @@ if (sort != null || limit != null){
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
+else if (ft_title != null) {
+    console.log("getting param ft_movie_title");
+    console.log(ft_title);
+    console.log("GET request to FTSearch");
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        url: "api/fulltext-search?ft_movie_title=" + ft_title, // Setting request url, which is mapped by MoviesServlet in Movies.java
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
+}
 else {
-    console.log("else in MovieList");
-    console.log("title: " + title + " year: " + year + " director: " + director_name + " star: " + star_name);
-    console.log("genre: " + genre + " prefix: " + prefix);
+    //console.log("else in MovieList");
+    //console.log("title: " + title + " year: " + year + " director: " + director_name + " star: " + star_name);
+    //console.log("genre: " + genre + " prefix: " + prefix);
 
     if (title == null && year == null && director_name == null && star_name == null) {
 // Makes another HTTP GET request to MBrowse

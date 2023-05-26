@@ -23,56 +23,34 @@ function handleLookup(query, doneCallback) {
     //console.log("sending AJAX request to backend Java Servlet")
 
     // TODO: if you want to check past query results first, you can do it here
-    let previousQuery = sessionStorage.getItem('previousQuery');
-    if (previousQuery != null) {
-        console.log("previousQuery: " + previousQuery);
-        // check if new query contains the previous one
-        if (query.includes(previousQuery)) {    // if yes, pass the current stored json data with this query to handleLookup
-            console.log("Using cached result");
-            let data = sessionStorage.getItem('suggestions')
-            handleLookupAjaxSuccess(data, query, doneCallback);
-        }
-        else {
-            // sending new HTTP GET request to the Java Servlet endpoint movie-suggestion with the new query
-            // with the query data
-            console.log("sending AJAX request to backend Java Servlet")
-            jQuery.ajax({
-                "method": "GET",
-                // generate the request url from the query.
-                // escape the query string to avoid errors caused by special characters
-                "url": "hero-suggestion?query=" + escape(query),
-                "success": function(data) {
-                    // pass the data, query, and doneCallback function into the success handler
-                    handleLookupAjaxSuccess(data, query, doneCallback)
-                },
-                "error": function(errorData) {
-                    console.log("lookup ajax error")
-                    console.log(errorData)
-                }
-            })
-        }
+    // If query is duplicated. get the existed cached result list responding to this query
+    let duplicatedData = sessionStorage.getItem(query);
+    if (duplicatedData != null) {
+        //console.log("previous result set: " + duplicatedData);
+        console.log("Using cached result");
+        let data =  JSON.parse(duplicatedData);
+        // send the cached result to handelLookup without sending AJAX request to backend server
+        handleLookupAjaxSuccess(data, query, doneCallback);
     }
     else {
-        console.log("new session starting with first initialized query" + query);
+        // sending the HTTP GET request to the Java Servlet endpoint movie-suggestion
+        // with the query data
+        console.log("sending AJAX request to backend Java Servlet");
+        jQuery.ajax({
+            "method": "GET",
+            // generate the request url from the query.
+            // escape the query string to avoid errors caused by special characters
+            "url": "hero-suggestion?query=" + escape(query),
+            "success": function(data) {
+                // pass the data, query, and doneCallback function into the success handler
+                handleLookupAjaxSuccess(data, query, doneCallback)
+            },
+            "error": function(errorData) {
+                console.log("lookup ajax error")
+                console.log(errorData)
+            }
+        })
     }
-    //sessionStorage.setItem('previousQuery', query)
-
-    // sending the HTTP GET request to the Java Servlet endpoint movie-suggestion
-    // with the query data
-    jQuery.ajax({
-        "method": "GET",
-        // generate the request url from the query.
-        // escape the query string to avoid errors caused by special characters
-        "url": "hero-suggestion?query=" + escape(query),
-        "success": function(data) {
-            // pass the data, query, and doneCallback function into the success handler
-            handleLookupAjaxSuccess(data, query, doneCallback)
-        },
-        "error": function(errorData) {
-            console.log("lookup ajax error")
-            console.log(errorData)
-        }
-    })
 }
 
 
@@ -88,22 +66,13 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 
     // parse the string into JSON
     //var jsonData = JSON.parse(data);
-    let previousQuery = sessionStorage.getItem('previousQuery');
-    let jsonData;
-    if (previousQuery != null) {
-        console.log('parse JSON ');
-        //jsonData = JSON.parse(data);
-        jsonData = data;
-    }
-    else
-        jsonData = data;
-
-    //let jsonData = data;
+    let jsonData = data;
     console.log(jsonData)
 
     // TODO: if you want to cache the result into a global variable you can do it here
-    sessionStorage.setItem('suggestions', jsonData);
-    sessionStorage.setItem('previousQuery', query)
+    // If not using stringify here JSON.parse() won't work when we get the result back from sessionStorage
+    sessionStorage.setItem(query, JSON.stringify(jsonData));
+    //sessionStorage.setItem('previousQuery', query)
 
     // call the callback function provided by the autocomplete library
     // add "{suggestions: jsonData}" to satisfy the library response format according to
