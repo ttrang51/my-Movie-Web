@@ -58,7 +58,7 @@ public class MSearchServlet extends HttpServlet {
 
             // An array to as flags for search conditions
             int[] flag = {0, 0, 0, 0};      // bit: 0 - not presented else presented
-                                            // order: title, year, director, star
+            // order: title, year, director, star
 
             // Retrieve parameter "name" from the http request, which refers to the value of <input name="name"> in index.html
             String title = request.getParameter("movie_title");

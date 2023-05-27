@@ -24,7 +24,8 @@ public class SQLQueryTemplate {
             "group_concat(sim.starId order by s.name separator ',') as starId\n" +
             "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z,\n" +
             "movies as m, ratings as rat\n" +
-            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId ";
+            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId \n" +
+            "and m.title like ?";
 
     public static final String U_MOVIE_SEARCH_PAGE_ = "select m.title, m.id, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
             "from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g\n" +
@@ -81,21 +82,19 @@ public class SQLQueryTemplate {
             "where r.movieId = m.Id and r.movieId = g.movieId and r.movieId = s.movieId\n" +
             "order by rating desc;";
 
-    public static final String uADD_STAR_PAGE_ = "SET @prefix = 'nm';\n" +
-            "SET @largest_varchar_id = (select max(id) from stars);\n" +
-            "SET @numeric_part = CAST(SUBSTRING(@largest_varchar_id, 3) AS UNSIGNED) + 1;\n" +
-            "SET @new_varchar_id = CONCAT(@prefix, @numeric_part);\n" +
-            "insert into stars (id, name, birthYear) values (@new_varchar_id, ?, ?);";
-
     public static final String ADD_STAR_PAGE_ = "select add_star(?, ?) as star_id";
     public static final String ADD_MOVIE_PAGE_ = "call add_movie(?, ?, ?, ?, ?, ?)";
     public static final String BROWSE_PAGE_ = "select * from genres";
+    public static final String FULL_TEXT_MOVIE_SUGGESTION_ = "SELECT id, title FROM movies as m where match (title) against (? in boolean mode) order by title asc;";
 
-    public static final String INSERT_TO_GENRES_ = "select add_genre(?) as genre_id;";
-
-    public static final String LOAD_MOVIE_DATA_ = "load data local infile '/Users/anthony/IdeaProjects/s23-122b-cs122b-team-nightowls-1/movies.csv' " + 
-                                                "into table movies " +
-                                                "FIELDS TERMINATED BY ',' " + 
-                                                "LINES TERMINATED BY '\n';";
+    // Keep the "order by m.title" as following the result set from TA's Demo
+    public static final String FULL_TEXT_MOVIE_SEARCH_ = "select m.title, m.id, m.year, m.director, t.genres, z.stars, z.starId, rat.rating\n" +
+            "from (select movieId, GROUP_CONCAT(g.name order by g.name asc) as genres from genres_in_movies as gim, genres as g\n" +
+            "where gim.genreId = g.id group by movieId) as t,\n" +
+            "(select movieId, group_concat(s.name order by s.name separator ',') as stars,\n" +
+            "group_concat(sim.starId order by s.name separator ',') as starId\n" +
+            "from stars_in_movies as sim, stars as s where sim.starId = s.id group by movieId) as z, movies as m, ratings as rat\n" +
+            "where t.movieId = z.movieId and z.movieId = m.Id and m.Id = rat.movieId\n" +
+            "and match (m.title) against (? in boolean mode) order by m.title;";
 
 }
