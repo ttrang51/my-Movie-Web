@@ -1,4 +1,4 @@
-# CS 122B Project 3 Report
+# CS 122B Project 4 Report
 
 
 ## URL of the Demo video
@@ -6,26 +6,29 @@
 #### https://uci.zoom.us/rec/share/1Fop81yIrlWXGYLLfhwxy3RSk-wWYNojyLWysQqg-7W_QaKmf2ng35wqn01wBBLr.97KDByw3wmNQ_bmG?startTime=1685252252000
 
 ## Contribution
-***Anthonny***
+***Anthony***
     
     Completed:
-    Task 1: Adding reCaptcha
-    Task 2: Adding HTTPS
-    Task 4: Use Encrypted Password
-    Task 5: _Dashboard Login Page
-    EC: Domain Registration
+    Task 2: Developed an Android App for Fabflix
+
 
 ***Thi Thuy Trang Tran***
     
     Completed: 
-    Task 3: Use PreparedStatement
-    Task 5: Add Star/Movie Using Stored Procedure
-    Task 6: XML Parsing
+    Task 1: Improved the Fabflix by adding Full-text Search and Autocomplete
+
 
 ***Cooperated Work***
     
     Peer-review 
     Testing and Inspection
+
+
+
+
+
+
+# Project 3 (PAST) Info Below
 
 ## Prepared Statement
     All the pages that accept user input will have its servlet to use PreparedStatement
