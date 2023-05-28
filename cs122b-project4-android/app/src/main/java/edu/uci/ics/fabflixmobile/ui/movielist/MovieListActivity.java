@@ -3,7 +3,9 @@ package edu.uci.ics.fabflixmobile.ui.movielist;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,8 @@ import com.android.volley.toolbox.StringRequest;
 import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
+import edu.uci.ics.fabflixmobile.databinding.ActivityLoginBinding;
+import edu.uci.ics.fabflixmobile.databinding.ActivityMovielistBinding;
 import edu.uci.ics.fabflixmobile.ui.login.LoginActivity;
 import edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity;
 import org.json.JSONArray;
@@ -26,10 +30,21 @@ import java.util.ArrayList;
 
 public class MovieListActivity extends AppCompatActivity {
 
-    private final String host = "10.0.2.2";
-    private final String port = "8080";
-    private final String domain = "cs122b_project1_api_example_war";
-    private final String baseURL = "http://" + host + ":" + port + "/" + domain;
+    // Local URL
+//    private final String host = "10.0.2.2";
+//    private final String port = "8080";
+//    private final String domain = "cs122b_project1_api_example_war";
+//    private final String baseURL = "http://" + host + ":" + port + "/" + domain;
+
+    // AWS Server URL
+    private final String host = "ec2-3-144-164-209.us-east-2.compute.amazonaws.com";
+    private final String port = "8443";
+    private final String domain = "cs122b-project1-api-example";
+    private final String baseURL = "https://" + host + ":" + port + "/" + domain;
+
+    private int page_num = 0;
+
+    private int total_results = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +81,17 @@ public class MovieListActivity extends AppCompatActivity {
             startActivity(SingleMoviePage);
         });
 
+
+
+        final Button prev_button = findViewById(R.id.prev);
+        final Button next_button = findViewById(R.id.next);
+
+        TextView page_text = findViewById(R.id.page_message);
+        page_text.setText("You are on Page " + (page_num + 1));
+
+        //assign a listener to call a function to handle the user request when clicking a button
+        prev_button.setOnClickListener(view -> prevPage());
+        next_button.setOnClickListener(view -> nextPage());
         // TODO: add pagination next/prev button functionality
     }
 
@@ -79,6 +105,8 @@ public class MovieListActivity extends AppCompatActivity {
         // TODO: get search parameters from search activity using Bundles
 
         Bundle bundle = getIntent().getExtras();
+
+        total_results = Integer.parseInt(bundle.getString("num_results"));
 
         String id = bundle.getString("movie_title"); ;//"tt0488539";
 
@@ -100,12 +128,27 @@ public class MovieListActivity extends AppCompatActivity {
                     try {
 
                         json_movies = new JSONArray(response);
+                        total_results = json_movies.length();
 
                         if (json_movies.length() >= 1) {
                             //Complete and destroy login activity once successful
                             //finish();
 
-                            for (int i=0; i < json_movies.length(); i++) {
+                            // Offset display results based on current page number
+                            int start_i = 0;
+                            int stop_i = 0;
+                            if (total_results < 10) {
+                                start_i = 0;
+                                stop_i = total_results;
+                            } else if (total_results - (page_num * 10) > 10 ){
+                                start_i = (page_num * 10);
+                                stop_i = (page_num * 10) + 10;
+                            } else { // if total_results - (page_num * 10) <= 10
+                                start_i = (page_num * 10);
+                                stop_i = (page_num * 10) + (total_results - (page_num * 10));
+                            }
+
+                            for (int i = start_i; i < stop_i; i++) {
                                 JSONObject m = (JSONObject) json_movies.get(i);
 
                                 // Add movie to movie_list
@@ -139,6 +182,46 @@ public class MovieListActivity extends AppCompatActivity {
 
 
         return movie_list;
+    }
+
+
+    public void nextPage() {
+
+        @SuppressLint("DefaultLocale") String message = "";
+        if (total_results == 0) {
+            System.out.println("You're on the only page!");
+            message = String.format("You're on the only page!");
+        } else if (Math.floor(total_results / 10.0) == 0) {
+            System.out.println("You're on the only page!");
+            message = String.format("You're on the only page!");
+        } else if (page_num  == Math.floor(total_results / 10.0) - 1) {
+            System.out.println("You're on the last page!");
+            message = String.format("You're on the last page!");
+        } else {
+            page_num++;
+            searchMovies();
+            System.out.println("You are now on page: " + (page_num + 1));
+            message = String.format("You are now on page: " + (page_num + 1));
+        }
+
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void prevPage() {
+
+        @SuppressLint("DefaultLocale") String message = "";
+        if (page_num  == 0) {
+            System.out.println("You're on the First page!");
+            message = String.format("You're on the First page!");
+        } else {
+            page_num--;
+            searchMovies();
+            System.out.println("You are now on page: " + page_num);
+            message = String.format("You are now on page: " + (page_num + 1));
+        }
+
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
 
