@@ -111,14 +111,14 @@ public class MovieListActivity extends AppCompatActivity {
         String id = bundle.getString("movie_title"); ;//"tt0488539";
 
 
-        String title = bundle.getString("movie_title");
+        String title = bundle.getString("movie_name");
         String director_name = bundle.getString("movie_dir");
         String year = bundle.getString("movie_year");
         String star_name = bundle.getString("movie_star");
 
         final StringRequest searchRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name,
+                baseURL + "/api/fulltext-search?ft_movie_title=" + title, //"/api/movies-search?movie_title=" + title + "&director_name=" + director_name + "&year=" + year + "&star_name=" + star_name,
                 response -> {
                     // TODO: should parse the json response to update Movie List Page using search parameters
                     //  upon different response value.

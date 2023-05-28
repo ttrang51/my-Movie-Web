@@ -2,7 +2,7 @@
     <string name="app_name">Fabflix Mobile</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
-    <string name="prompt_movie_title">Movie</string>
+    <string name="prompt_movie_title">Movie Title</string>
     <string name="prompt_movie_dir">Director</string>
     <string name="prompt_movie_year">Year</string>
     <string name="prompt_movie_star">Star</string>

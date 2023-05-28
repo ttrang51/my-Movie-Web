@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity{
         // request type is POST
         final StringRequest searchRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/movies-search?movie_title=" + movie_title.getText() + "&director_name="+ movie_dir.getText() + "&year="+ movie_year.getText() +  "&star_name=" + movie_star.getText(),
+                baseURL + "/api/fulltext-search?ft_movie_title=" + movie_title.getText(), //api/movies-search?movie_title=" + movie_title.getText() + "&director_name="+ movie_dir.getText() + "&year="+ movie_year.getText() +  "&star_name=" + movie_star.getText(),
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
@@ -94,7 +94,7 @@ public class SearchActivity extends AppCompatActivity{
                             Bundle search_bundle = new Bundle();
                             // Pass search parameters to Movie List Page
                             search_bundle.putString("num_results", Integer.toString(json_movies.length()));
-                            search_bundle.putString("movie_title", movie_title.getText().toString());
+                            search_bundle.putString("movie_name", movie_title.getText().toString());
                             search_bundle.putString("movie_year", movie_year.getText().toString());
                             search_bundle.putString("movie_dir", movie_dir.getText().toString());
                             search_bundle.putString("movie_star", movie_star.getText().toString());
