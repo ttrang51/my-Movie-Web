@@ -1,3 +1,4 @@
+use moviedb;
 BEGIN;
 INSERT INTO movies VALUES('tt0421974','Sky Fighters',2005,'Gérard Pirès');
 INSERT INTO movies VALUES('tt0378947','Melinda and Melinda',2004,'Woody Allen');
