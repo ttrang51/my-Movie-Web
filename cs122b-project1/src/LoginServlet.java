@@ -13,9 +13,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Dictionary;
 
-import org.jasypt.util.password.PasswordEncryptor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
@@ -49,7 +47,7 @@ public class LoginServlet extends HttpServlet {
         // Verify reCAPTCHA
         try {
             // If the POST is coming from mobile app or from Apache Jmeter, do not verify
-            if (!gRecaptchaResponse.equals("mobile")  || !request.getHeader("User-Agent").contains("Apache")) {
+            if (!(gRecaptchaResponse.equals("mobile") || request.getHeader("User-Agent").contains("Apache"))) {
                 RecaptchaVerifyUtils.verify(gRecaptchaResponse);
             }
         } catch (Exception e) {
