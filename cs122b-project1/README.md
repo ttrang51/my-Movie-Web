@@ -1,88 +1,87 @@
-# CS 122B Project 4 Report
+# CS 122B Project 5 Report
 
+- # General
+    - #### Team#: Nightowls
+    
+    - #### Names: Anthony Martinez and Thi Thuy Trang Tran
+    
+    - #### Project 5 Video Demo Link:
 
-## URL of the Demo video
+    - #### Instruction of deployment:
 
-#### https://uci.zoom.us/rec/share/Y5aQfe9GlOqkkoSLb0PSY8ZHxoBqaz0i9E3qScgJmLw0tik_b4mRVdE4ebyIi1T9.10viyUtiYK2hGUG-?startTime=1685296811000
+    - #### Collaborations and Work Distribution:
 
-## Contribution
-***Anthony***
+    ***Anthony***
     
     Completed:
-    Task 2: Developed an Android App for Fabflix
+    Task 1: Enabled Fabflix with Connection Pooling. 
+    Task 2: Setup a MySQL cluster on AWS that includes a master and a slave.
+    Task 3: Setup a load balancer to balance the traffic to multiple Fabflix instances.
 
 
-***Thi Thuy Trang Tran***
+    ***Thi Thuy Trang Tran***
+        
+        Completed: 
+        Task 4: Measured the performance of the keyword search feature using Apache JMeter.
+
+
+    ***Cooperated Work***
+        
+        Peer-review 
+        Testing and Inspection
+
+
+- # Connection Pooling
+    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+        #### In s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/SQLQueryTemplate.java
+        #### on lines 85 through 88 we have SQL Queries predefined using the Stored procedures we have in our mysql database.
+        #### These Queries are used in...
+            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addMovieServlet.java (line 58)
+            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addStarServlet.java (line 53)
+            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/MBrowseServlet.java (line 62)
+            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/FTSearchServlet.java (line 71)
     
-    Completed: 
-    Task 1: Improved the Fabflix by adding Full-text Search and Autocomplete
-
-
-***Cooperated Work***
+    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+        #### We used connection pooling in our project to reduce the cost of creating new connections to the database by keeping a "pool" of open connections that
+        #### can be passed around from database operation to database operation. Specifically, we have prepared statements setup in our Mysql database that utilize the
+        #### pooling, so we can send queries using the prepared statments to get a faster data return.
     
-    Peer-review 
-    Testing and Inspection
-
-
-
-
-
-
-# Project 3 (PAST) Info Below
-
-## Prepared Statement
-    All the pages that accept user input will have its servlet to use PreparedStatement
-    Other pages also use PreparedStatement
-    User input pages: MSearchServlet, addMovieServlet, addStarServlet, LoginServlet, CheckoutServlet, etc.
-
-## Parsing Time Optimization Strategies
-### Naive Approach
-    Individually perform insert/execute statements which is expensive and time-consuming
-### Batch Insert
-    Reduce overhead of individual insert statements
-    Reduce round trips between the application and the database server by gouping multiple rows in a single batch
-    Minimize parsing overhead as it only needs to parse once for the entire batch of data
-    Provide transactional control as batch insert can be performed within a transaction
-### LOAD DATA
-    Faster parsing for large amount of data as it is designed and optimized for bulk data loading from external sources
-    using an efficient parsing mechanism
-    Reduce network traffic as data is read directly from the file system rather than being sent over the network
-    Minimize logging and indexing during data loading process
-    Provide transactional control
-    Integration with MySQL features
-
-## Report
-
-### Numeric report 
-
-    Parsed: 8751 movies
-    Parsed:  6839 stars
-    Parsed: 123 genres
-    Inserted 123 genres
-    Inserted 6839 stars
-    Inserted 8719 movies
-    Inserted 9798 into genres_in_movie
-    Inserted 25350 into stars_in_movie
-    Inconsistent movies: 48
-    Dup movie: 12
-    Null movie: 3352
-    Inconsistent stars: 17053
-    Dup star: 12
-    Stars not found: 1325
-
-
-### Inconsistent reasoning
-
-    -   Inconsistent movies: duplicated movies which have same title and movieId; null movies whose required fields like title, movieId, director, year are empty. These
-    will not be added to movies table. Either be ignored by DomParser or stored procedure insert_movie.
-    -   Inconsistent casts: actors/movies not found. They are in main/actor xml files but are not in cast xml file or the other way around.
-    -   Inconsistent stars: duplicated stars with same name and same birth year will be handled in DomParser. Stars with same name and birth year existed in
-    database are still added as following instruction from task 5. 
-    -   Inconsistent genres: movies existing with no cat are also considered inconsistent hence would not be added to the genres_in_movie table. Genres with not found
-    movieId will also be ignored. These will be handeled by the stored procedure: link_genre_movie.
-
-
+    - #### Explain how Connection Pooling works with two backend SQL.
+        #### Connection Pooling works with the two backend SQL databases by allowing for the speedy data retreival while also 
+        #### dividing up the workload between the two database servers.
+        ####
+        ####
     
+
+- # Master/Slave
+    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+        #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/WebContent/META-INF/context.xml
+        #### /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
+
+    - #### How read/write requests were routed to Master/Slave SQL?
+        #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1.
+        #### Write are routed only to the Master SQL by 
+    
+
+- # JMeter TS/TJ Time Logs
+    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+
+- # JMeter TS/TJ Time Measurement Report
+
+| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
 
     
 
