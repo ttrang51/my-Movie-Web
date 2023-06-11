@@ -59,8 +59,8 @@
         #### /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
 
     - #### How read/write requests were routed to Master/Slave SQL?
-        #### 
-        #### 
+        #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1.
+        #### Write are routed only to the Master SQL by 
     
 
 - # JMeter TS/TJ Time Logs
