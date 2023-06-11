@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -132,8 +134,27 @@ public class MSearchServlet extends HttpServlet {
                 statement.setInt(4, yearInteger);
             }
 
+            String contextPath = request.getServletContext().getRealPath("/");
+            String xmlFilePath = contextPath + "log.txt";
+            File TJoutFile = new File(xmlFilePath);
+            if (!TJoutFile.exists())
+                TJoutFile.createNewFile();
+
+            // Time the total JDBC parts per query (TJ)
+            long startTime = System.nanoTime();
+
             // Perform the query
             ResultSet rs = statement.executeQuery();
+
+            long endTime = System.nanoTime();
+            long TJelapsedTime = endTime - startTime; // in nano seconds
+            System.out.println("TJ time for search: " + TJelapsedTime);
+
+            // Append new TS values to TSoutFile
+            FileWriter fwriter = new FileWriter(TJoutFile, true);
+            fwriter.write(String.valueOf(TJelapsedTime) + " ");
+            fwriter.flush();
+            fwriter.close();
 
             String queryString = statement.toString();
             queryString = queryString.substring( queryString.indexOf( ": " ) + 2 );
@@ -172,6 +193,7 @@ public class MSearchServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
+
             // Close all structures
             rs.close();
             statement.close();

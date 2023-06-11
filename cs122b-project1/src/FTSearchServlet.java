@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -45,12 +47,12 @@ public class FTSearchServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
-        System.out.println("FTSearchServlet is called");
 
         HttpSession session = request.getSession();
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
+
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()){
@@ -78,8 +80,27 @@ public class FTSearchServlet extends HttpServlet {
             System.out.println("tokens list: " + ft_tokens);
             statement.setString(1, ft_tokens);
 
+            String contextPath = request.getServletContext().getRealPath("/");
+            String xmlFilePath = contextPath + "log.txt";
+            File TJoutFile = new File(xmlFilePath);
+            if (!TJoutFile.exists())
+                TJoutFile.createNewFile();
+
+            // Time the total JDBC parts per query (TJ)
+            long startTime = System.nanoTime();
+
             // Perform the query
             ResultSet rs = statement.executeQuery();
+
+            long endTime = System.nanoTime();
+            long TJelapsedTime = endTime - startTime; // in nano seconds
+            System.out.println("TJ time for search: " + TJelapsedTime);
+
+            // Append new TS values to TSoutFile
+            FileWriter fwriter = new FileWriter(TJoutFile, true);
+            fwriter.write(String.valueOf(TJelapsedTime) + " ");
+            fwriter.flush();
+            fwriter.close();
 
             String queryString = statement.toString();
             queryString = queryString.substring( queryString.indexOf( ": " ) + 2 );
@@ -115,6 +136,7 @@ public class FTSearchServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
+
             // Close all structures
             rs.close();
             statement.close();
