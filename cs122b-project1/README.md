@@ -55,8 +55,12 @@
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+        #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/WebContent/META-INF/context.xml
+        #### /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
 
     - #### How read/write requests were routed to Master/Slave SQL?
+        #### 
+        #### 
     
 
 - # JMeter TS/TJ Time Logs
