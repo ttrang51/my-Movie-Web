@@ -21,8 +21,8 @@
 
     ***Thi Thuy Trang Tran***
         
-        Completed: 
-        Task 4: Measured the performance of the keyword search feature using Apache JMeter.
+    Completed: 
+    Task 4: Measured the performance of the keyword search feature using Apache JMeter.
 
 
     ***Cooperated Work***
@@ -60,7 +60,7 @@
 
     - #### How read/write requests were routed to Master/Slave SQL?
         #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1.
-        #### Write are routed only to the Master SQL by 
+        #### Write are routed only to the Master SQL by the load balancer.
     
 
 - # JMeter TS/TJ Time Logs
