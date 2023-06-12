@@ -17,9 +17,6 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A servlet that takes input from a html <form> and talks to MySQL moviedbexample,
@@ -44,6 +41,8 @@ public class FTSearchServlet extends HttpServlet {
     // Use http GET
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+
+        long TSstartTime = System.currentTimeMillis();
 
         response.setContentType("application/json"); // Response mime type
 
@@ -80,27 +79,29 @@ public class FTSearchServlet extends HttpServlet {
             System.out.println("tokens list: " + ft_tokens);
             statement.setString(1, ft_tokens);
 
-            String contextPath = request.getServletContext().getRealPath("/");
-            String xmlFilePath = contextPath + "log.txt";
-            File TJoutFile = new File(xmlFilePath);
-            if (!TJoutFile.exists())
-                TJoutFile.createNewFile();
+           // String contextPath = request.getServletContext().getRealPath("/");
+            //SyncAppend timer = new SyncAppend(contextPath);
+            //String xmlFilePath = contextPath + "log.txt";
+            //File TJoutFile = new File(xmlFilePath);
+            //if (!TJoutFile.exists())
+            //    TJoutFile.createNewFile();
 
             // Time the total JDBC parts per query (TJ)
-            long startTime = System.nanoTime();
+            long TJstartTime = System.currentTimeMillis();
 
             // Perform the query
             ResultSet rs = statement.executeQuery();
 
-            long endTime = System.nanoTime();
-            long TJelapsedTime = endTime - startTime; // in nano seconds
-            System.out.println("TJ time for search: " + TJelapsedTime);
+            long TJendTime = System.currentTimeMillis();
+            long TJelapsedTime = TJendTime - TJstartTime; // in nano seconds
+            //System.out.println("TJ time for search: " + TJelapsedTime);
+            //timer.syncAppend(TJelapsedTime, 0);
 
             // Append new TS values to TSoutFile
-            FileWriter fwriter = new FileWriter(TJoutFile, true);
-            fwriter.write(String.valueOf(TJelapsedTime) + " ");
-            fwriter.flush();
-            fwriter.close();
+            //FileWriter fwriter = new FileWriter(TJoutFile, true);
+            //fwriter.write(String.valueOf(TJelapsedTime) + " ");
+            //fwriter.flush();
+            //fwriter.close();
 
             String queryString = statement.toString();
             queryString = queryString.substring( queryString.indexOf( ": " ) + 2 );
@@ -140,6 +141,23 @@ public class FTSearchServlet extends HttpServlet {
             // Close all structures
             rs.close();
             statement.close();
+            conn.close();
+
+            long TSendTime = System.currentTimeMillis();
+            long TSelapsedTime = TSendTime - TSstartTime; // in nano seconds
+
+            String contextPath = request.getServletContext().getRealPath("/");
+            String xmlFilePath = contextPath + "log.txt";
+            System.out.println(xmlFilePath);
+            File TSoutFile = new File(xmlFilePath);
+            if (!TSoutFile.exists())
+                TSoutFile.createNewFile();
+
+            // Append new TS values to TSoutFile
+            FileWriter fwriter = new FileWriter(TSoutFile, true);
+            fwriter.write(String.valueOf(TJelapsedTime) + " " + String.valueOf(TSelapsedTime) + "\n");
+            fwriter.flush();
+            fwriter.close();
 
             // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");
