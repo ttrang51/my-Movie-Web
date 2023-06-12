@@ -5,25 +5,25 @@
     
     - #### Names: Anthony Martinez and Thi Thuy Trang Tran
     
-    - #### Project 5 Video Demo Link:
+    - #### Project 5 Video Demo Link: https://uci.zoom.us/rec/play/pIvExg-TT_EaVQ8CVG3NmEM8dYZkLXV_qwQyy0j9B38pcDaDXzom-hSpkbM1dYLzOBxsMJQFfKAdqTgU.eXPmbJ708q8xyvtS?canPlayFromShare=true&from=my_recording&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fuci.zoom.us%2Frec%2Fshare%2F1l01qa_Cw-rzq7guO-SIUsqEAzBO4xUFAEgY-PBoKntDJ9mxf-g7R-xArx5Unn-u.0r9-E8nFLfnMLXYH
 
     - #### Instruction of deployment:
-        #### To deploy falbix on any instance (master, slave, instance 1):
-        ### 1. Connect to tomcat manager (keep tab open to manually deploy fablix)
-        ###     - http://3.143.24.138:8080/manager/html/ (instance 1)
-        ###     - http://3.145.134.44:8080/manager/html/ (instance 2 (master))
-        ###     - http://18.219.157.91:8080/manager/html/(instance 3 (slave))
-        ### 2. (In terminal) change working directory to /s23-122b-cs122b-team-nightowls/cs122b-project1 ("cd s23-122b-cs122b-team-nightowls/cs122b-project1")
-        ### 3. run "mvn clean"
-        ### 4. run "mvn package"
-        ### 5. click "undeploy" button on tomcat manager webpage for "cs122b-spring21-project1-api-example" to remove the current falbix
-        ### 6. click "Browse..." button under "Deploy" section of tomcat manager webpage and choose the WAR file (located in s23-122b-cs122b-team-nightowls-1/cs122b-project1/target) that was created from running "mvn package" in previous step
-        ### 7. Click on hyperlink titled "cs122b-spring21-project1-api-example" under the "Path" section of the page to navigate to newly deployed Falbix
+         To deploy falbix on any instance (master, slave, instance 1):
+         1. Connect to tomcat manager (keep tab open to manually deploy fablix)
+             - http://3.143.24.138:8080/manager/html/ (instance 1)
+             - http://3.145.134.44:8080/manager/html/ (instance 2 (master))
+             - http://18.219.157.91:8080/manager/html/(instance 3 (slave))
+         2. (In terminal) change working directory to /s23-122b-cs122b-team-nightowls/cs122b-project1 ("cd s23-122b-cs122b-team-nightowls/cs122b-project1")
+         3. run "mvn clean"
+         4. run "mvn package"
+         5. click "undeploy" button on tomcat manager webpage for "cs122b-spring21-project1-api-example" to remove the current falbix
+         6. click "Browse..." button under "Deploy" section of tomcat manager webpage and choose the WAR file (located in s23-122b-cs122b-team-nightowls-1/cs122b-project1/target) that was created from running "mvn package" in previous step
+         7. Click on hyperlink titled "cs122b-spring21-project1-api-example" under the "Path" section of the page to navigate to newly deployed Falbix
 
 
-    - #### Collaborations and Work Distribution:
+    Collaborations and Work Distribution:
 
-    ***Anthony Martinez***
+    Anthony Martinez
     
     Completed:
     Task 1: Enabled Fabflix with Connection Pooling. 
@@ -31,13 +31,13 @@
     Task 3: Setup a load balancer to balance the traffic to multiple Fabflix instances.
 
 
-    ***Thi Thuy Trang Tran***
+    Thi Thuy Trang Tran
         
     Completed: 
     Task 4: Measured the performance of the keyword search feature using Apache JMeter.
 
 
-    ***Cooperated Work***
+    Cooperated Work
         
         Peer-review 
         Testing and Inspection
@@ -45,37 +45,47 @@
 
 - # Connection Pooling
     - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
-        #### In s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/SQLQueryTemplate.java
-        #### on lines 85 through 88 we have SQL Queries predefined using the Stored procedures we have in our mysql database.
-        #### These Queries are used in...
-            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addMovieServlet.java (line 58)
-            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addStarServlet.java (line 53)
-            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/MBrowseServlet.java (line 62)
-            #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/FTSearchServlet.java (line 71)
+        In s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/SQLQueryTemplate.java
+        on lines 85 through 88 we have SQL Queries predefined using the Stored procedures we have in our mysql database.
+        These Queries are used in...
+            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addMovieServlet.java (line 58)
+            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addStarServlet.java (line 53)
+            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/MBrowseServlet.java (line 62)
+            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/FTSearchServlet.java (line 71)
     
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
-        #### We used connection pooling in our project to reduce the cost of creating new connections to the database by keeping a "pool" of open connections that
-        #### can be passed around from database operation to database operation. Specifically, we have prepared statements setup in our Mysql database that utilize the
-        #### pooling, so we can send queries using the prepared statments to get a faster data return.
+        We used connection pooling in our project to reduce the cost of creating new connections to the database by keeping a "pool" of open connections that
+        can be passed around from database operation to database operation. Specifically, we have prepared statements setup in our Mysql database that utilize the
+        pooling, so we can send queries using the prepared statments to get a faster data return.
     
     - #### Explain how Connection Pooling works with two backend SQL.
-        #### Connection Pooling works with the two backend SQL databases by allowing for the speedy data retreival while also 
-        #### dividing up the workload between the two database servers.
+        Connection Pooling works with the two backend SQL databases by allowing for the speedy data retreival while also 
+        dividing up the workload between the two database servers.
         
     
 
 - # Master/Slave
-    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
-        #### s23-122b-cs122b-team-nightowls-1/cs122b-project1/WebContent/META-INF/context.xml
-        #### /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
+  Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
 
-    - #### How read/write requests were routed to Master/Slave SQL?
-        #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1 (and GCP instance).
-        #### Write are routed only to the Master SQL by the load balancer.
+       ** /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
+       ** s23-122b-cs122b-team-nightowls-1/cs122b-project1/WebContent/META-INF/context.xml
+
+- # How read/write requests were routed to Master/Slave SQL?
+    
+       ** Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1 (and GCP instance). 
+       ** Write are routed only to the Master SQL by the load balancer.
     
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+
+        ** log_processing.java is a script written in Java language that use to calculate the TJ and TS average times in ms. The program can handle multiple files and generate the average TJ and TS times of them.
+        ** Steps:
+            1. Open command prompt
+            2. Run "javac log_processing.java" to compile the program
+            3. Run "java log_processing file_name file_name" to calculate and output the average TS and TJ values
+  
 
 
 - # JMeter TS/TJ Time Measurement Report
