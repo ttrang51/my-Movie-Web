@@ -81,6 +81,7 @@ public class addStarServlet extends HttpServlet {
             }
             rs.close();
             statement.close();
+            conn.close();
 
             if (row_count == 0) {
                 JsonObject jsonObject = new JsonObject();

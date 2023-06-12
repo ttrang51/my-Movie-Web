@@ -91,6 +91,7 @@ public class SingleStarServlet extends HttpServlet {
             }
             rs.close();
             statement.close();
+            conn.close();
 
             // Write JSON string to output
             out.write(jsonArray.toString());

@@ -113,6 +113,7 @@ public class cartItems extends HttpServlet {
             session.setAttribute("checkoutTotal", checkout_price);
             rs.close();
             statement.close();
+            conn.close();
 
             // Log to localhost log
             request.getServletContext().log("getting " + previousItemsJsonArray.size() + " results");
