@@ -45,13 +45,17 @@
 
 - # Connection Pooling
     - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
-        In s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/SQLQueryTemplate.java
-        on lines 85 through 88 we have SQL Queries predefined using the Stored procedures we have in our mysql database.
-        These Queries are used in...
-            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addMovieServlet.java (line 58)
-            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/addStarServlet.java (line 53)
-            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/MBrowseServlet.java (line 62)
-            ## s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/FTSearchServlet.java (line 71)
+        
+          In s23-122b-cs122b-team-nightowls-1/cs122b-project1/src/SQLQueryTemplate.java
+          on lines 85 through 88 we have SQL Queries predefined using the Stored procedures we have in our mysql database.
+          These Queries are used bascially all the servlets that contains Prepared Statements. A list of some typical ones are below:
+              addMovieServlet.java 
+              addStarServlet.java 
+              MSearchServlet.java
+              MBrowseServlet.java 
+              FTSearchServlet.java
+              etc..
+  
     
     - #### Explain how Connection Pooling is utilized in the Fabflix code.
         We used connection pooling in our project to reduce the cost of creating new connections to the database by keeping a "pool" of open connections that
