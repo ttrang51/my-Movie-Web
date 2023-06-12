@@ -8,6 +8,14 @@
     - #### Project 5 Video Demo Link:
 
     - #### Instruction of deployment:
+        #### To deploy falbix on any instance (master, slave, instance 1):
+        ### 1. ssh onto instance
+        ### 2. change working directory to /s23-122b-cs122b-team-nightowls/cs122b-project1 ("cd s23-122b-cs122b-team-nightowls/cs122b-project1")
+        ### 3. run "mvn clean"
+        ### 4. run "mvn package"
+        ### 5. run "sudo cp ./target/*.war /var/lib/tomcat10/webapps" to copy war file to the tomcat server
+        ### 6. run "sudo ls -lah /var/lib/tomcat10/webapps" to make sure the war file was updated to the recently built one
+
 
     - #### Collaborations and Work Distribution:
 
@@ -49,8 +57,7 @@
     - #### Explain how Connection Pooling works with two backend SQL.
         #### Connection Pooling works with the two backend SQL databases by allowing for the speedy data retreival while also 
         #### dividing up the workload between the two database servers.
-        ####
-        ####
+        
     
 
 - # Master/Slave
@@ -59,7 +66,7 @@
         #### /etc/apache2/sites-enabled/000-default.conf (on apache server of instance 1)
 
     - #### How read/write requests were routed to Master/Slave SQL?
-        #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1.
+        #### Read requests are routed to either the Master or Slave servers based on the balancer that's set up on instance 1 (and GCP instance).
         #### Write are routed only to the Master SQL by the load balancer.
     
 
