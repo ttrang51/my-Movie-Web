@@ -9,17 +9,21 @@
 
     - #### Instruction of deployment:
         #### To deploy falbix on any instance (master, slave, instance 1):
-        ### 1. ssh onto instance
-        ### 2. change working directory to /s23-122b-cs122b-team-nightowls/cs122b-project1 ("cd s23-122b-cs122b-team-nightowls/cs122b-project1")
+        ### 1. Connect to tomcat manager (keep tab open to manually deploy fablix)
+        ###     - http://3.143.24.138:8080/manager/html/ (instance 1)
+        ###     - http://3.145.134.44:8080/manager/html/ (instance 2 (master))
+        ###     - http://18.219.157.91:8080/manager/html/(instance 3 (slave))
+        ### 2. (In terminal) change working directory to /s23-122b-cs122b-team-nightowls/cs122b-project1 ("cd s23-122b-cs122b-team-nightowls/cs122b-project1")
         ### 3. run "mvn clean"
         ### 4. run "mvn package"
-        ### 5. run "sudo cp ./target/*.war /var/lib/tomcat10/webapps" to copy war file to the tomcat server
-        ### 6. run "sudo ls -lah /var/lib/tomcat10/webapps" to make sure the war file was updated to the recently built one
+        ### 5. click "undeploy" button on tomcat manager webpage for "cs122b-spring21-project1-api-example" to remove the current falbix
+        ### 6. click "Browse..." button under "Deploy" section of tomcat manager webpage and choose the WAR file (located in s23-122b-cs122b-team-nightowls-1/cs122b-project1/target) that was created from running "mvn package" in previous step
+        ### 7. Click on hyperlink titled "cs122b-spring21-project1-api-example" under the "Path" section of the page to navigate to newly deployed Falbix
 
 
     - #### Collaborations and Work Distribution:
 
-    ***Anthony***
+    ***Anthony Martinez***
     
     Completed:
     Task 1: Enabled Fabflix with Connection Pooling. 
