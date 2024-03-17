@@ -51,7 +51,7 @@ public class cartItems extends HttpServlet {
             previousItems = new HashMap<>();
             session.setAttribute("cartItems", previousItems);
         }
-        // Log to localhost log
+        // Log to tomcat localhost log
         request.getServletContext().log("getting " + previousItems.size() + " items");
 
         // Output stream to STDOUT

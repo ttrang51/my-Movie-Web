@@ -14,6 +14,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Map;
 
 @WebServlet(name = "CheckoutServlet", urlPatterns = "/api/checkout")
 public class CheckoutServlet extends HttpServlet {
@@ -71,8 +74,26 @@ public class CheckoutServlet extends HttpServlet {
             while (rs.next()) {
                 // All credit card info correct
                 row_count++;
+
                 // Insert transaction into sale table
                 HttpSession session = request.getSession();
+
+                ArrayList<String> insertQueryList = new ArrayList<>();
+                Map<String, Integer> cartItems = (Map<String, Integer>) session.getAttribute("cartItems");
+                LocalDate currentDate = LocalDate.now();
+
+                for (String m_id : cartItems.keySet()) {
+                    // generate the insert query
+                    String insertQuery = String.format("insert into sales (customerId, movieId, saleDate) values ('%s','%s','%s');",
+                            session.getAttribute("userID"), m_id, currentDate.toString());
+                    insertQueryList.add(insertQuery);
+                }
+
+                // execute the insert queries into the db
+                for (String insertQuery : insertQueryList) {
+                    int insertResult = statement.executeUpdate(insertQuery);
+                }
+                //------------- done update sale records
 
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");

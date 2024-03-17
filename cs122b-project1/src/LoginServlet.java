@@ -91,6 +91,7 @@ public class LoginServlet extends HttpServlet {
 
                 String userUserName = rs.getString("email");
                 String userPassword = rs.getString("password");
+                String userID = rs.getString("userId");
 
                 // use the encryptor to compare the user input password with encrypted password stored in DB
                 Boolean loginSuccess = new StrongPasswordEncryptor().checkPassword(password, userPassword);
@@ -101,6 +102,7 @@ public class LoginServlet extends HttpServlet {
                     if (loginSuccess) {
                         
                         request.getSession().setAttribute("user", new User(username));
+                        request.getSession().setAttribute("userID", userID);
 
                         responseJsonObject.addProperty("status", "success");
                         responseJsonObject.addProperty("message", "success");

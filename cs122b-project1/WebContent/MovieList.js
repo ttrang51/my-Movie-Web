@@ -1,5 +1,5 @@
 /**
- * This example is following frontend and backend separation.
+ * This is following frontend and backend separation.
  *
  * Before this .js is loaded, the html skeleton is created.
  *

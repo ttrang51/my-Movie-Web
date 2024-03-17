@@ -183,7 +183,7 @@ public class MovieSuggestion extends HttpServlet {
 
             // search on superheroes and add the results to JSON Array
             // this example only does a substring match
-            // TODO: in project 4, you should do full text search with MySQL to find the matches on movies and stars
+            // in project 4, you should do full text search with MySQL to find the matches on movies and stars
 
             for (Integer id : superHeroMap.keySet()) {
                 String heroName = superHeroMap.get(id);

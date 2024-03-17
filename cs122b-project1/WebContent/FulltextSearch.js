@@ -1,5 +1,5 @@
 /*
- * CS 122B Project 4. Autocomplete Example.
+ *
  *
  * This Javascript code uses this library: https://github.com/devbridge/jQuery-Autocomplete
  *
@@ -8,6 +8,16 @@
  *
  * To read this code, start from the line "$('#autocomplete').autocomplete" and follow the callback functions.
  *
+ */
+
+/*
+    This js file basically perform these operations
+    1. Handle 'enter' press from user's query
+    2. Display suggestions from user's query
+        * If duplicated query, no sending ajax to backend and use the cached result from previous duplicated query instead
+        * If not duplicated query, sending ajax to backend servlet to get new suggestions
+    3. Handle select of a suggestion from user
+
  */
 
 
@@ -22,7 +32,7 @@ function handleLookup(query, doneCallback) {
     console.log("autocomplete initiated")
     //console.log("sending AJAX request to backend Java Servlet")
 
-    // TODO: if you want to check past query results first, you can do it here
+    // if you want to check past query results first, you can do it here
     // If query is duplicated. get the existed cached result list responding to this query
     let duplicatedData = sessionStorage.getItem(query);
     if (duplicatedData != null) {
@@ -69,7 +79,7 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
     let jsonData = data;
     console.log(jsonData)
 
-    // TODO: if you want to cache the result into a global variable you can do it here
+    // if you want to cache the result into a global variable you can do it here
     // If not using stringify here JSON.parse() won't work when we get the result back from sessionStorage
     sessionStorage.setItem(query, JSON.stringify(jsonData));
     //sessionStorage.setItem('previousQuery', query)
@@ -88,7 +98,7 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
  * You can redirect to the page you want using the suggestion data.
  */
 function handleSelectSuggestion(suggestion) {
-    // TODO: jump to the specific result page based on the selected suggestion
+    // jump to the specific result page based on the selected suggestion
     console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
     // jump to the single movie page of the selected suggestion -- this is by mouse click
     let url = "single-movie.html?id=" + suggestion["data"]["movieID"];
@@ -118,7 +128,7 @@ $('#autocomplete').autocomplete({
     // set delay time
     deferRequestBy: 300,
     // there are some other parameters that you might want to use to satisfy all the requirements
-    // TODO: add other parameters, such as minimum characters
+    // add other parameters, such as minimum characters
     minChars: 3,
 });
 
@@ -128,7 +138,7 @@ $('#autocomplete').autocomplete({
  */
 function handleNormalSearch(query) {
     console.log("doing normal search with query: " + query);
-    // TODO: you should do normal search here
+    // should do normal search here
     // Already handle by form event submitted. For when user either clicks on the 'Search' button or enters
     // the 'Enter' key without selecting the suggestion entry
 }
@@ -142,6 +152,6 @@ $('#autocomplete').keypress(function(event) {
     }
 })
 
-// TODO: if you have a "search" button, you may want to bind the onClick event as well of that button
+// if we have a "search" button, we may want to bind the onClick event as well of that button
 // Already handle by form event submitted. For when user either clicks on the 'Search' button or enters
 // the 'Enter' key without selecting the suggestion entry

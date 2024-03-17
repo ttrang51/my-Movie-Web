@@ -62,8 +62,8 @@ public class SQLQueryTemplate {
 
     public static final String CART_PAGE_ = "select m.id, m.title, m.price from movies as m where ";
 
-    public static final String LOGIN_PAGE_ = "select c.email, c.password from customers as c where c.email = ?";
-
+    public static final String LOGIN_PAGE_ = "select c.email, c.password , c.id from customers as c where c.email = ?";
+    // add c.id above
     public static final String DASHBOARD_LOGIN_PAGE_ = "select c.email, c.password from employees as c where c.email = ?";
 
     public static final String TOP_20_MOVIES_LIST_PAGE_ = "with r(movieId, rating) as (select movieId, rating\n" +
